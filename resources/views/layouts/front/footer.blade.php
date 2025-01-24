@@ -205,7 +205,61 @@
 <a href="#" data-target="html" class="scroll-to-target scroll-to-top"><i class="icon-up-arrow"></i></a>
 
 @yield('cust_js')
-
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Orion Contracting Company",
+        "description": "Leading construction and contracting experts with 15+ years of experience specializing in commercial, industrial and residential projects across United Arab Emirates And Saudi Arabia",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+        "foundingDate": "2008",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Dubai",
+            "addressRegion": "Dubai",
+            "addressCountry": "United Arab Emirates"
+        },
+        "contactPoint": [{
+            "@type": "ContactPoint",
+            "telephone": "+971-4-123-4567",
+            "contactType": "customer service",
+            "areaServed": ["AE", "SA"],
+            "availableLanguage": ["English", "Arabic"]
+        }],
+        "sameAs": [
+            "https://www.facebook.com/orioncontractingcompany",
+            "https://www.linkedin.com/company/orion-contracting-company-llc/mycompany/"
+        ],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Construction Services",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Commercial Construction"
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Industrial Construction"
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "MEP Services"
+                    }
+                }
+            ]
+        }
+    }
+    </script>
 </body>
 
 

@@ -17,7 +17,7 @@
     <meta name="keywords"
         content="constructing, contracting, build, UAE, Ras Al Khaimah, Dubai,Mechanical electrical and plumbing ,Businesses, construct, mep, MEP, INFRASTRUCTURE, roads, LANDSCAPE">
     <meta name="robots" content="index, follow">
-
+@yield('meta_tags')
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
 

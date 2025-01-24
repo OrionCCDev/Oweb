@@ -21,7 +21,26 @@ $p_nam = 'home';
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/reey-font/stylesheet.css') }}" /> -->
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
+@section('meta_tags')
+<title>Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia</title>
+<meta name="description" content="Premier construction and contracting company with 15+ years expertise in commercial, industrial and residential projects across UAE and Saudi Arabia. ISO certified, innovative solutions and guaranteed quality.">
+<meta name="keywords" content="construction company UAE, contracting Saudi Arabia, commercial construction, industrial projects, MEP contractors, construction management, building contractors, Orion Contracting, Dubai construction, Saudi construction company">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Orion Contracting Company">
 
+<!-- Open Graph / Social Media -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Orion Contracting Company - Construction Excellence">
+<meta property="og:description" content="Leading construction experts delivering innovative solutions across UAE & Saudi Arabia. 15+ years of excellence in commercial and industrial projects.">
+<meta property="og:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
+<meta property="og:url" content="{{ url()->current() }}">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Orion Contracting - Construction Excellence in UAE & KSA">
+<meta name="twitter:description" content="Leading construction and contracting experts with 15+ years of experience">
+<meta name="twitter:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
+@endsection
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
 <link rel="stylesheet"
@@ -48,37 +67,19 @@ $p_nam = 'home';
 </div>
 @endsection
 @section('cust_js')
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}">
-</script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-validate/jquery.validate.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.js') }}"></script> -->
-<!--<script src="{{ asset('orionFrontAssets/assets/vendors/odometer/odometer.min.js') }}"></script>  -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/tiny-slider/tiny-slider.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/wnumb/wNumb.min.js') }}"></script> -->
-<!-- related with loader -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/isotope/isotope.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/countdown/jquery.countdown.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/js/bootstrap-select.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/vegas/vegas.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.circleType.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.lettering.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}"></script> -->
-<!-- template js -->
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}" defer></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+<script src="http://threejs.org/examples/js/libs/stats.min.js" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Create the video element
@@ -90,12 +91,12 @@ $p_nam = 'home';
         video.setAttribute('autoplay', 'autoplay');
         video.setAttribute('playsInline', 'playsInline');
         video.setAttribute('id', 'background-video');
-        video.setAttribute('poster', {{ asset('orionFrontAssets/assets/video/video-screen.png') }});
+        video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
         // Add poster attribute
 
         // Create the source element
         var source = document.createElement('source');
-        source.src = {{ asset('orionFrontAssets/assets/video/1118(9).mp4') }};
+        source.src = '{{ asset('orionFrontAssets/assets/video/1118(9).mp4') }}';
         source.type = "video/mp4";
 
         // Append the source to the video
@@ -106,9 +107,7 @@ $p_nam = 'home';
         video.play();
         // Optional: Play the video if autoPlay doesn't work (e.g., due to browser policies)
         document.body.addEventListener('click', function () {
-            video.play()
-                .then(() => console.log("Video playback started successfully"))
-                .catch(error => console.error("Error trying to play the video:", error));
+
         }, { once: true }); // The { once: true } option auto-removes the event listener after one use
     });
 </script>
@@ -126,7 +125,6 @@ $p_nam = 'home';
         <source src="{{ asset('orionFrontAssets/assets/video/1118(9).mp4') }}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <!-- <div  id="background-video"></div> -->
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
                 "effect": "fade",
                 "pagination": {
@@ -796,7 +794,7 @@ $p_nam = 'home';
 </section>
 <section class="about-one">
     <div class="about-one__shape-11 float-bob-y">
-        <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="">
+        <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="" loading="lazy">
     </div>
     <div class="container">
         <div class="row">

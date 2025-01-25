@@ -99,7 +99,7 @@ $p_nam = 'projects';
                                                 <h4 class="product__all-title"><a
                                                         href="{{ route('projects.show' , ['project'=>$data['id']]) }}">{{
                                                         $data->name }}</a></h4>
-                                                <p class="product__all-price">{{ $data->Client->name }}</p>
+                                                {{-- <p class="product__all-price">{{ $data->Client->name }}</p> --}}
                                                 <div class="product__all-btn-box">
                                                     <a href="{{ route('projects.show', ['project'=>$data['id']]) }}"
                                                         class="thm-btn product__all-btn">More</a>

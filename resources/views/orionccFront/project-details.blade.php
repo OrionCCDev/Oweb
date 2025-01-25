@@ -176,7 +176,7 @@ $p_nam = 'projects';
                     <div class="section-title text-center">
                         <span class="section-title__tagline">Checkout Our Project</span>
                         <h2 class="section-title__title">{{ $project->name }}
-                            <br> {{ $project->Client->name }}
+                            {{-- <br> {{ $project->Client->name }} --}}
                         </h2>
                     </div>
                     <div class="portfolio-details__img">
@@ -226,10 +226,10 @@ $p_nam = 'projects';
                 <div class="col-xl-4 col-lg-5">
                     <div class="portfolio-details__right">
                         <ul class="list-unstyled portfolio-details__details-list">
-                            <li>
+                            {{-- <li>
                                 <p class="portfolio-details__client">Client:</p>
                                 <h4 class="portfolio-details__name">{{ $project->Client->name }}</h4>
-                            </li>
+                            </li> --}}
                             <li>
                                 <p class="portfolio-details__client">Consultant:</p>
                                 <h4 class="portfolio-details__name">{{ $project->consultant }}</h4>
@@ -521,7 +521,7 @@ $p_nam = 'projects';
                                                     href="{{ route('projects.show' , ['project'=>$pro->id]) }}">{{
                                                     $pro->name
                                                     }}</a></h3>
-                                            <p class="gallery-one__sub-title">{{ $pro->Client->name }}</p>
+                                            {{-- <p class="gallery-one__sub-title">{{ $pro->Client->name }}</p> --}}
                                         </div>
                                     </div>
                                     <div class="gallery-one__arrow-box">

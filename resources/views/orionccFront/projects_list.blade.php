@@ -98,7 +98,7 @@ $p_nam = 'projects';
                                                 href="{{ route('projects.show' , ['project'=>$data['id']]) }}">{{
                                                 $data->name }}</a>
                                         </h4>
-                                        <p class="product-list__price">{{ $data->Client->name }}</p>
+                                        {{-- <p class="product-list__price">{{ $data->Client->name }}</p> --}}
                                         <p class="product-list__text">{{ $data->full_desc }}</p>
                                         <div class="product-list__btn-box">
                                             <a href="{{ route('projects.show' , ['project'=>$data['id']]) }}"

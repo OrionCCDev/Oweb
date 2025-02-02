@@ -162,7 +162,7 @@ $p_nam = 'projects';
                 <li><span>/</span></li>
                 <li><a href="{{ route('projects.index') }}">Projects</a></li>
             </ul>
-            <h2 class="fnt-clr-g">{{ $project->name }}</h2>
+            <h2 class="fnt-clr-g">{{ $project->Client->name }}</h2>
         </div>
     </div>
 </section>
@@ -178,6 +178,7 @@ $p_nam = 'projects';
                         <h2 class="section-title__title">{{ $project->name }}
                             {{-- <br> {{ $project->Client->name }} --}}
                         </h2>
+                        <h5>{{ $project->sub_name }}</h5>
                     </div>
                     <div class="portfolio-details__img">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->main_image) }}"
@@ -194,42 +195,26 @@ $p_nam = 'projects';
                         <p class="portfolio-details__text-1">{{ $project->mini_desc }}</p>
                         <p class="portfolio-details__text-2">{{ $project->full_desc }}</p>
                         <ul class="portfolio-details__points-box list-unstyled">
+                            @foreach ($project->points as $point )
+
                             <li>
                                 <div class="icon">
                                     <span class="fa fa-check"></span>
                                 </div>
                                 <div class="text">
-                                    <p>Lorem ipsum dolor sit amet is simply free text available in the market
+                                    <p>{{ $point->point }}
                                     </p>
                                 </div>
                             </li>
-                            <li>
-                                <div class="icon">
-                                    <span class="fa fa-check"></span>
-                                </div>
-                                <div class="text">
-                                    <p>Sed tempor arcu non ligula convallis suffered alternation in some form by
-                                        injected</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="icon">
-                                    <span class="fa fa-check"></span>
-                                </div>
-                                <div class="text">
-                                    <p>Fusce sodales lacus sollicitudin, if you are going to use a passage</p>
-                                </div>
-                            </li>
+                            @endforeach
+
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="portfolio-details__right">
                         <ul class="list-unstyled portfolio-details__details-list">
-                            {{-- <li>
-                                <p class="portfolio-details__client">Client:</p>
-                                <h4 class="portfolio-details__name">{{ $project->Client->name }}</h4>
-                            </li> --}}
+
                             <li>
                                 <p class="portfolio-details__client">Consultant:</p>
                                 <h4 class="portfolio-details__name">{{ $project->consultant }}</h4>
@@ -239,18 +224,17 @@ $p_nam = 'projects';
                                 <h4 class="portfolio-details__name">{{ $project->Sector->name }}</h4>
                             </li>
                             <li>
-                                <p class="portfolio-details__client">Cost:</p>
-                                <h4 class="portfolio-details__name">{{ $project->cost }}</h4>
+                                <p class="portfolio-details__client">Contract Type:</p>
+                                <h4 class="portfolio-details__name">{{ $project->contract_type }}</h4>
                             </li>
                             <li>
-                                <p class="portfolio-details__client">Start:</p>
+                                <p class="portfolio-details__client">compilation:</p>
                                 <h4 class="portfolio-details__name">{{
-                                    \Carbon\Carbon::parse($project->start)->format('Y-m-d') }}</h4>
+                                    \Carbon\Carbon::parse($project->end)->format('Y-m') }}</h4>
                             </li>
                             <li>
-                                <p class="portfolio-details__client">End:</p>
-                                <h4 class="portfolio-details__name">{{
-                                    \Carbon\Carbon::parse($project->end)->format('Y-m-d') }}
+                                <p class="portfolio-details__client">Duration:</p>
+                                <h4 class="portfolio-details__name">{{ $project->duration }}
                                 </h4>
                             </li>
                         </ul>
@@ -279,7 +263,7 @@ $p_nam = 'projects';
                             <span class="section-title__tagline">Our project Gallary</span>
                             <h2 class="section-title__title">It's Good To Share Our Work With You</h2>
                         </div>
-                        <p class="testimonial-two__text-1">{{ $project->mini_desc }}</p>
+
                     </div>
                 </div>
                 <div class="col-xl-8">
@@ -301,18 +285,23 @@ $p_nam = 'projects';
                                 "delay": 5000
                                 }}'>
                                 <div class="swiper-wrapper">
-                                    @foreach ( $project->getMedia("mini_gallary") as $media )
+                                    @foreach ( $project->gallaries as $media )
+                                    <div class="swiper-slide">
+                                        <div class="">
+                                            <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}" alt=""  style="width:100%;height:410px;" >
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    {{-- @foreach ( $project->getMedia("mini_gallary") as $media )
                                     <div class="swiper-slide">
                                         <div class="">
                                             <img src="{{ $media->getFullUrl() }}" alt=""
                                                 style="width:100%;height:410px">
                                         </div>
-
                                     </div>
-
-                                    @endforeach
+                                    @endforeach --}}
                                 </div>
-                                <!-- If we need navigation buttons -->
+
                                 {{-- <div class="swiper-pagination" id="main-slider-pagination"></div> --}}
 
                             </div>
@@ -327,19 +316,26 @@ $p_nam = 'projects';
 <div class="container" style="margin-top: 120px;">
     <div id="customize-thumbnails-gallery">
         <ul class="flip-items enhanced-reflection">
-            @foreach ( $project->getMedia("flipster") as $media )
+            @foreach ( $project->gallaries as $media)
+            <li data-flip-title="Title {{ $loop->index + 1 }}">
+                <a class="flipster__item" href="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}">
+                    <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}" />
+                </a>
+            </li>
+            @endforeach
+            {{-- @foreach ( $project->getMedia("flipster") as $media )
             <li data-flip-title="Title {{ $loop->index + 1 }}">
                 <a class="flipster__item" href="{{ $media->getFullUrl() }}">
                     <img src="{{ $media->getFullUrl() }}" />
                 </a>
             </li>
-            @endforeach
+            @endforeach --}}
         </ul>
     </div>
 
 </div>
 <!--Counter One Start-->
-<section class="counter-one">
+{{-- <section class="counter-one">
     <div class="counter-one__bg" style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/OIU9IB1-01.png') }});background-size: auto;
     background-repeat: repeat;">
     </div>
@@ -390,7 +386,7 @@ $p_nam = 'projects';
             </li>
         </ul>
     </div>
-</section>
+</section> --}}
 <!--Counter One End-->
 <!--Video One Start-->
 <section class="video-one">
@@ -408,7 +404,7 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a href="https://www.youtube.com/watch?v=Get7rqXYrbQ" class="video-popup">
+                        <a href="{{ $project->video }}" class="video-popup">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>

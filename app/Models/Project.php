@@ -51,5 +51,7 @@ class Project extends Model implements HasMedia
         return $this->hasMany(ProjectPoint::class , 'project_id' , 'id');
     }
 
-
+    public function gallaries(){
+        return $this->hasMany(ProjectGallary::class , 'project_id' , 'id');
+    }
 }

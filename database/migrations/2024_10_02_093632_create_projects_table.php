@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('slug_name')->nullable();
             $table->string('sub_name')->nullable();
+            $table->string('contract_type')->nullable();
+            $table->string('scope')->nullable();
+            $table->string('duration')->nullable();
             $table->enum('status' ,['completed' , 'in progress']);
             $table->enum('priority' ,['h-v1' , 'h-v2' , 'm-v1' , 'm-v2' , 'l-v1' , 'l-v2']);
             $table->string('main_image')->default('main.webp');

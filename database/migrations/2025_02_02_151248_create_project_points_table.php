@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('project_points', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('point')->nullable();
+            $table->foreignId('project_id')->nullable()->constrained(
+                table: 'projects'
+            )->nullOnDelete();
+            
         });
     }
 

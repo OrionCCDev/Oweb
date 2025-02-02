@@ -47,6 +47,9 @@ class Project extends Model implements HasMedia
     public function Sector(){
         return $this->belongsTo(Sector::class , 'sector_id' , 'id');
     }
+    public function points(){
+        return $this->hasMany(ProjectPoint::class , 'project_id' , 'id');
+    }
 
 
 }

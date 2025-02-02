@@ -423,7 +423,7 @@ $p_nam = 'projects';
 <!--Video One End-->
 <!--Portfolio Details page End-->
 <section class="portfolio-details">
-    <div class="container">
+    {{-- <div class="container">
         <div class="row">
             <div class="col-xl-12">
                 @php
@@ -479,7 +479,7 @@ $p_nam = 'projects';
                     </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </section>
 <!--Gallery One Start-->
 <section class="gallery-one gallery-two">

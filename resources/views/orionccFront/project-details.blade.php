@@ -408,7 +408,7 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a class="video-popup">
+                        <a href="{{ $project->video }}" class="video-popup">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>

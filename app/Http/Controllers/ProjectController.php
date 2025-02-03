@@ -63,12 +63,15 @@ class ProjectController extends Controller
         ->inRandomOrder()
         ->limit(3)
         ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
-        $videoUrl =  $project->video ;// Fetch this from your database
-            // Convert to embed URL format
-    if (strpos($videoUrl, 'watch?v=') !== false) {
-        $videoUrl = str_replace('watch?v=', 'embed/', $videoUrl);
-    }
-        return view('orionccFront.project-details',[ 'videoUrl' =>  $videoUrl , 'project' => $project , 'sug_proj'=>$suggested_projects]);
+
+        // Pass the original video URL without modification
+        $videoUrl = $project->video;
+
+        return view('orionccFront.project-details', [
+            'videoUrl' => $videoUrl,
+            'project' => $project,
+            'sug_proj' => $suggested_projects
+        ]);
     }
 
     /**

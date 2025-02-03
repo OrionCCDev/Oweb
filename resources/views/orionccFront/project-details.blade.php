@@ -147,41 +147,25 @@ $p_nam = 'projects';
 <script>
     var videoUrl = @json($videoUrl);
 
-    function makViewVideo() {
-        $(document).ready(function() {
-            $(".video-popup{{ $project->id }}").magnificPopup({
-                type: "iframe",
-                mainClass: "mfp-fade",
-                removalDelay: 160,
-                preloader: false,
-                fixedContentPos: false,
-                iframe: {
-                    patterns: {
-                        youtube: {
-                            index: "youtube.com/",
-                            id: "v=",
-                            src: videoUrl, // Use the dynamic video URL here
-                        },
-                    },
-                },
-            });
-
-            // Trigger the popup on click
-            $(".video-popup{{ $project->id }}").on('click', function(e) {
-                e.preventDefault();
-                $.magnificPopup.open({
-                    items: {
-                        src: videoUrl
-                    },
-                    type: 'iframe',
-                    mainClass: 'mfp-fade',
-                    removalDelay: 160,
-                    preloader: false,
-                    fixedContentPos: false
-                });
-            });
+    $(document).ready(function () {
+        // Initialize Magnific Popup on the video link
+        $('.video-popup{{ $project->id }}').magnificPopup({
+            type: 'iframe',
+            mainClass: 'mfp-fade',
+            removalDelay: 160,
+            preloader: false,
+            fixedContentPos: false,
+            iframe: {
+                patterns: {
+                    youtube: {
+                        index: 'youtube.com/',
+                        id: 'v=',
+                        src: '//www.youtube.com/embed/%id%?autoplay=1'
+                    }
+                }
+            }
         });
-    }
+    });
 </script>
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
@@ -444,7 +428,7 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a onclick="makViewVideo()" class="video-popup{{ $project->id }}">
+                        <a href="{{ $videoUrl }}" class="video-popup{{ $project->id }}">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>

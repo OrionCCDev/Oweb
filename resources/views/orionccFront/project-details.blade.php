@@ -408,14 +408,48 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a href="{{ $project->video }}" class="video-popup">
+                        <a href="#" class="video-popup">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>
                             </div>
                         </a>
                     </div>
+<script>
+    $(document).ready(function() {
+  $(".video-popup").magnificPopup({
+    type: "iframe",
+    mainClass: "mfp-fade",
+    removalDelay: 160,
+    preloader: false,
+    fixedContentPos: false,
+    iframe: {
+      patterns: {
+        youtube: {
+          index: "youtube.com/",
+          id: "v=",
+          src: videoUrl, // Use the dynamic video URL here
+        },
+      },
+    },
+  });
 
+  // Trigger the popup on click
+  $(".video-popup").on('click', function(e) {
+    e.preventDefault();
+    $.magnificPopup.open({
+      items: {
+        src: videoUrl
+      },
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false,
+      fixedContentPos: false
+    });
+  });
+});
+</script>
                     <h2 class="video-one__video-title">We Will Be Happy to Share
                         <br> Our Project Video
                     </h2>

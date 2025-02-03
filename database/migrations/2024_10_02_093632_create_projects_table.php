@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamp(column: 'start')->nullable();
             $table->timestamp(column: 'end')->nullable();
             $table->bigInteger(column: 'cost')->nullable();
-            $table->string(column: 'video')->nullable();
+            $table->text(column: 'video')->nullable();
             $table->foreignId('client_id')->nullable()->constrained(
                 table: 'clients'
             )->nullOnDelete();

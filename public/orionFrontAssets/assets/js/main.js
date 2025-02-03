@@ -433,6 +433,8 @@
         },
       },
     },
+
+
   });
   if ($(".img-popup").length) {
     var groups = {};

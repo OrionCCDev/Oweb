@@ -408,7 +408,7 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a href="#" class="video-popup{{ $project->id }}">
+                        <a onclick="makViewVideo()" class="video-popup{{ $project->id }}">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>
@@ -416,7 +416,8 @@ $p_nam = 'projects';
                         </a>
                     </div>
 <script>
-    $(document).ready(function() {
+    function makViewVideo() {
+        $(document).ready(function() {
   $({{ '.video-popup' . $project->id }}).magnificPopup({
     type: "iframe",
     mainClass: "mfp-fade",
@@ -449,6 +450,9 @@ $p_nam = 'projects';
     });
   });
 });
+
+    }
+
 </script>
                     <h2 class="video-one__video-title">We Will Be Happy to Share
                         <br> Our Project Video

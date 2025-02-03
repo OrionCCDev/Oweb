@@ -435,7 +435,7 @@ $p_nam = 'projects';
   });
 
   // Trigger the popup on click
-  $(".video-popup").on('click', function(e) {
+  $({{ '.video-popup' . $project->id }}).on('click', function(e) {
     e.preventDefault();
     $.magnificPopup.open({
       items: {

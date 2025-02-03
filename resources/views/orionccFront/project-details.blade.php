@@ -204,7 +204,7 @@ $p_nam = 'projects';
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
                     <div class="portfolio-details__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->main_image) }}"
+                        <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
                             alt="">
                     </div>
                 </div>
@@ -252,9 +252,9 @@ $p_nam = 'projects';
                                 <h4 class="portfolio-details__name">{{ $project->contract_type }}</h4>
                             </li>
                             <li>
-                                <p class="portfolio-details__client">compilation:</p>
+                                <p class="portfolio-details__client">completion:</p>
                                 <h4 class="portfolio-details__name">{{
-                                    \Carbon\Carbon::parse($project->end)->format('Y-m') }}</h4>
+                                    \Carbon\Carbon::parse($project->end)->format('Y M') }}</h4>
                             </li>
                             <li>
                                 <p class="portfolio-details__client">Duration:</p>
@@ -337,27 +337,7 @@ $p_nam = 'projects';
     </section>
 
 </div>
-<div class="container" style="margin-top: 120px;">
-    <div id="customize-thumbnails-gallery">
-        <ul class="flip-items enhanced-reflection">
-            @foreach ( $project->gallaries as $media)
-            <li data-flip-title="Title {{ $loop->index + 1 }}">
-                <a class="flipster__item" href="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}">
-                    <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}" />
-                </a>
-            </li>
-            @endforeach
-            {{-- @foreach ( $project->getMedia("flipster") as $media )
-            <li data-flip-title="Title {{ $loop->index + 1 }}">
-                <a class="flipster__item" href="{{ $media->getFullUrl() }}">
-                    <img src="{{ $media->getFullUrl() }}" />
-                </a>
-            </li>
-            @endforeach --}}
-        </ul>
-    </div>
 
-</div>
 <!--Counter One Start-->
 {{-- <section class="counter-one">
     <div class="counter-one__bg" style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/OIU9IB1-01.png') }});background-size: auto;

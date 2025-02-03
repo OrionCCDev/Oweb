@@ -61,11 +61,11 @@ $p_nam = 'home';
 
 
 
-@section('pageLoader')
+{{-- @section('pageLoader')
 <div class="preloader">
     <div class="preloader__image"></div>
 </div>
-@endsection
+@endsection --}}
 @section('cust_js')
 <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}" defer></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>

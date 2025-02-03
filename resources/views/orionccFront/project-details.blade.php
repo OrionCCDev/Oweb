@@ -194,6 +194,7 @@ $p_nam = 'projects';
                         <h3 class="portfolio-details__title">About our project</h3>
                         <p class="portfolio-details__text-1">{{ $project->mini_desc }}</p>
                         <p class="portfolio-details__text-2">{{ $project->full_desc }}</p>
+                        <p class="portfolio-details__text-2">{{ $project->scope }}</p>
                         <ul class="portfolio-details__points-box list-unstyled">
                             @foreach ($project->points as $point )
 

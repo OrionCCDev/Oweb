@@ -203,7 +203,7 @@ $p_nam = 'projects';
                         </h2>
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
-                    <div class="portfolio-details__img video-one">
+                    <div class="portfolio-details__img video-one video-one__video-link">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
                             alt="">
                             <div class="video-one__video-icon">

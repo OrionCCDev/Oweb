@@ -203,9 +203,15 @@ $p_nam = 'projects';
                         </h2>
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
-                    <div class="portfolio-details__img">
+                    <div class="portfolio-details__img video-one">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
                             alt="">
+                            <div class="video-one-border"></div>
+                            <div class="video-one-border video-one-border-two"></div>
+                            <div class="video-one-border video-one-border-three"></div>
+                            <div class="video-one-border video-one-border-four"></div>
+                            <div class="video-one-border video-one-border-five"></div>
+                            <div class="video-one-border video-one-border-six"></div>
                     </div>
                 </div>
             </div>
@@ -393,7 +399,7 @@ $p_nam = 'projects';
 </section> --}}
 <!--Counter One End-->
 <!--Video One Start-->
-<section class="video-one">
+{{-- <section class="video-one">
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->main_image) }})">
     </div>
@@ -423,7 +429,7 @@ $p_nam = 'projects';
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 <!--Video One End-->
 <!--Portfolio Details page End-->
 <section class="portfolio-details">

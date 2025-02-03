@@ -146,6 +146,42 @@ $p_nam = 'projects';
 </script>
 <script>
     var videoUrl = @json($videoUrl);
+
+    function makViewVideo() {
+        $(document).ready(function() {
+            $(".video-popup{{ $project->id }}").magnificPopup({
+                type: "iframe",
+                mainClass: "mfp-fade",
+                removalDelay: 160,
+                preloader: false,
+                fixedContentPos: false,
+                iframe: {
+                    patterns: {
+                        youtube: {
+                            index: "youtube.com/",
+                            id: "v=",
+                            src: videoUrl, // Use the dynamic video URL here
+                        },
+                    },
+                },
+            });
+
+            // Trigger the popup on click
+            $(".video-popup{{ $project->id }}").on('click', function(e) {
+                e.preventDefault();
+                $.magnificPopup.open({
+                    items: {
+                        src: videoUrl
+                    },
+                    type: 'iframe',
+                    mainClass: 'mfp-fade',
+                    removalDelay: 160,
+                    preloader: false,
+                    fixedContentPos: false
+                });
+            });
+        });
+    }
 </script>
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
@@ -415,45 +451,7 @@ $p_nam = 'projects';
                             </div>
                         </a>
                     </div>
-<script>
-    function makViewVideo() {
-        $(document).ready(function() {
-  $({{ '.video-popup' . $project->id }}).magnificPopup({
-    type: "iframe",
-    mainClass: "mfp-fade",
-    removalDelay: 160,
-    preloader: false,
-    fixedContentPos: false,
-    iframe: {
-      patterns: {
-        youtube: {
-          index: "youtube.com/",
-          id: "v=",
-          src: videoUrl, // Use the dynamic video URL here
-        },
-      },
-    },
-  });
 
-  // Trigger the popup on click
-  $({{ '.video-popup' . $project->id }}).on('click', function(e) {
-    e.preventDefault();
-    $.magnificPopup.open({
-      items: {
-        src: videoUrl
-      },
-      type: 'iframe',
-      mainClass: 'mfp-fade',
-      removalDelay: 160,
-      preloader: false,
-      fixedContentPos: false
-    });
-  });
-});
-
-    }
-
-</script>
                     <h2 class="video-one__video-title">We Will Be Happy to Share
                         <br> Our Project Video
                     </h2>

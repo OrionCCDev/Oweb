@@ -206,12 +206,10 @@ $p_nam = 'projects';
                     <div class="portfolio-details__img video-one">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
                             alt="">
-                            <div class="video-one-border"></div>
-                            <div class="video-one-border video-one-border-two"></div>
-                            <div class="video-one-border video-one-border-three"></div>
-                            <div class="video-one-border video-one-border-four"></div>
-                            <div class="video-one-border video-one-border-five"></div>
-                            <div class="video-one-border video-one-border-six"></div>
+                            <div class="video-one__video-icon">
+                                <span class="fa fa-play"></span>
+                                <i class="ripple"></i>
+                            </div>
                     </div>
                 </div>
             </div>

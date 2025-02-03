@@ -408,7 +408,7 @@ $p_nam = 'projects';
             <div class="col-xl-12">
                 <div class="video-one__inner">
                     <div class="video-one__video-link">
-                        <a href="{{ $project->video }}" class="video-popup">
+                        <a href="{{ $project->video }}" class="video-popup{{ $project->id }}">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>
@@ -417,7 +417,7 @@ $p_nam = 'projects';
                     </div>
 <script>
     $(document).ready(function() {
-  $(".video-popup").magnificPopup({
+  $({{ '.video-popup' . $project->id }}).magnificPopup({
     type: "iframe",
     mainClass: "mfp-fade",
     removalDelay: 160,

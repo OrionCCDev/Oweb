@@ -144,7 +144,10 @@ $p_nam = 'projects';
       });
     });
 </script>
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+<script>
+    var videoUrl = @json($videoUrl);
+</script>
+<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
 @section('page_content')
 <!--Page Header Start-->

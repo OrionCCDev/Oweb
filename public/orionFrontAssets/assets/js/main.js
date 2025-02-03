@@ -429,7 +429,7 @@
         youtube: {
           index: "youtube.com/",
           id: "v=",
-          src: "https://www.youtube.com/embed/G7Be8sTJZrc",
+          src: videoUrl,
         },
       },
     },

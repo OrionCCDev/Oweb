@@ -63,8 +63,8 @@ class ProjectController extends Controller
         ->inRandomOrder()
         ->limit(3)
         ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
-
-        return view('orionccFront.project-details',['project' => $project , 'sug_proj'=>$suggested_projects]);
+        $videoUrl =  $project->video ;// Fetch this from your database
+        return view('orionccFront.project-details',[ 'videoUrl' =>  $videoUrl , 'project' => $project , 'sug_proj'=>$suggested_projects]);
     }
 
     /**

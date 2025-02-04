@@ -63,14 +63,15 @@ class ProjectController extends Controller
         ->inRandomOrder()
         ->limit(3)
         ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
-
+        $projectg = Project::with(['gallaries'])->where('id', $project->id)->first();
         // Pass the original video URL without modification
         $videoUrl = $project->video;
 
         return view('orionccFront.project-details', [
             'videoUrl' => $videoUrl,
             'project' => $project,
-            'sug_proj' => $suggested_projects
+            'sug_proj' => $suggested_projects,
+            'projectg' => $projectg,
         ]);
     }
 

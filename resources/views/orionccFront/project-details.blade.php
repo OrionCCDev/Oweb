@@ -3,12 +3,7 @@
 $p_nam = 'projects';
 @endphp
 @section('page_name' , $project->name )
-@section('pageLoader')
-<div class="preloader">
-    <div class="preloader__image"></div>
-</div>
-<!-- /.preloader -->
-@endsection
+
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" />
@@ -28,9 +23,27 @@ $p_nam = 'projects';
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" />
+<!-- lightGallery CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-thumbnail/2.7.1/lg-thumbnail.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-fullscreen/2.7.1/lg-fullscreen.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-zoom/2.7.1/lg-zoom.min.js"></script>
+
 @if ($p_nam == 'projects')
 <link rel="stylesheet"
     href="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/css/bootstrap-select.min.css') }}" />
+
+<style>
+    .inline-gallery-container {
+        border: 2px solid rgba(255, 0, 0, 0) !important;
+        min-height: 450px !important;
+    }
+
+    .lg-item {
+        background-color: rgba(255, 0, 0, 0) !important;
+    }
+</style>
 @endif
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/vegas/vegas.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.css') }}" />
@@ -41,8 +54,7 @@ $p_nam = 'projects';
 <!-- template styles -->
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/packages.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
-<link href="https://cdn.jsdelivr.net/npm/lightgallery@2.3.0/css/lightgallery.min.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/js/flip/jquery.flipster.min.css') }}" />
+
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" />
 @endsection
 @section('cust_js')
@@ -75,11 +87,11 @@ $p_nam = 'projects';
 <script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.lettering.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}"></script>
 <!-- template js -->
-<script src="{{ asset('orionFrontAssets/assets/js/flip/jquery.flipster.min.js') }}"></script>
+{{-- <script src="{{ asset('orionFrontAssets/assets/js/flip/jquery.flipster.min.js') }}"></script> --}}
 <!-- template js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.3.0/lightgallery.min.js"
-    integrity="sha512-+1CyleTPoFvPO15/CfBZ5h6k/mu/qCQe9uxq1tEfO7SRJ52MnCAQ561bAYkvrsGtnG7AkcvKtVwdeoZc8ps7bQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- lightGallery JS + Plugins -->
+
 <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
 <script>
@@ -144,29 +156,8 @@ $p_nam = 'projects';
       });
     });
 </script>
-<script>
-    var videoUrl = @json($videoUrl);
 
-    $(document).ready(function () {
-        // Initialize Magnific Popup on the video link
-        $('.video-popup{{ $project->id }}').magnificPopup({
-            type: 'iframe',
-            mainClass: 'mfp-fade',
-            removalDelay: 160,
-            preloader: false,
-            fixedContentPos: false,
-            iframe: {
-                patterns: {
-                    youtube: {
-                        index: 'youtube.com/',
-                        id: 'v=',
-                        src: '//www.youtube.com/embed/%id%?autoplay=1'
-                    }
-                }
-            }
-        });
-    });
-</script>
+
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
 @section('page_content')
@@ -203,13 +194,27 @@ $p_nam = 'projects';
                         </h2>
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
+                    <style>
+                        .portfolio-details__img.video-one.video-one__video-link {
+                            position: relative;
+                        }
+
+                        .portfolio-details__img.video-one.video-one__video-link .video-one__video-icon {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translateX(-50%) translateY(-50%);
+                        }
+                    </style>
                     <div class="portfolio-details__img video-one video-one__video-link">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
                             alt="">
+                        <a href="{{ $videoUrl }}" class="video-popup{{ $project->id }}">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>
                             </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -297,42 +302,91 @@ $p_nam = 'projects';
                 <div class="col-xl-8">
                     <div class="testimonial-two__right" style="min-height: 410px;max-height:410px">
                         <div class="main-slider-three__right" style="min-height: 410px;max-height:410px">
-                            <div class="swiper-container thm-swiper__slider" style="min-height: 410px;max-height:410px"
-                                data-swiper-options='{"slidesPerView": 1, "loop": true,
-                                "effect": "cube",
-                                "pagination": {
-                                "el": "#main-slider-pagination",
-                                "type": "bullets",
-                                "clickable": true
-                                },
-                                "navigation": {
-                                "nextEl": "#main-slider__swiper-button-next",
-                                "prevEl": "#main-slider__swiper-button-prev"
-                                },
-                                "autoplay": {
-                                "delay": 5000
-                                }}'>
-                                <div class="swiper-wrapper">
-                                    @foreach ( $project->gallaries as $media )
-                                    <div class="swiper-slide">
-                                        <div class="">
-                                            <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}" alt=""  style="width:100%;height:410px;" >
-                                        </div>
+
+                            <div id="inline-gallery-container" class="inline-gallery-container swiper-wrapper"></div>
+                            <script>
+                                var videoUrl = @json($videoUrl);
+                                var projectg = @json($projectg->gallaries);
+
+
+                                    var galleryImages = @json($project->gallaries->map(function($gallery) use ($project) {
+                                    return [
+                                        'src' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
+                                        'thumb' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
+                                    ];
+
+                                }));
+                                var lgContainer = document.getElementById('inline-gallery-container');
+                                    var inlineGallery = lightGallery(lgContainer, {
+                                        container: lgContainer,
+                                    dynamic: true,
+                                    dynamicEl: galleryImages,
+                                    autoplay: true,
+                                    thumbnail: true,
+                                    hash: false,
+                                    closable: false,
+                                    showMaximizeIcon: false,
+                                    appendSubHtmlTo: '.lg-item',
+                                    slideDelay: 400,
+                                    thumbWidth: 60,
+                                    thumbHeight: "40px",
+                                    thumbMargin: 4,
+                                    download: false,
+                                    counter: true,
+                                    enableSwipe: true,
+                                    enableDrag: true,
+                                    swipeThreshold: 50,
+                                    loop: true,
+                                    fullScreen: true,
+                                    zoom: true,
+                                    scale: 1,
+                                    actualSize: true
+                                    });
+
+                                    // Since we are using dynamic mode, we need to programmatically open lightGallery
+                                    inlineGallery.openGallery();
+
+                                // Initialize Magnific Popup on the video link
+                                $('.video-popup{{ $project->id }}').magnificPopup({
+                                    type: 'iframe',
+                                    mainClass: 'mfp-fade',
+                                    removalDelay: 160,
+                                    preloader: false,
+                                    fixedContentPos: false,
+                                    iframe: {
+                                        patterns: {
+                                            youtube: {
+                                                index: 'youtube.com/',
+                                                id: 'v=',
+                                                src: '//www.youtube.com/embed/%id%?autoplay=1'
+                                            }
+                                        }
+                                    }
+                                });
+
+                            </script>
+                            {{-- <div class="swiper-wrapper">
+                                @foreach ( $project->gallaries as $media )
+                                <div class="swiper-slide">
+                                    <div class="">
+                                        <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name .'/' . $media->image) }}"
+                                            alt="" style="width:100%;height:410px;">
                                     </div>
-                                    @endforeach
-                                    {{-- @foreach ( $project->getMedia("mini_gallary") as $media )
-                                    <div class="swiper-slide">
-                                        <div class="">
-                                            <img src="{{ $media->getFullUrl() }}" alt=""
-                                                style="width:100%;height:410px">
-                                        </div>
-                                    </div>
-                                    @endforeach --}}
                                 </div>
+                                @endforeach --}}
+                                {{-- @foreach ( $project->getMedia("mini_gallary") as $media )
+                                <div class="swiper-slide">
+                                    <div class="">
+                                        <img src="{{ $media->getFullUrl() }}" alt="" style="width:100%;height:410px">
+                                    </div>
+                                </div>
+                                @endforeach --}}
+                                {{--
+                            </div> --}}
 
-                                {{-- <div class="swiper-pagination" id="main-slider-pagination"></div> --}}
+                            {{-- <div class="swiper-pagination" id="main-slider-pagination"></div> --}}
 
-                            </div>
+
                         </div>
                     </div>
                 </div>

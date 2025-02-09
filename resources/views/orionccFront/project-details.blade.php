@@ -176,7 +176,7 @@ $p_nam = 'projects';
                 <li><span>/</span></li>
                 <li><a href="{{ route('projects.index') }}">Projects</a></li>
             </ul>
-            <h2 class="fnt-clr-g">{{ $project->Client->name }}</h2>
+            <h2 class="fnt-clr-g">{{ $project?->Client?->name }}</h2>
         </div>
     </div>
 </section>

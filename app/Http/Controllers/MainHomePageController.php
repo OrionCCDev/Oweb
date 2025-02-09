@@ -14,7 +14,7 @@ class MainHomePageController extends Controller
         $sectors = Sector::all();
         $events = Event::all();
         $main_event = Event::latest()->take(1)->first();
-        $projects = Project::latest()->take(9)->get();
+        $projects = Project::orderBy('priority')->take(9)->get();
         $clients = Client::whereNotNull('logo')->get();
         // dd($events , $main_event);
         return view('orionccFront.index', compact('sectors','events' , 'main_event','projects' , 'clients'));

@@ -41,6 +41,16 @@ $p_nam = 'home';
 <meta name="twitter:description" content="Leading construction and contracting experts with 15+ years of experience">
 <meta name="twitter:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
 @endsection
+<style>
+    #particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+</style>
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
 <link rel="stylesheet"
@@ -79,6 +89,7 @@ $p_nam = 'home';
 <script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}" defer></script>
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 <script src="http://threejs.org/examples/js/libs/stats.min.js" defer></script>
+
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -96,7 +107,7 @@ $p_nam = 'home';
 
         // Create the source element
         var source = document.createElement('source');
-        source.src = '{{ asset('orionFrontAssets/assets/video/1118(9).mp4') }}';
+        source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
         source.type = "video/mp4";
 
         // Append the source to the video
@@ -122,7 +133,7 @@ $p_nam = 'home';
 <!--Main Slider Start-->
 <section class="main-slider clearfix" style="position: relative;" id="hero-slider-sect">
     <video autoplay loop muted playsinline id="background-video">
-        <source src="{{ asset('orionFrontAssets/assets/video/1118(9).mp4') }}" type="video/mp4">
+        <source src="{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
@@ -798,7 +809,7 @@ $p_nam = 'home';
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-xl-6">
+            {{-- <div class="col-xl-6">
                 <div class="about-one__left">
                     <div class="about-one__img-box wow slideInLeft" data-wow-delay="100ms" data-wow-duration="2500ms">
                         <div class="about-one__big-text">ORION</div>
@@ -847,24 +858,14 @@ $p_nam = 'home';
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-6">
+            </div> --}}
+            <div class="col-xl-12">
                 <div class="about-one__right">
                     <div class="section-title text-left">
                         <span class="section-title__tagline">You Dream We Build</span>
-                        <h2 class="section-title__title">Orion Founder Message</h2>
+                        <h2 class="section-title__title">Orion Founders Message</h2>
                     </div>
-                    <ul class="about-one__points-box list-unstyled">
-                        <li>
-                            <div class="icon">
-                                <span class="fa fa-check"></span>
-                            </div>
-                            <div class="text">
-                                <p>Ghassan Abu Safi</p>
-                            </div>
-                        </li>
 
-                    </ul>
                     <p class="about-one__text-1">Founded in 2008 by a team of young, Experts engineers, our
                         company has grown by leveraging extensive knowledge in industrial and commercial
                         construction within the region.</p>

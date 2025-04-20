@@ -5,12 +5,7 @@ $p_nam = 'certificate';
 @endphp
 
 @section('page_name' , 'Certification')
-@section('pageLoader')
-<div class="preloader">
-    <div class="preloader__image"></div>
-</div>
-<!-- /.preloader -->
-@endsection
+
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" />

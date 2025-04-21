@@ -50,6 +50,28 @@ $p_nam = 'home';
   left: 0;
   z-index: 1;
 }
+    /* Add preload styles to improve above-the-fold loading */
+    .lazy-load {
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .lazy-load.loaded {
+        opacity: 1;
+    }
+    /* Critical CSS for improved above-the-fold rendering */
+    .main-slider {
+        position: relative;
+        overflow: hidden;
+    }
+    #background-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
 </style>
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
@@ -77,53 +99,184 @@ $p_nam = 'home';
 </div>
 @endsection --}}
 @section('cust_js')
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}" defer></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}" defer></script>
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
-<script src="http://threejs.org/examples/js/libs/stats.min.js" defer></script>
-
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Create the video element
-        var video = document.createElement('video');
+    // Lazy loading function
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
-        // Set video attributes
-        video.setAttribute('muted', 'muted');
-        video.setAttribute('loop', 'loop');
-        video.setAttribute('autoplay', 'autoplay');
-        video.setAttribute('playsInline', 'playsInline');
-        video.setAttribute('id', 'background-video');
-        video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
-        // Add poster attribute
+        if ("IntersectionObserver" in window) {
+            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src;
+                        if(lazyImage.dataset.srcset) {
+                            lazyImage.srcset = lazyImage.dataset.srcset;
+                        }
+                        lazyImage.classList.add("loaded");
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
 
-        // Create the source element
-        var source = document.createElement('source');
-        source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
-        source.type = "video/mp4";
+            lazyImages.forEach(function(lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        } else {
+            // Fallback for browsers without intersection observer
+            let active = false;
 
-        // Append the source to the video
-        video.appendChild(source);
+            const lazyLoad = function() {
+                if (active === false) {
+                    active = true;
 
-        // Append the video to the container
-        document.getElementById('hero-slider-sect').prepend(video);
-        video.play();
-        // Optional: Play the video if autoPlay doesn't work (e.g., due to browser policies)
-        document.body.addEventListener('click', function () {
+                    setTimeout(function() {
+                        lazyImages.forEach(function(lazyImage) {
+                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+                                lazyImage.src = lazyImage.dataset.src;
+                                if(lazyImage.dataset.srcset) {
+                                    lazyImage.srcset = lazyImage.dataset.srcset;
+                                }
+                                lazyImage.classList.add("loaded");
 
-        }, { once: true }); // The { once: true } option auto-removes the event listener after one use
+                                lazyImages = lazyImages.filter(function(image) {
+                                    return image !== lazyImage;
+                                });
+
+                                if (lazyImages.length === 0) {
+                                    document.removeEventListener("scroll", lazyLoad);
+                                    window.removeEventListener("resize", lazyLoad);
+                                    window.removeEventListener("orientationchange", lazyLoad);
+                                }
+                            }
+                        });
+
+                        active = false;
+                    }, 200);
+                }
+            };
+
+            document.addEventListener("scroll", lazyLoad);
+            window.addEventListener("resize", lazyLoad);
+            window.addEventListener("orientationchange", lazyLoad);
+            lazyLoad();
+        }
+
+        // Create the video element with proper loading strategy
+        const videoContainer = document.getElementById('hero-slider-sect');
+        if (videoContainer) {
+            const video = document.createElement('video');
+
+            // Set video attributes
+            video.setAttribute('muted', 'muted');
+            video.setAttribute('loop', 'loop');
+            video.setAttribute('autoplay', 'autoplay');
+            video.setAttribute('playsinline', 'playsinline');
+            video.setAttribute('id', 'background-video');
+            video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
+            video.preload = 'auto';
+
+            // Create the source element
+            const source = document.createElement('source');
+            source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
+            source.type = "video/mp4";
+
+            // Append the source to the video
+            video.appendChild(source);
+
+            // Append the video to the container
+            videoContainer.prepend(video);
+
+            // Attempt to play
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Auto-play was prevented - add a play button or other UI element if needed
+                    document.addEventListener('click', function() {
+                        video.play();
+                    }, { once: true });
+                });
+            }
+        }
     });
-</script>
-<script>
-    particlesJS("particles-js", { "particles": { "number": { "value": 109, "density": { "enable": true, "value_area": 787.7116975187079 } }, "color": { "value": "#aef490" }, "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 }, "image": { "src": "img/github.svg", "width": 100, "height": 100 } }, "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } }, "size": { "value": 3.998400639744104, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } }, "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 }, "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 400, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 }, "repulse": { "distance": 200, "duration": 0.4 }, "push": { "particles_nb": 4 }, "remove": { "particles_nb": 2 } } }, "retina_detect": true }); var count_particles, stats, update; stats = new Stats; stats.setMode(0); stats.domElement.style.position = 'absolute'; stats.domElement.style.left = '0px'; stats.domElement.style.top = '0px'; document.body.appendChild(stats.domElement); count_particles = document.querySelector('.js-count-particles'); update = function () { stats.begin(); stats.end(); if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) { count_particles.innerText = window.pJSDom[0].pJS.particles.array.length; } requestAnimationFrame(update); }; requestAnimationFrame(update);;
+
+    // Defer loading of particles.js until after critical content
+    function loadParticles() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+        script.onload = function() {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                    "color": { "value": "#aef490" },
+                    "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
+                    "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                    "size": { "value": 3, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
+                    "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 },
+                    "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": { "enable": true, "mode": "grab" },
+                        "onclick": { "enable": true, "mode": "push" },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": { "distance": 400, "line_linked": { "opacity": 1 } },
+                        "push": { "particles_nb": 4 }
+                    }
+                },
+                "retina_detect": true
+            });
+        };
+        document.body.appendChild(script);
+    }
+
+    // Load non-critical scripts
+    function loadDeferredScripts() {
+        const scripts = [
+            '{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}',
+            '{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}',
+            '{{ asset('orionFrontAssets/assets/js/main.js') }}'
+        ];
+
+        let loadedCount = 0;
+
+        function loadScript(index) {
+            if (index >= scripts.length) {
+                // All scripts loaded
+                loadParticles();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = scripts[index];
+            script.onload = function() {
+                loadedCount++;
+                loadScript(index + 1);
+            };
+            document.body.appendChild(script);
+        }
+
+        // Start loading scripts
+        loadScript(0);
+    }
+
+    // Use requestIdleCallback or setTimeout to defer non-critical tasks
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadDeferredScripts);
+    } else {
+        setTimeout(loadDeferredScripts, 2000);
+    }
 </script>
 @endsection
 
@@ -132,10 +285,7 @@ $p_nam = 'home';
 
 <!--Main Slider Start-->
 <section class="main-slider clearfix" style="position: relative;" id="hero-slider-sect">
-    <video autoplay loop muted playsinline id="background-video">
-        <source src="{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <!-- Video is added via JS -->
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
                 "effect": "fade",
                 "pagination": {
@@ -157,13 +307,13 @@ $p_nam = 'home';
                 </div>
 
                 <div class="main-slider__shape-4 float-bob-y">
-                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
+                        alt="main slider section white shape" class="lazy">
                 </div>
 
                 <div class="main-slider__img-one">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/1.png') }}"
-                        alt="main slider first image" class="img-bounce">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/1.png') }}"
+                        alt="main slider first image" class="lazy img-bounce">
                 </div>
                 <div class="container">
                     <div class="row">
@@ -186,13 +336,13 @@ $p_nam = 'home';
                 </div>
 
                 <div class="main-slider__shape-4 float-bob-y">
-                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
+                        alt="main slider section white shape" class="lazy">
                 </div>
 
                 <div class="main-slider__img-one">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/2.png') }}"
-                        alt="main slider first image" class="img-bounce">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/2.png') }}"
+                        alt="main slider first image" class="lazy img-bounce">
                 </div>
                 <div class="container">
                     <div class="row">
@@ -216,13 +366,13 @@ $p_nam = 'home';
                 </div>
 
                 <div class="main-slider__shape-4 float-bob-y">
-                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
+                        alt="main slider section white shape" class="lazy">
                 </div>
 
                 <div class="main-slider__img-one">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/3.png') }}"
-                        alt="main slider first image" class="img-bounce">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/3.png') }}"
+                        alt="main slider first image" class="lazy img-bounce">
                 </div>
                 <div class="container">
                     <div class="row">
@@ -246,13 +396,13 @@ $p_nam = 'home';
                 </div>
 
                 <div class="main-slider__shape-4 float-bob-y">
-                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
+                        alt="main slider section white shape" class="lazy">
                 </div>
 
                 <div class="main-slider__img-one">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/4.png') }}"
-                        alt="main slider first image" class="img-bounce">
+                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/4.png') }}"
+                        alt="main slider first image" class="lazy img-bounce">
                 </div>
                 <div class="container">
                     <div class="row">
@@ -291,9 +441,9 @@ $p_nam = 'home';
                     <div class="feature-one__single">
                         <div class="feature-one__icon">
                             <span class="">
-                                <img width="64"
-                                    src="{{ asset('orionFrontAssets/assets/images/icon/quality-icon-award-vector-25322832.png') }}"
-                                    alt="">
+                                <img width="64" height="64" loading="lazy"
+                                    data-src="{{ asset('orionFrontAssets/assets/images/icon/quality-icon-award-vector-25322832.png') }}"
+                                    alt="Quality icon" class="lazy">
                             </span>
                         </div>
                         <div class="feature-one__content">
@@ -308,8 +458,8 @@ $p_nam = 'home';
                     <div class="feature-one__single">
                         <div class="feature-one__icon">
                             <span class="">
-                                <img width="64" src="{{ asset('orionFrontAssets/assets/images/icon/efficiency.png') }}"
-                                    alt="">
+                                <img width="64" height="64" loading="lazy" data-src="{{ asset('orionFrontAssets/assets/images/icon/efficiency.png') }}"
+                                    alt="Efficiency icon" class="lazy">
                             </span>
                         </div>
                         <div class="feature-one__content">
@@ -324,7 +474,7 @@ $p_nam = 'home';
                     <div class="feature-one__single">
                         <div class="feature-one__icon">
                             <span class="">
-                                <img src="{{ asset('orionFrontAssets/assets/images/icon/idea.png') }}" alt="">
+                                <img data-src="{{ asset('orionFrontAssets/assets/images/icon/idea.png') }}" alt="" class="lazy">
                             </span>
                         </div>
                         <div class="feature-one__content">
@@ -339,7 +489,7 @@ $p_nam = 'home';
                     <div class="feature-one__single">
                         <div class="feature-one__icon">
                             <span class="">
-                                <img src="{{ asset('orionFrontAssets/assets/images/icon/safty.png') }}" alt="">
+                                <img data-src="{{ asset('orionFrontAssets/assets/images/icon/safty.png') }}" alt="" class="lazy">
                             </span>
                         </div>
                         <div class="feature-one__content">
@@ -475,10 +625,10 @@ $p_nam = 'home';
             style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-one__bg-img.jpg') }});">
         </div>
         <div class="testimonial-one__bg-img-2">
-            <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-05.png') }}" alt="">
+            <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-05.png') }}" alt="" class="lazy">
         </div>
         <div class="testimonial-one__bg-shape">
-            <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-05.png') }}" alt="">
+            <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-05.png') }}" alt="" class="lazy">
         </div>
         <div class="container">
             <div class="hot-products-two__top">
@@ -509,8 +659,8 @@ $p_nam = 'home';
                                 <div class="hot-products__single-inner">
                                     <div class="hot-products__img-box">
                                         <div class="hot-products__img">
-                                            <img src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image) }}"
-                                                alt="">
+                                            <img loading="lazy" data-src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image) }}"
+                                                alt="{{ $project->name }}" class="lazy">
                                         </div>
                                     </div>
                                     <div class="hot-products__content">
@@ -666,16 +816,16 @@ $p_nam = 'home';
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
                             <div class="banner-one__inner ">
                                 <div class="banner-one__img-2">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/certificate/صورة3.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة3.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
 
                                 <p class="banner-one__tagline">OrionCC</p>
@@ -693,16 +843,16 @@ $p_nam = 'home';
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
                             <div class="banner-one__inner banner-one__inner-2">
                                 <div class="banner-one__img-2">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/certificate/صورة2.jpg') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة2.jpg') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
 
                                 <p class="banner-one__tagline">OrionCC</p>
@@ -720,16 +870,16 @@ $p_nam = 'home';
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
                             <div class="banner-one__inner">
                                 <div class="banner-one__img-2">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/certificate/صورة4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
 
                                 <p class="banner-one__tagline">OrionCC</p>
@@ -747,16 +897,16 @@ $p_nam = 'home';
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInLeft;">
                             <div class="banner-one__inner banner-one__inner-2">
                                 <div class="banner-one__img-2">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/certificate/صورة1.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة1.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <p class="banner-one__tagline">OrionCC</p>
                                 <h3 class="banner-one__title">Commercial
@@ -773,16 +923,16 @@ $p_nam = 'home';
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
                             <div class="banner-one__inner ">
                                 <div class="banner-one__img-2">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/certificate/صورة5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                        alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
+                                        alt="" class="lazy">
                                 </div>
 
                                 <p class="banner-one__tagline">OrionCC</p>
@@ -805,7 +955,7 @@ $p_nam = 'home';
 </section>
 <section class="about-one">
     <div class="about-one__shape-11 float-bob-y">
-        <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="" loading="lazy">
+        <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="" loading="lazy" class="lazy">
     </div>
     <div class="container">
         <div class="row">
@@ -828,7 +978,7 @@ $p_nam = 'home';
                                     <img src="{{ asset('orionFrontAssets/assets/images/icon/001-construction.png') }}" alt="">
                                 </div> -->
                         <div class="about-one__shape-5 zoominout shape-item">
-                            <img src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-09.png') }}" alt="">
+                            <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-09.png') }}" alt="" class="lazy">
                         </div>
                         <!-- <div class="about-one__shape-6 float-bob-x shape-item">
                                     <img src="{{ asset('orionFrontAssets/assets/images/icon/002-excavator.png') }}" alt="">
@@ -846,7 +996,7 @@ $p_nam = 'home';
                                     <img src="{{ asset('orionFrontAssets/assets/images/icon/006-man.png') }}" alt="">
                                 </div> -->
                         <div class="about-one__img">
-                            <img src="{{ asset('orionFrontAssets/assets/images/team/ghasan.png') }}" alt="">
+                            <img data-src="{{ asset('orionFrontAssets/assets/images/team/ghasan.png') }}" alt="" class="lazy">
                         </div>
                         <div class="about-one__experience-box">
                             <div class="about-one__experience-icon">
@@ -874,7 +1024,7 @@ $p_nam = 'home';
                         project execution.</p>
                     <div class="about-one__bottom">
                         <div class="about-one__bottom-icon">
-                            <img src="{{ asset('orionFrontAssets/assets/images/icon/014-labor.png') }}" alt="">
+                            <img data-src="{{ asset('orionFrontAssets/assets/images/icon/014-labor.png') }}" alt="" class="lazy">
                         </div>
                         <div class="text">
                             <h3>Our unwavering commitment is to achieve <br> the ultimate satisfaction of our
@@ -987,7 +1137,7 @@ $p_nam = 'home';
                         </a>
                     </div>
                     <div class="video-one__shape">
-                        <img src="{{ asset('orionFrontAssets/assets/images/shapes/team-two-shape-3.png') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/team-two-shape-3.png') }}" alt="" class="lazy">
                     </div>
                     <h2 class="video-one__video-title">Best Of The Best Managers
                         <br> Only To Make Your Dreams Come True
@@ -1041,8 +1191,8 @@ $p_nam = 'home';
                         <div class="categories-one__single categories-one__single-{{ $loop->index + 1 }}">
                             <div class="categories-one__img-box">
                                 <div class="categories-one__img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}"
+                                        alt="" class="lazy">
                                 </div>
                             </div>
                             <div class="categories-one__content">
@@ -1079,13 +1229,13 @@ $p_nam = 'home';
     <div class="container">
         <div class="cta-one__inner">
             <div class="cta-one__img-1">
-                <img src="{{ asset('orionFrontAssets/assets/images/resources/Screenshot 2024-09-04 103337.png') }}"
-                    alt="">
+                <img data-src="{{ asset('orionFrontAssets/assets/images/resources/Screenshot 2024-09-04 103337.png') }}"
+                    alt="" class="lazy">
             </div>
             <div class="cta-one__left">
                 <div class="cta-one__title-box">
                     <span class="cta-one__tagline">Need Orion Help?</span>
-                    <h2 class="cta-one__title">We’re leader in Contracting of Constructions market</h2>
+                    <h2 class="cta-one__title">We're leader in Contracting of Constructions market</h2>
                 </div>
             </div>
             <div class="cta-one__right">
@@ -1107,7 +1257,7 @@ $p_nam = 'home';
         style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg-img.png') }});">
     </div>
     <div class="testimonial-two__shape-1">
-        <img src="{{ asset('orionFrontAssets/assets/images/shapes/testimonial-two-shape-1.png') }}" alt="">
+        <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/testimonial-two-shape-1.png') }}" alt="" class="lazy">
     </div>
     <div class="container">
         <div class="row">
@@ -1117,12 +1267,12 @@ $p_nam = 'home';
                         <span class="section-title__tagline">Our Clients</span>
                         <h2 class="section-title__title">Building Success Together</h2>
                     </div>
-                    <p class="testimonial-two__text-1 text-center">“At the heart of our success are the strong
+                    <p class="testimonial-two__text-1 text-center">"At the heart of our success are the strong
                         partnerships
-                        we’ve built with our clients. We believe in a collaborative approach, working
+                        we've built with our clients. We believe in a collaborative approach, working
                         hand-in-hand to achieve shared goals. Our clients are more than just business partners;
                         they are integral to our journey, inspiring us to innovate and excel. Together, we build
-                        a foundation of trust, mutual respect, and lasting success.”</p>
+                        a foundation of trust, mutual respect, and lasting success."</p>
                 </div>
             </div>
         </div>
@@ -1133,7 +1283,7 @@ $p_nam = 'home';
             <div class="row">
                 @foreach ($clients as $client )
                     <div class="col clinet-logo-item">
-                        <img src="{{ asset('orionFrontAssets/assets/images/clinets/' . $client->logo) }}" alt="{{ $client->name . ' company image' }}" srcset="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/clinets/' . $client->logo) }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
                     </div>
                 @endforeach
 
@@ -1183,7 +1333,7 @@ $p_nam = 'home';
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
                         <a href="http://">
-                            <img src="{{ asset('orionFrontAssets/assets/images/project/Picture1.jpg') }}" alt="">
+                            <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture1.jpg') }}" alt="" class="lazy">
                         </a>
                     </div>
                 </div>
@@ -1193,7 +1343,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture10.png') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture10.png') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1203,7 +1353,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture12.png') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture12.png') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1213,7 +1363,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture212.jpg') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture212.jpg') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1223,7 +1373,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture3.jpg') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture3.jpg') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1233,7 +1383,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture32.jpg') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture32.jpg') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1243,7 +1393,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture6.jpg') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture6.jpg') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1253,7 +1403,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture8.png') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture8.png') }}" alt="" class="lazy">
 
                     </div>
                 </div>
@@ -1263,7 +1413,7 @@ $p_nam = 'home';
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/Picture5.jpg') }}" alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture5.jpg') }}" alt="" class="lazy">
 
                     </div>
                 </div>

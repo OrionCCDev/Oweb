@@ -72,6 +72,37 @@ $p_nam = 'home';
         object-fit: cover;
         z-index: 0;
     }
+
+    /* Certificate slider custom styles */
+    .certificates-slider {
+        position: relative;
+        padding-bottom: 50px;
+    }
+    .certificates-slider .swiper-button-next,
+    .certificates-slider .swiper-button-prev {
+        color: #10ca9d;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+    }
+    .certificates-slider .swiper-button-next:after,
+    .certificates-slider .swiper-button-prev:after {
+        font-size: 20px;
+    }
+    .certificates-slider .swiper-pagination {
+        bottom: 10px;
+    }
+    .certificates-slider .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+        background: #10ca9d;
+        opacity: 0.5;
+    }
+    .certificates-slider .swiper-pagination-bullet-active {
+        opacity: 1;
+        background: #10ca9d;
+    }
 </style>
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
@@ -198,6 +229,35 @@ $p_nam = 'home';
                 });
             }
         }
+
+        // Initialize certificate slider specifically
+        if (typeof Swiper !== 'undefined') {
+            // Check if the Swiper container exists
+            const certificateSlider = document.querySelector('.certificates-slider');
+            if (certificateSlider) {
+                // Get swiper options from data attribute
+                const options = certificateSlider.dataset.swiperOptions ?
+                    JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
+
+                // Initialize the swiper
+                new Swiper('.certificates-slider', options);
+            }
+        } else {
+            // If Swiper isn't loaded yet, wait for it
+            const checkSwiper = setInterval(function() {
+                if (typeof Swiper !== 'undefined') {
+                    clearInterval(checkSwiper);
+
+                    const certificateSlider = document.querySelector('.certificates-slider');
+                    if (certificateSlider) {
+                        const options = certificateSlider.dataset.swiperOptions ?
+                            JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
+
+                        new Swiper('.certificates-slider', options);
+                    }
+                }
+            }, 100);
+        }
     });
 
     // Defer loading of particles.js until after critical content
@@ -263,6 +323,19 @@ $p_nam = 'home';
             script.onload = function() {
                 loadedCount++;
                 loadScript(index + 1);
+
+                // Initialize certificate slider after swiper.min.js is loaded
+                if (script.src.includes('swiper.min.js')) {
+                    setTimeout(function() {
+                        const certificateSlider = document.querySelector('.certificates-slider');
+                        if (certificateSlider) {
+                            const options = certificateSlider.dataset.swiperOptions ?
+                                JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
+
+                            new Swiper('.certificates-slider', options);
+                        }
+                    }, 500);
+                }
             };
             document.body.appendChild(script);
         }
@@ -762,7 +835,7 @@ $p_nam = 'home';
                                             </div>
                                             <h4 class="why-choose-one__title">Natural items</h4>
                                             <p class="why-choose-one__text">Lorem ipsum dolor sit amet, sectetur adipiscing
-                                                elit.</p>
+                                                elit.</p> 
                                         </div>
                                     </div>
                                 </div>
@@ -783,7 +856,7 @@ $p_nam = 'home';
             </h2>
         </div>
         <div class="row">
-            <div class="thm-swiper__slider swiper-container" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "breakpoints": {
+            <div class="thm-swiper__slider swiper-container certificates-slider" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
                 "0": {
                     "spaceBetween": 30,
                     "slidesPerView": 1
@@ -810,7 +883,7 @@ $p_nam = 'home';
                 }
             }}'>
                 <div class="swiper-wrapper">
-
+                    <!-- First slide -->
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
@@ -838,6 +911,7 @@ $p_nam = 'home';
                             </div>
                         </div>
                     </div>
+                    <!-- Second slide -->
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
@@ -865,6 +939,7 @@ $p_nam = 'home';
                             </div>
                         </div>
                     </div>
+                    <!-- Third slide -->
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
@@ -892,6 +967,7 @@ $p_nam = 'home';
                             </div>
                         </div>
                     </div>
+                    <!-- Fourth slide -->
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__left wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInLeft;">
@@ -918,6 +994,7 @@ $p_nam = 'home';
                             </div>
                         </div>
                     </div>
+                    <!-- Fifth slide -->
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
@@ -946,12 +1023,19 @@ $p_nam = 'home';
                         </div>
                     </div>
                 </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                <!-- Add Navigation -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
-            <div class="testimonial-one__btn-box offset-5">
+
+            <div class="testimonial-one__btn-box offset-5 mt-5">
                 <a href="{{ route('certificate.index') }}" class="testimonial-one__btn thm-btn">View all
                     Certifications</a>
             </div>
         </div>
+    </div>
 </section>
 <section class="about-one">
     <div class="about-one__shape-11 float-bob-y">

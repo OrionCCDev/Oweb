@@ -62,15 +62,64 @@ $p_nam = 'home';
     .main-slider {
         position: relative;
         overflow: hidden;
+        min-height: 100vh; /* Full viewport height */
     }
     #background-video {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 100vh; /* Full viewport height */
         object-fit: cover;
         z-index: 0;
+    }
+
+    /* Ensure video works on mobile */
+    @media (max-width: 767px) {
+        #background-video {
+            height: 100vh; /* Full viewport height on mobile */
+            min-height: 100%;
+            width: 100%;
+            z-index: 0;
+        }
+        .main-slider {
+            min-height: 100vh; /* Full viewport height on mobile */
+        }
+    }
+
+    /* Override the global style that hides videos on mobile */
+    @media screen and (max-width: 900px) {
+        #background-video {
+            display: block !important;
+            z-index: 0;
+            height: 100vh; /* Full viewport height */
+        }
+        .swiper-container,
+        .main-slider__content {
+            position: relative;
+            z-index: 5;
+        }
+    }
+
+    /* Center content in full-height video section */
+    .main-slider .container {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 5;
+    }
+
+    /* Fix z-index issues for slider content */
+    .main-slider__content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .swiper-container {
+        position: relative;
+        z-index: 2;
     }
 
     /* Certificate slider custom styles */
@@ -196,37 +245,82 @@ $p_nam = 'home';
         // Create the video element with proper loading strategy
         const videoContainer = document.getElementById('hero-slider-sect');
         if (videoContainer) {
-            const video = document.createElement('video');
+            // Check if browser supports HTML5 video
+            if (!!document.createElement('video').canPlayType) {
+                const video = document.createElement('video');
 
-            // Set video attributes
-            video.setAttribute('muted', 'muted');
-            video.setAttribute('loop', 'loop');
-            video.setAttribute('autoplay', 'autoplay');
-            video.setAttribute('playsinline', 'playsinline');
-            video.setAttribute('id', 'background-video');
-            video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
-            video.preload = 'auto';
+                // Set video attributes
+                video.setAttribute('muted', 'muted');
+                video.setAttribute('loop', 'loop');
+                video.setAttribute('autoplay', 'autoplay');
+                video.setAttribute('playsinline', 'playsinline');
+                video.setAttribute('id', 'background-video');
+                video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
+                // Force video to be visible on mobile and full height
+                video.style.display = 'block';
+                video.style.zIndex = '0';
+                video.style.height = '100vh';
+                video.style.width = '100%';
+                video.style.objectFit = 'cover';
+                video.preload = 'auto';
 
-            // Create the source element
-            const source = document.createElement('source');
-            source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
-            source.type = "video/mp4";
+                // Create the source element
+                const source = document.createElement('source');
+                source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
+                source.type = "video/mp4";
 
-            // Append the source to the video
-            video.appendChild(source);
+                // Append the source to the video
+                video.appendChild(source);
 
-            // Append the video to the container
-            videoContainer.prepend(video);
+                // Append the video to the container
+                videoContainer.prepend(video);
 
-            // Attempt to play
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // Auto-play was prevented - add a play button or other UI element if needed
-                    document.addEventListener('click', function() {
-                        video.play();
-                    }, { once: true });
+                // Attempt to play - enhanced for mobile support
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Autoplay prevented, will try after user interaction:", error);
+
+                        // iOS requires user interaction to play video
+                        const playVideoOnInteraction = function() {
+                            video.play().catch(e => console.log("Still couldn't play:", e));
+                            document.removeEventListener('touchstart', playVideoOnInteraction);
+                            document.removeEventListener('click', playVideoOnInteraction);
+                        };
+
+                        document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
+                        document.addEventListener('click', playVideoOnInteraction, { once: true });
+
+                        // Add visible play button for better UX on mobile
+                        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                            const playButton = document.createElement('div');
+                            playButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%;height:75px;width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.5); color:white; padding:20px; border-radius:50%; cursor:pointer;';
+                            playButton.innerHTML = '<i class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></i>';
+                            playButton.addEventListener('click', function() {
+                                video.play();
+                                this.style.display = 'none';
+                            });
+                            videoContainer.appendChild(playButton);
+                        }
+                    });
+                }
+
+                // Add error handling
+                video.addEventListener('error', function() {
+                    console.log("Video playback error, falling back to background image");
+                    setFallbackBackground();
                 });
+            } else {
+                // Browser doesn't support HTML5 video
+                console.log("Browser doesn't support HTML5 video, using fallback");
+                setFallbackBackground();
+            }
+
+            // Fallback function
+            function setFallbackBackground() {
+                videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
+                videoContainer.style.backgroundSize = "cover";
+                videoContainer.style.backgroundPosition = "center center";
             }
         }
 
@@ -357,8 +451,9 @@ $p_nam = 'home';
 @section('page_content')
 
 <!--Main Slider Start-->
-<section class="main-slider clearfix" style="position: relative;" id="hero-slider-sect">
+<section class="main-slider clearfix" style="position: relative; min-height: 100vh; height: 100vh;" id="hero-slider-sect">
     <!-- Video is added via JS -->
+    <div id="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); z-index: 1;"></div>
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
                 "effect": "fade",
                 "pagination": {
@@ -373,129 +468,7 @@ $p_nam = 'home';
                 "autoplay": {
                 "delay": 5000
                 }}'>
-        <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <div class="main-slider-bg-shape"
-                    style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/main-slider-bg-shape-two.png') }});">
-                </div>
 
-                <div class="main-slider__shape-4 float-bob-y">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape" class="lazy">
-                </div>
-
-                <div class="main-slider__img-one">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/1.png') }}"
-                        alt="main slider first image" class="lazy img-bounce">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="main-slider__content">
-                                <h4 class="main-slider__sub-title">You Dream We Build</h4>
-                                <h2 class="main-slider__title">Excellence <br> in Every Project.</h2>
-                                <div class="main-slider__btn-box">
-                                    <a href="about.html" class="thm-btn main-slider__btn-one">See Projects</a>
-                                    <a href="products.html" class="thm-btn main-slider__btn-two">Contact Us</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="main-slider-bg-shape"
-                    style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/main-slider-bg-shape-two.png') }});">
-                </div>
-
-                <div class="main-slider__shape-4 float-bob-y">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape" class="lazy">
-                </div>
-
-                <div class="main-slider__img-one">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/2.png') }}"
-                        alt="main slider first image" class="lazy img-bounce">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="main-slider__content">
-
-                                <h4 class="main-slider__sub-title">You Dream We Build</h4>
-                                <h2 class="main-slider__title">Transforming <br> Visions into Reality.</h2>
-                                <div class="main-slider__btn-box">
-                                    <a href="about.html" class="thm-btn main-slider__btn-one">See Projects</a>
-                                    <a href="products.html" class="thm-btn main-slider__btn-two">Contact Us</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="main-slider-bg-shape"
-                    style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/main-slider-bg-shape-two.png') }});">
-                </div>
-
-                <div class="main-slider__shape-4 float-bob-y">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape" class="lazy">
-                </div>
-
-                <div class="main-slider__img-one">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/3.png') }}"
-                        alt="main slider first image" class="lazy img-bounce">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="main-slider__content">
-
-                                <h4 class="main-slider__sub-title">You Dream We Build</h4>
-                                <h2 class="main-slider__title">Your Trusted <br> Partner in Construction.</h2>
-                                <div class="main-slider__btn-box">
-                                    <a href="about.html" class="thm-btn main-slider__btn-one">See Projects</a>
-                                    <a href="products.html" class="thm-btn main-slider__btn-two">Contact Us</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="main-slider-bg-shape"
-                    style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/main-slider-bg-shape-two.png') }});">
-                </div>
-
-                <div class="main-slider__shape-4 float-bob-y">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/main-slider-shape-4.png') }}"
-                        alt="main slider section white shape" class="lazy">
-                </div>
-
-                <div class="main-slider__img-one">
-                    <img data-src="{{ asset('orionFrontAssets/assets/images/resources/4.png') }}"
-                        alt="main slider first image" class="lazy img-bounce">
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="main-slider__content">
-
-                                <h4 class="main-slider__sub-title">You Dream We Build</h4>
-                                <h2 class="main-slider__title">Your Trusted <br> Partner in Construction.</h2>
-                                <div class="main-slider__btn-box">
-                                    <a href="about.html" class="thm-btn main-slider__btn-one">See Projects</a>
-                                    <a href="products.html" class="thm-btn main-slider__btn-two">Contact Us</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- If we need navigation buttons -->
 
 
     </div>
@@ -835,7 +808,7 @@ $p_nam = 'home';
                                             </div>
                                             <h4 class="why-choose-one__title">Natural items</h4>
                                             <p class="why-choose-one__text">Lorem ipsum dolor sit amet, sectetur adipiscing
-                                                elit.</p> 
+                                                elit.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1215,7 +1188,7 @@ $p_nam = 'home';
                     <div class="video-one__video-link">
                         <a href="https://www.youtube.com/watch?v=3VSpvjEEdIQ&autoplay=1&mute=1" class="video-popup">
                             <div class="video-one__video-icon">
-                                <span class="fa fa-play"></span>
+                                <span class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></span>
                                 <i class="ripple"></i>
                             </div>
                         </a>

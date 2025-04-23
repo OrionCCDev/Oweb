@@ -123,12 +123,14 @@ $p_nam = 'home';
     }
 
     /* Certificate slider custom styles */
-    .certificates-slider {
+    .certificates-slider, .sectors-slider {
         position: relative;
         padding-bottom: 50px;
     }
     .certificates-slider .swiper-button-next,
-    .certificates-slider .swiper-button-prev {
+    .certificates-slider .swiper-button-prev,
+    .sectors-slider .swiper-button-next,
+    .sectors-slider .swiper-button-prev {
         color: #10ca9d;
         background-color: rgba(255, 255, 255, 0.8);
         border-radius: 50%;
@@ -136,19 +138,24 @@ $p_nam = 'home';
         height: 44px;
     }
     .certificates-slider .swiper-button-next:after,
-    .certificates-slider .swiper-button-prev:after {
+    .certificates-slider .swiper-button-prev:after,
+    .sectors-slider .swiper-button-next:after,
+    .sectors-slider .swiper-button-prev:after {
         font-size: 20px;
     }
-    .certificates-slider .swiper-pagination {
+    .certificates-slider .swiper-pagination,
+    .sectors-slider .swiper-pagination {
         bottom: 10px;
     }
-    .certificates-slider .swiper-pagination-bullet {
+    .certificates-slider .swiper-pagination-bullet,
+    .sectors-slider .swiper-pagination-bullet {
         width: 10px;
         height: 10px;
         background: #10ca9d;
         opacity: 0.5;
     }
-    .certificates-slider .swiper-pagination-bullet-active {
+    .certificates-slider .swiper-pagination-bullet-active,
+    .sectors-slider .swiper-pagination-bullet-active {
         opacity: 1;
         background: #10ca9d;
     }
@@ -427,6 +434,15 @@ $p_nam = 'home';
                                 JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
 
                             new Swiper('.certificates-slider', options);
+                        }
+
+                        // Initialize sectors slider
+                        const sectorsSlider = document.querySelector('.sectors-slider');
+                        if (sectorsSlider) {
+                            const options = sectorsSlider.dataset.swiperOptions ?
+                                JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
+
+                            new Swiper('.sectors-slider', options);
                         }
                     }, 500);
                 }
@@ -852,7 +868,7 @@ $p_nam = 'home';
                 },
                 "1199": {
                     "spaceBetween": 100,
-                    "slidesPerView": 2
+                    "slidesPerView": 3
                 }
             }}'>
                 <div class="swiper-wrapper">
@@ -1215,26 +1231,26 @@ $p_nam = 'home';
             </h2>
         </div>
         <div class="row">
-            <div class="thm-swiper__slider swiper-container" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "breakpoints": {
+            <div class="thm-swiper__slider swiper-container sectors-slider" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
                             "0": {
                                 "spaceBetween": 30,
-                                "slidesPerView": 2
+                                "slidesPerView": 1
                             },
                             "375": {
                                 "spaceBetween": 30,
-                                "slidesPerView": 2
+                                "slidesPerView": 1
                             },
                             "575": {
                                 "spaceBetween": 30,
-                                "slidesPerView": 2
+                                "slidesPerView": 1
                             },
                             "767": {
                                 "spaceBetween": 50,
-                                "slidesPerView": 3
+                                "slidesPerView": 2
                             },
                             "991": {
                                 "spaceBetween": 50,
-                                "slidesPerView": 3
+                                "slidesPerView": 2
                             },
                             "1199": {
                                 "spaceBetween": 100,
@@ -1244,7 +1260,7 @@ $p_nam = 'home';
                 <div class="swiper-wrapper">
                     <!--Categories One Single Start-->
                     @foreach ($sectors as $sector)
-                    <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp swiper-slide" data-wow-delay="100ms">
+                    <div class="swiper-slide">
                         <div class="categories-one__single categories-one__single-{{ $loop->index + 1 }}">
                             <div class="categories-one__img-box">
                                 <div class="categories-one__img">
@@ -1270,9 +1286,12 @@ $p_nam = 'home';
                     </div>
                     <!--Categories One Single End-->
                     @endforeach
-
-
                 </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+                <!-- Add Navigation -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
         </div>
     </div>

@@ -17,7 +17,7 @@
                                     alt=""></a>
                         </div>
                         <div class="footer-widget__about-text-box">
-                            <p class="footer-widget__about-text">We’re Making Your Dream <br> Became Reality</p>
+                            <p class="footer-widget__about-text">We're Making Your Dream <br> Became Reality</p>
                         </div>
                         <div class="footer-widget__social-box">
                             <a href="#"><i class="fab fa-facebook"></i></a>
@@ -259,6 +259,83 @@
             ]
         }
     }
+    </script>
+
+    <!-- Essential scripts for mobile menu -->
+    <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+
+    <!-- Direct mobile menu initialization -->
+    <script>
+        (function() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initMobileMenu);
+            } else {
+                initMobileMenu();
+            }
+
+            function initMobileMenu() {
+                // Copy menu items from main menu to mobile menu if empty
+                if (document.querySelector(".main-menu__list") && document.querySelector(".mobile-nav__container")) {
+                    let mobileNavContainer = document.querySelector(".mobile-nav__container");
+                    if (!mobileNavContainer.innerHTML.trim()) {
+                        let navContent = document.querySelector(".main-menu__list").outerHTML;
+                        mobileNavContainer.innerHTML = navContent;
+                    }
+                }
+
+                // Set up dropdown toggles in mobile menu
+                if (document.querySelector(".mobile-nav__container .main-menu__list")) {
+                    let dropdownAnchors = document.querySelectorAll(".mobile-nav__container .main-menu__list .dropdown > a, .mobile-nav__container .main-menu__list > li > a");
+
+                    dropdownAnchors.forEach(function(anchor) {
+                        // Only add toggle button if it doesn't already exist
+                        if (!anchor.querySelector('button')) {
+                            let toggleBtn = document.createElement("BUTTON");
+                            toggleBtn.setAttribute("aria-label", "dropdown toggler");
+                            toggleBtn.innerHTML = "<i class='fa fa-angle-down'></i>";
+                            anchor.appendChild(toggleBtn);
+
+                            toggleBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                this.classList.toggle("expanded");
+                                this.parentNode.classList.toggle("expanded");
+
+                                let subMenu = anchor.parentNode.querySelector('ul');
+                                if (subMenu) {
+                                    if (subMenu.style.display === "block") {
+                                        subMenu.style.display = "none";
+                                    } else {
+                                        subMenu.style.display = "block";
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // Set up mobile nav toggler
+                let mobileNavTogglers = document.querySelectorAll(".mobile-nav__toggler");
+                mobileNavTogglers.forEach(function(toggler) {
+                    toggler.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(".mobile-nav__wrapper").classList.toggle("expanded");
+                        document.body.classList.toggle("locked");
+                    });
+                });
+
+                // Set up mobile nav close
+                let mobileNavClose = document.querySelector(".mobile-nav__close");
+                if (mobileNavClose) {
+                    mobileNavClose.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(".mobile-nav__wrapper").classList.remove("expanded");
+                        document.body.classList.remove("locked");
+                    });
+                }
+            }
+        })();
     </script>
 </body>
 

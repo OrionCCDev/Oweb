@@ -61,6 +61,12 @@ $p_nam = 'home';
         }
     }
 
+    @media screen and (max-width: 400px) {
+        :root {
+            --slider-height: 50vh;
+        }
+    }
+
     /* Add preload styles to improve above-the-fold loading */
     .lazy-load {
         opacity: 0;
@@ -212,7 +218,9 @@ $p_nam = 'home';
     // Lazy loading function
     document.addEventListener('DOMContentLoaded', function() {
         // Set slider height based on screen width
-        if (window.innerWidth <= 900) {
+        if (window.innerWidth <= 400) {
+            document.documentElement.style.setProperty('--slider-height', '50vh');
+        } else if (window.innerWidth <= 900) {
             document.documentElement.style.setProperty('--slider-height', '70vh');
         } else {
             document.documentElement.style.setProperty('--slider-height', '100vh');
@@ -220,7 +228,9 @@ $p_nam = 'home';
 
         // Update on resize
         window.addEventListener('resize', function() {
-            if (window.innerWidth <= 900) {
+            if (window.innerWidth <= 400) {
+                document.documentElement.style.setProperty('--slider-height', '50vh');
+            } else if (window.innerWidth <= 900) {
                 document.documentElement.style.setProperty('--slider-height', '70vh');
             } else {
                 document.documentElement.style.setProperty('--slider-height', '100vh');
@@ -306,7 +316,13 @@ $p_nam = 'home';
                 video.style.zIndex = '0';
 
                 // Set responsive height based on screen width
-                if (window.innerWidth <= 900) {
+                if (window.innerWidth <= 400) {
+                    video.style.height = '50vh';
+                    videoContainer.style.height = '50vh';
+                    videoContainer.style.minHeight = '50vh';
+                    document.getElementById('video-overlay').style.height = '50vh';
+                    video.style.objectFit = 'fill';
+                } else if (window.innerWidth <= 900) {
                     video.style.height = '70vh';
                     videoContainer.style.height = '70vh';
                     videoContainer.style.minHeight = '70vh';
@@ -325,7 +341,13 @@ $p_nam = 'home';
 
                 // Add resize listener to adjust video height on window resize
                 window.addEventListener('resize', function() {
-                    if (window.innerWidth <= 900) {
+                    if (window.innerWidth <= 400) {
+                        video.style.height = '50vh';
+                        videoContainer.style.height = '50vh';
+                        videoContainer.style.minHeight = '50vh';
+                        document.getElementById('video-overlay').style.height = '50vh';
+                        video.style.objectFit = 'fill';
+                    } else if (window.innerWidth <= 900) {
                         video.style.height = '70vh';
                         videoContainer.style.height = '70vh';
                         videoContainer.style.minHeight = '70vh';

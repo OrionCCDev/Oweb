@@ -311,15 +311,16 @@ $p_nam = 'home';
                     videoContainer.style.height = '70vh';
                     videoContainer.style.minHeight = '70vh';
                     document.getElementById('video-overlay').style.height = '70vh';
+                    video.style.objectFit = 'fill';
                 } else {
                     video.style.height = '100vh';
                     videoContainer.style.height = '100vh';
                     videoContainer.style.minHeight = '100vh';
                     document.getElementById('video-overlay').style.height = '100vh';
+                    video.style.objectFit = 'cover';
                 }
 
                 video.style.width = '100%';
-                video.style.objectFit = 'cover';
                 video.preload = 'auto';
 
                 // Add resize listener to adjust video height on window resize
@@ -329,11 +330,13 @@ $p_nam = 'home';
                         videoContainer.style.height = '70vh';
                         videoContainer.style.minHeight = '70vh';
                         document.getElementById('video-overlay').style.height = '70vh';
+                        video.style.objectFit = 'fill';
                     } else {
                         video.style.height = '100vh';
                         videoContainer.style.height = '100vh';
                         videoContainer.style.minHeight = '100vh';
                         document.getElementById('video-overlay').style.height = '100vh';
+                        video.style.objectFit = 'cover';
                     }
                 });
 

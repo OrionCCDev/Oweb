@@ -50,6 +50,17 @@ $p_nam = 'home';
   left: 0;
   z-index: 1;
 }
+    /* Add CSS custom property for slider height */
+    :root {
+        --slider-height: 100vh;
+    }
+
+    @media screen and (max-width: 900px) {
+        :root {
+            --slider-height: 70vh;
+        }
+    }
+
     /* Add preload styles to improve above-the-fold loading */
     .lazy-load {
         opacity: 0;
@@ -200,6 +211,22 @@ $p_nam = 'home';
 <script>
     // Lazy loading function
     document.addEventListener('DOMContentLoaded', function() {
+        // Set slider height based on screen width
+        if (window.innerWidth <= 900) {
+            document.documentElement.style.setProperty('--slider-height', '70vh');
+        } else {
+            document.documentElement.style.setProperty('--slider-height', '100vh');
+        }
+
+        // Update on resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 900) {
+                document.documentElement.style.setProperty('--slider-height', '70vh');
+            } else {
+                document.documentElement.style.setProperty('--slider-height', '100vh');
+            }
+        });
+
         const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
         if ("IntersectionObserver" in window) {
@@ -277,10 +304,38 @@ $p_nam = 'home';
                 // Force video to be visible on mobile and full height
                 video.style.display = 'block';
                 video.style.zIndex = '0';
-                video.style.height = '100vh';
+
+                // Set responsive height based on screen width
+                if (window.innerWidth <= 900) {
+                    video.style.height = '70vh';
+                    videoContainer.style.height = '70vh';
+                    videoContainer.style.minHeight = '70vh';
+                    document.getElementById('video-overlay').style.height = '70vh';
+                } else {
+                    video.style.height = '100vh';
+                    videoContainer.style.height = '100vh';
+                    videoContainer.style.minHeight = '100vh';
+                    document.getElementById('video-overlay').style.height = '100vh';
+                }
+
                 video.style.width = '100%';
                 video.style.objectFit = 'cover';
                 video.preload = 'auto';
+
+                // Add resize listener to adjust video height on window resize
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth <= 900) {
+                        video.style.height = '70vh';
+                        videoContainer.style.height = '70vh';
+                        videoContainer.style.minHeight = '70vh';
+                        document.getElementById('video-overlay').style.height = '70vh';
+                    } else {
+                        video.style.height = '100vh';
+                        videoContainer.style.height = '100vh';
+                        videoContainer.style.minHeight = '100vh';
+                        document.getElementById('video-overlay').style.height = '100vh';
+                    }
+                });
 
                 // Create the source element
                 const source = document.createElement('source');
@@ -478,9 +533,9 @@ $p_nam = 'home';
 @section('page_content')
 
 <!--Main Slider Start-->
-<section class="main-slider clearfix" style="position: relative; min-height: 100vh; height: 100vh;" id="hero-slider-sect">
+<section class="main-slider clearfix" id="hero-slider-sect" style="position: relative; height: var(--slider-height, 100vh); min-height: var(--slider-height, 100vh);">
     <!-- Video is added via JS -->
-    <div id="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.3); z-index: 1;"></div>
+    <div id="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: var(--slider-height, 100vh); background-color: rgba(0,0,0,0.3); z-index: 1;"></div>
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
                 "effect": "fade",
                 "pagination": {

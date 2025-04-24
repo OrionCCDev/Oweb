@@ -77,13 +77,13 @@ $p_nam = 'home';
     /* Ensure video works on mobile */
     @media (max-width: 767px) {
         #background-video {
-            height: 100vh; /* Full viewport height on mobile */
-            min-height: 100%;
+            height: 70vh; /* 70% viewport height on mobile */
+            min-height: 70%;
             width: 100%;
             z-index: 0;
         }
         .main-slider {
-            min-height: 100vh; /* Full viewport height on mobile */
+            min-height: 70vh; /* 70% viewport height on mobile */
         }
     }
 
@@ -92,7 +92,7 @@ $p_nam = 'home';
         #background-video {
             display: block !important;
             z-index: 0;
-            height: 100vh; /* Full viewport height */
+            height: 70vh; /* 70% viewport height */
         }
         .swiper-container,
         .main-slider__content {
@@ -109,6 +109,17 @@ $p_nam = 'home';
         justify-content: center;
         position: relative;
         z-index: 5;
+    }
+
+    /* Adjust main slider container height on mobile */
+    @media screen and (max-width: 900px) {
+        .main-slider .container {
+            height: 70vh;
+        }
+        .main-slider {
+            min-height: 70vh;
+            height: 70vh;
+        }
     }
 
     /* Fix z-index issues for slider content */

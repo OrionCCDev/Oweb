@@ -789,7 +789,7 @@ $p_nam = 'home';
                     <div class="col-xl-6 col-lg-6">
                         <div class="section-title text-left">
                             <span class="section-title__tagline">Checkout Our Projects</span>
-                            <h2 class="section-title__title">In-Progress Projects</h2>
+                            <h2 class="section-title__title">Our Projects</h2>
                             <!-- <div class="hot-products__btn-box">
                                         <a href="all_projects.html" class="hot-products__btn thm-btn">All Projects</a>
                                     </div> -->

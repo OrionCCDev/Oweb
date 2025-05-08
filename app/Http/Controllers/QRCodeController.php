@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class QRCodeController extends Controller
 {
@@ -21,13 +22,28 @@ class QRCodeController extends Controller
             if ($response->successful()) {
                 // Save the QR code image
                 $path = public_path('images/qrcode.png');
-                file_put_contents($path, $response->body());
+
+                // Create directory if it doesn't exist
+                if (!file_exists(public_path('images'))) {
+                    mkdir(public_path('images'), 0755, true);
+                }
+
+                // Save the image
+                if (file_put_contents($path, $response->body())) {
+                    Log::info('QR code generated successfully');
+                } else {
+                    Log::error('Failed to save QR code image');
+                }
+            } else {
+                Log::error('QR Server API request failed: ' . $response->status());
             }
         } catch (\Exception $e) {
-            // Log error if needed
-            \Log::error('QR Code generation failed: ' . $e->getMessage());
+            Log::error('QR Code generation failed: ' . $e->getMessage());
         }
 
-        return view('qrcode');
+        // Pass the PDF URL to the view
+        return view('qrcode', [
+            'pdfUrl' => $pdfUrl
+        ]);
     }
 }

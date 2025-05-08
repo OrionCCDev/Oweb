@@ -38,9 +38,16 @@
             margin-top: 1rem;
             color: #0066cc;
             text-decoration: none;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
         .download-link:hover {
-            text-decoration: underline;
+            background-color: #0052a3;
+            text-decoration: none;
         }
         .url-display {
             margin-top: 1rem;
@@ -57,12 +64,16 @@
     <div class="container">
         <h1>AOJ Company Profile QR Code</h1>
         <div class="qr-code">
-            <img src="{{ asset('images/qrcode.png') }}" alt="QR Code for PDF Download">
+            @if(file_exists(public_path('images/qrcode.png')))
+                <img src="{{ asset('images/qrcode.png') }}" alt="QR Code for PDF Download">
+            @else
+                <p>QR Code image not available. Please try refreshing the page.</p>
+            @endif
         </div>
         <div class="url-display">
-            QR Code URL: https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf
+            QR Code URL: {{ $pdfUrl }}
         </div>
-        <a href="https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
+        <a href="{{ $pdfUrl }}" class="download-link" download>
             Click here to download PDF directly
         </a>
     </div>

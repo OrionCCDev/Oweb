@@ -53,3 +53,5 @@ Route::get('/about-us', function () {
 // });
 
 // require __DIR__.'/auth.php';
+
+Route::get('/qrcode', [App\Http\Controllers\QRCodeController::class, 'index'])->name('qrcode');

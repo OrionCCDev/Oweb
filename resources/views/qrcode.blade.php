@@ -44,7 +44,7 @@
     <div class="container">
         <h1>AOJ Company Profile QR Code</h1>
         <div id="qrcode"></div>
-        <a href="{{ asset('uploads/AOJ COMPANY PROFILE.pdf') }}" class="download-link" download>
+        <a href="https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
             Click here to download PDF directly
         </a>
     </div>
@@ -52,7 +52,7 @@
     <script>
         // Create QR code
         const qr = qrcode(0, 'M');
-        qr.addData('{{ asset('uploads/AOJ COMPANY PROFILE.pdf') }}');
+        qr.addData('https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf');
         qr.make();
 
         // Create QR code image

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Download QR Code</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,8 +27,12 @@
             color: #333;
             margin-bottom: 1rem;
         }
-        #qrcode {
+        .qr-code {
             margin: 1rem 0;
+        }
+        .qr-code img {
+            max-width: 300px;
+            height: auto;
         }
         .download-link {
             margin-top: 1rem;
@@ -53,26 +56,15 @@
 <body>
     <div class="container">
         <h1>AOJ Company Profile QR Code</h1>
-        <div id="qrcode"></div>
-        <div class="url-display" id="urlDisplay"></div>
+        <div class="qr-code">
+            <img src="{{ asset('images/qrcode.png') }}" alt="QR Code for PDF Download">
+        </div>
+        <div class="url-display">
+            QR Code URL: https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf
+        </div>
         <a href="https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
             Click here to download PDF directly
         </a>
     </div>
-
-    <script>
-        // Create QR code with proper URL encoding
-        const pdfUrl = 'https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf';
-        const qr = qrcode(0, 'M');
-        qr.addData(pdfUrl);
-        qr.make();
-
-        // Create QR code image with larger size for better scanning
-        const qrImage = qr.createImgTag(15);
-        document.getElementById('qrcode').innerHTML = qrImage;
-
-        // Display the URL for debugging
-        document.getElementById('urlDisplay').textContent = 'QR Code URL: ' + pdfUrl;
-    </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
         "endroid/qr-code": "*",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "simplesoftwareio/simple-qrcode": "^4.2",
+        "simplesoftwareio/simple-qrcode": "~4.2",
         "spatie/laravel-medialibrary": "^11.0.0"
     },
     "require-dev": {

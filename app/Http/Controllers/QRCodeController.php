@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 class QRCodeController extends Controller
 {
@@ -11,14 +14,21 @@ class QRCodeController extends Controller
     {
         $pdfUrl = 'https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf';
 
-        // Generate QR code and save it
-        $qrCode = QrCode::format('png')
-            ->size(300)
-            ->generate($pdfUrl);
+        // Create QR code renderer
+        $renderer = new ImageRenderer(
+            new RendererStyle(400),
+            new ImagickImageBackEnd()
+        );
 
-        // Save the QR code to public directory
-        $qrPath = public_path('images/qrcode.png');
-        file_put_contents($qrPath, $qrCode);
+        // Create QR code writer
+        $writer = new Writer($renderer);
+
+        // Generate QR code
+        $qrcode = $writer->writeString($pdfUrl);
+
+        // Save the QR code image
+        $path = public_path('images/qrcode.png');
+        file_put_contents($path, $qrcode);
 
         return view('qrcode');
     }

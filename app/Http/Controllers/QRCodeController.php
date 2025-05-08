@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
 
 class QRCodeController extends Controller
 {
@@ -14,17 +10,11 @@ class QRCodeController extends Controller
     {
         $pdfUrl = 'https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf';
 
-        // Create QR code renderer
-        $renderer = new ImageRenderer(
-            new RendererStyle(400),
-            new ImagickImageBackEnd()
-        );
+        // Generate QR code using Google Charts API
+        $googleChartApi = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($pdfUrl);
 
-        // Create QR code writer
-        $writer = new Writer($renderer);
-
-        // Generate QR code
-        $qrcode = $writer->writeString($pdfUrl);
+        // Get QR code image content
+        $qrcode = file_get_contents($googleChartApi);
 
         // Save the QR code image
         $path = public_path('images/qrcode.png');

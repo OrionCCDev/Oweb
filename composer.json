@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bacon/bacon-qr-code": "*",
         "chillerlan/php-qrcode": "*",
         "endroid/qr-code": "*",
         "laravel/framework": "^11.9",

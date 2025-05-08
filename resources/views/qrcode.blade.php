@@ -55,14 +55,14 @@
         <h1>AOJ Company Profile QR Code</h1>
         <div id="qrcode"></div>
         <div class="url-display" id="urlDisplay"></div>
-        <a href="https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
+        <a href="https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
             Click here to download PDF directly
         </a>
     </div>
 
     <script>
         // Create QR code with proper URL encoding
-        const pdfUrl = 'https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf';
+        const pdfUrl = 'https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf';
         const qr = qrcode(0, 'M');
         qr.addData(pdfUrl);
         qr.make();

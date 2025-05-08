@@ -22,6 +22,7 @@
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 90%;
         }
         h1 {
             color: #333;
@@ -38,26 +39,40 @@
         .download-link:hover {
             text-decoration: underline;
         }
+        .url-display {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 0.9rem;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>AOJ Company Profile QR Code</h1>
         <div id="qrcode"></div>
+        <div class="url-display" id="urlDisplay"></div>
         <a href="https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf" class="download-link" download>
             Click here to download PDF directly
         </a>
     </div>
 
     <script>
-        // Create QR code
+        // Create QR code with proper URL encoding
+        const pdfUrl = 'https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf';
         const qr = qrcode(0, 'M');
-        qr.addData('https://orion-contracting.com/AOJ%20COMPANY%20PROFILE.pdf');
+        qr.addData(pdfUrl);
         qr.make();
 
-        // Create QR code image
-        const qrImage = qr.createImgTag(10);
+        // Create QR code image with larger size for better scanning
+        const qrImage = qr.createImgTag(15);
         document.getElementById('qrcode').innerHTML = qrImage;
+
+        // Display the URL for debugging
+        document.getElementById('urlDisplay').textContent = 'QR Code URL: ' + pdfUrl;
     </script>
 </body>
 </html>

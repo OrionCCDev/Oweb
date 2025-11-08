@@ -67,6 +67,153 @@ $p_nam = 'home';
         }
     }
 
+    /* Creative Preloader Styles */
+    #page-preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #page-preloader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .loader-container {
+        text-align: center;
+    }
+
+    /* Construction crane loader */
+    .construction-loader {
+        width: 120px;
+        height: 120px;
+        position: relative;
+        margin: 0 auto 30px;
+    }
+
+    .crane {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        animation: crane-rotate 3s infinite ease-in-out;
+    }
+
+    .crane-arm {
+        width: 100px;
+        height: 4px;
+        background: #FFD700;
+        position: absolute;
+        top: 20px;
+        left: 10px;
+        transform-origin: left center;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .crane-hook {
+        width: 3px;
+        height: 40px;
+        background: #FFD700;
+        position: absolute;
+        right: 0;
+        top: 20px;
+        animation: hook-swing 1.5s infinite ease-in-out;
+    }
+
+    .crane-load {
+        width: 20px;
+        height: 20px;
+        background: #FF6B6B;
+        position: absolute;
+        bottom: -25px;
+        right: -8.5px;
+        border-radius: 2px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        animation: load-bounce 1.5s infinite ease-in-out;
+    }
+
+    .crane-base {
+        width: 8px;
+        height: 60px;
+        background: linear-gradient(to bottom, #FFD700, #FFA500);
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+    }
+
+    @keyframes crane-rotate {
+        0%, 100% { transform: rotate(0deg); }
+        50% { transform: rotate(15deg); }
+    }
+
+    @keyframes hook-swing {
+        0%, 100% { transform: translateX(0) rotate(0deg); }
+        50% { transform: translateX(-5px) rotate(-5deg); }
+    }
+
+    @keyframes load-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .loader-text {
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 600;
+        margin-top: 20px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        animation: pulse-text 1.5s infinite;
+    }
+
+    .loader-subtext {
+        color: rgba(255,255,255,0.8);
+        font-size: 14px;
+        margin-top: 10px;
+        letter-spacing: 2px;
+    }
+
+    @keyframes pulse-text {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .progress-bar {
+        width: 200px;
+        height: 4px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 2px;
+        margin-top: 30px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #FFD700, #FFA500);
+        width: 0%;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Deferred sections - hidden initially */
+    .deferred-section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .deferred-section.loaded {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     /* Add preload styles to improve above-the-fold loading */
     .lazy-load {
         opacity: 0;
@@ -215,19 +362,69 @@ $p_nam = 'home';
 @endsection --}}
 @section('cust_js')
 <script>
-    // Lazy loading function
-    document.addEventListener('DOMContentLoaded', function() {
-        // Set slider height based on screen width
-        if (window.innerWidth <= 400) {
-            document.documentElement.style.setProperty('--slider-height', '50vh');
-        } else if (window.innerWidth <= 900) {
-            document.documentElement.style.setProperty('--slider-height', '70vh');
-        } else {
-            document.documentElement.style.setProperty('--slider-height', '100vh');
+    // Progressive Page Loading System with Creative Preloader
+    (function() {
+        let progressBar = document.getElementById('loader-progress');
+        let progress = 0;
+
+        // Update progress bar
+        function updateProgress(value) {
+            progress = Math.min(value, 100);
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
         }
 
-        // Update on resize
-        window.addEventListener('resize', function() {
+        // Hide preloader
+        function hidePreloader() {
+            updateProgress(100);
+            setTimeout(function() {
+                const preloader = document.getElementById('page-preloader');
+                if (preloader) {
+                    preloader.classList.add('fade-out');
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        // Lazy loading for images using IntersectionObserver
+        function setupLazyLoading() {
+            const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            if(lazyImage.dataset.srcset) {
+                                lazyImage.srcset = lazyImage.dataset.srcset;
+                            }
+                            lazyImage.classList.add("loaded");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Fallback for browsers without IntersectionObserver
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImage.src = lazyImage.dataset.src;
+                    if(lazyImage.dataset.srcset) {
+                        lazyImage.srcset = lazyImage.dataset.srcset;
+                    }
+                    lazyImage.classList.add("loaded");
+                });
+            }
+        }
+
+        // Set slider height based on screen width
+        function updateSliderHeight() {
             if (window.innerWidth <= 400) {
                 document.documentElement.style.setProperty('--slider-height', '50vh');
             } else if (window.innerWidth <= 900) {
@@ -235,112 +432,26 @@ $p_nam = 'home';
             } else {
                 document.documentElement.style.setProperty('--slider-height', '100vh');
             }
-        });
-
-        const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
-
-        if ("IntersectionObserver" in window) {
-            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        if(lazyImage.dataset.srcset) {
-                            lazyImage.srcset = lazyImage.dataset.srcset;
-                        }
-                        lazyImage.classList.add("loaded");
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            lazyImages.forEach(function(lazyImage) {
-                lazyImageObserver.observe(lazyImage);
-            });
-        } else {
-            // Fallback for browsers without intersection observer
-            let active = false;
-
-            const lazyLoad = function() {
-                if (active === false) {
-                    active = true;
-
-                    setTimeout(function() {
-                        lazyImages.forEach(function(lazyImage) {
-                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
-                                lazyImage.src = lazyImage.dataset.src;
-                                if(lazyImage.dataset.srcset) {
-                                    lazyImage.srcset = lazyImage.dataset.srcset;
-                                }
-                                lazyImage.classList.add("loaded");
-
-                                lazyImages = lazyImages.filter(function(image) {
-                                    return image !== lazyImage;
-                                });
-
-                                if (lazyImages.length === 0) {
-                                    document.removeEventListener("scroll", lazyLoad);
-                                    window.removeEventListener("resize", lazyLoad);
-                                    window.removeEventListener("orientationchange", lazyLoad);
-                                }
-                            }
-                        });
-
-                        active = false;
-                    }, 200);
-                }
-            };
-
-            document.addEventListener("scroll", lazyLoad);
-            window.addEventListener("resize", lazyLoad);
-            window.addEventListener("orientationchange", lazyLoad);
-            lazyLoad();
         }
 
-        // Create the video element with proper loading strategy
-        const videoContainer = document.getElementById('hero-slider-sect');
-        if (videoContainer) {
-            // Check if browser supports HTML5 video
+        // Load background video
+        function loadBackgroundVideo() {
+            const videoContainer = document.getElementById('hero-slider-sect');
+            if (!videoContainer) return;
+
             if (!!document.createElement('video').canPlayType) {
                 const video = document.createElement('video');
-
-                // Set video attributes
                 video.setAttribute('muted', 'muted');
                 video.setAttribute('loop', 'loop');
                 video.setAttribute('autoplay', 'autoplay');
                 video.setAttribute('playsinline', 'playsinline');
                 video.setAttribute('id', 'background-video');
                 video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
-                // Force video to be visible on mobile and full height
                 video.style.display = 'block';
                 video.style.zIndex = '0';
 
-                // Set responsive height based on screen width
-                if (window.innerWidth <= 400) {
-                    video.style.height = '50vh';
-                    videoContainer.style.height = '50vh';
-                    videoContainer.style.minHeight = '50vh';
-                    document.getElementById('video-overlay').style.height = '50vh';
-                    video.style.objectFit = 'fill';
-                } else if (window.innerWidth <= 900) {
-                    video.style.height = '70vh';
-                    videoContainer.style.height = '70vh';
-                    videoContainer.style.minHeight = '70vh';
-                    document.getElementById('video-overlay').style.height = '70vh';
-                    video.style.objectFit = 'fill';
-                } else {
-                    video.style.height = '100vh';
-                    videoContainer.style.height = '100vh';
-                    videoContainer.style.minHeight = '100vh';
-                    document.getElementById('video-overlay').style.height = '100vh';
-                    video.style.objectFit = 'cover';
-                }
-
-                video.style.width = '100%';
-                video.preload = 'auto';
-
-                // Add resize listener to adjust video height on window resize
-                window.addEventListener('resize', function() {
+                // Set responsive height
+                function updateVideoHeight() {
                     if (window.innerWidth <= 400) {
                         video.style.height = '50vh';
                         videoContainer.style.height = '50vh';
@@ -360,36 +471,29 @@ $p_nam = 'home';
                         document.getElementById('video-overlay').style.height = '100vh';
                         video.style.objectFit = 'cover';
                     }
-                });
+                }
 
-                // Create the source element
+                updateVideoHeight();
+                window.addEventListener('resize', updateVideoHeight);
+
+                video.style.width = '100%';
+                video.preload = 'auto';
+
                 const source = document.createElement('source');
                 source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
                 source.type = "video/mp4";
-
-                // Append the source to the video
                 video.appendChild(source);
-
-                // Append the video to the container
                 videoContainer.prepend(video);
 
-                // Attempt to play - enhanced for mobile support
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                        console.log("Autoplay prevented, will try after user interaction:", error);
-
-                        // iOS requires user interaction to play video
                         const playVideoOnInteraction = function() {
                             video.play().catch(e => console.log("Still couldn't play:", e));
-                            document.removeEventListener('touchstart', playVideoOnInteraction);
-                            document.removeEventListener('click', playVideoOnInteraction);
                         };
-
                         document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
                         document.addEventListener('click', playVideoOnInteraction, { once: true });
 
-                        // Add visible play button for better UX on mobile
                         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                             const playButton = document.createElement('div');
                             playButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%;height:75px;width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.5); color:white; padding:20px; border-radius:50%; cursor:pointer;';
@@ -403,159 +507,198 @@ $p_nam = 'home';
                     });
                 }
 
-                // Add error handling
                 video.addEventListener('error', function() {
-                    console.log("Video playback error, falling back to background image");
-                    setFallbackBackground();
+                    videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
+                    videoContainer.style.backgroundSize = "cover";
+                    videoContainer.style.backgroundPosition = "center center";
                 });
             } else {
-                // Browser doesn't support HTML5 video
-                console.log("Browser doesn't support HTML5 video, using fallback");
-                setFallbackBackground();
-            }
-
-            // Fallback function
-            function setFallbackBackground() {
                 videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
                 videoContainer.style.backgroundSize = "cover";
                 videoContainer.style.backgroundPosition = "center center";
             }
         }
 
-        // Initialize certificate slider specifically
-        if (typeof Swiper !== 'undefined') {
-            // Check if the Swiper container exists
+        // Load deferred sections sequentially
+        function loadDeferredSections() {
+            const deferredSections = document.querySelectorAll('.deferred-section');
+            let currentIndex = 0;
+
+            function loadNextSection() {
+                if (currentIndex >= deferredSections.length) return;
+
+                const section = deferredSections[currentIndex];
+                section.classList.add('loaded');
+
+                currentIndex++;
+                // Load next section after a short delay for smooth animation
+                setTimeout(loadNextSection, 150);
+            }
+
+            // Start loading deferred sections after a brief delay
+            setTimeout(loadNextSection, 500);
+        }
+
+        // Load non-critical scripts
+        function loadDeferredScripts() {
+            const scripts = [
+                '{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}',
+                '{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}',
+                '{{ asset('orionFrontAssets/assets/js/main.js') }}'
+            ];
+
+            let loadedCount = 0;
+
+            function loadScript(index) {
+                if (index >= scripts.length) {
+                    loadParticles();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = scripts[index];
+                script.onload = function() {
+                    loadedCount++;
+                    loadScript(index + 1);
+
+                    // Initialize sliders after Swiper is loaded
+                    if (script.src.includes('swiper.min.js')) {
+                        setTimeout(function() {
+                            initializeSliders();
+                        }, 500);
+                    }
+                };
+                script.onerror = function() {
+                    console.warn('Failed to load:', scripts[index]);
+                    loadScript(index + 1);
+                };
+                document.body.appendChild(script);
+            }
+
+            loadScript(0);
+        }
+
+        // Initialize Swiper sliders
+        function initializeSliders() {
+            if (typeof Swiper === 'undefined') return;
+
+            // Certificate slider
             const certificateSlider = document.querySelector('.certificates-slider');
             if (certificateSlider) {
-                // Get swiper options from data attribute
                 const options = certificateSlider.dataset.swiperOptions ?
                     JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                // Initialize the swiper
                 new Swiper('.certificates-slider', options);
             }
-        } else {
-            // If Swiper isn't loaded yet, wait for it
-            const checkSwiper = setInterval(function() {
-                if (typeof Swiper !== 'undefined') {
-                    clearInterval(checkSwiper);
 
-                    const certificateSlider = document.querySelector('.certificates-slider');
-                    if (certificateSlider) {
-                        const options = certificateSlider.dataset.swiperOptions ?
-                            JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                        new Swiper('.certificates-slider', options);
-                    }
-                }
-            }, 100);
-        }
-    });
-
-    // Defer loading of particles.js until after critical content
-    function loadParticles() {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
-        script.onload = function() {
-            particlesJS("particles-js", {
-                "particles": {
-                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                    "color": { "value": "#aef490" },
-                    "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
-                    "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                    "size": { "value": 3, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
-                    "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 },
-                    "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": { "enable": true, "mode": "grab" },
-                        "onclick": { "enable": true, "mode": "push" },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": { "distance": 400, "line_linked": { "opacity": 1 } },
-                        "push": { "particles_nb": 4 }
-                    }
-                },
-                "retina_detect": true
-            });
-        };
-        document.body.appendChild(script);
-    }
-
-    // Load non-critical scripts
-    function loadDeferredScripts() {
-        const scripts = [
-            '{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}',
-            '{{ asset('orionFrontAssets/assets/js/main.js') }}'
-        ];
-
-        let loadedCount = 0;
-
-        function loadScript(index) {
-            if (index >= scripts.length) {
-                // All scripts loaded
-                loadParticles();
-                return;
+            // Sectors slider
+            const sectorsSlider = document.querySelector('.sectors-slider');
+            if (sectorsSlider) {
+                const options = sectorsSlider.dataset.swiperOptions ?
+                    JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
+                new Swiper('.sectors-slider', options);
             }
+        }
 
+        // Load particles.js
+        function loadParticles() {
             const script = document.createElement('script');
-            script.src = scripts[index];
+            script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
             script.onload = function() {
-                loadedCount++;
-                loadScript(index + 1);
-
-                // Initialize certificate slider after swiper.min.js is loaded
-                if (script.src.includes('swiper.min.js')) {
-                    setTimeout(function() {
-                        const certificateSlider = document.querySelector('.certificates-slider');
-                        if (certificateSlider) {
-                            const options = certificateSlider.dataset.swiperOptions ?
-                                JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.certificates-slider', options);
+                particlesJS("particles-js", {
+                    "particles": {
+                        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+                        "color": { "value": "#aef490" },
+                        "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
+                        "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                        "size": { "value": 3, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
+                        "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 },
+                        "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": { "enable": true, "mode": "grab" },
+                            "onclick": { "enable": true, "mode": "push" },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": { "distance": 400, "line_linked": { "opacity": 1 } },
+                            "push": { "particles_nb": 4 }
                         }
-
-                        // Initialize sectors slider
-                        const sectorsSlider = document.querySelector('.sectors-slider');
-                        if (sectorsSlider) {
-                            const options = sectorsSlider.dataset.swiperOptions ?
-                                JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.sectors-slider', options);
-                        }
-                    }, 500);
-                }
+                    },
+                    "retina_detect": true
+                });
             };
             document.body.appendChild(script);
         }
 
-        // Start loading scripts
-        loadScript(0);
-    }
+        // Main initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Phase 1: Initialize critical settings (10% progress)
+            updateProgress(10);
+            updateSliderHeight();
+            window.addEventListener('resize', updateSliderHeight);
 
-    // Use requestIdleCallback or setTimeout to defer non-critical tasks
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadDeferredScripts);
-    } else {
-        setTimeout(loadDeferredScripts, 2000);
-    }
+            // Phase 2: Load hero video and setup lazy loading (40% progress)
+            updateProgress(30);
+            setupLazyLoading();
+            loadBackgroundVideo();
+            updateProgress(50);
+
+            // Phase 3: Wait for critical content to be visible (70% progress)
+            setTimeout(function() {
+                updateProgress(70);
+
+                // Phase 4: Hide preloader (90% progress)
+                updateProgress(90);
+                hidePreloader();
+
+                // Phase 5: Load deferred sections automatically
+                loadDeferredSections();
+
+                // Phase 6: Load non-critical scripts
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(loadDeferredScripts);
+                } else {
+                    setTimeout(loadDeferredScripts, 1000);
+                }
+            }, 800); // Give time for hero section to render
+        });
+    })();
 </script>
 @endsection
 
 
 @section('page_content')
+
+<!-- Creative Page Preloader -->
+<div id="page-preloader">
+    <div class="loader-container">
+        <div class="construction-loader">
+            <div class="crane">
+                <div class="crane-base"></div>
+                <div class="crane-arm">
+                    <div class="crane-hook">
+                        <div class="crane-load"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loader-text">Building Excellence</div>
+        <div class="loader-subtext">ORION CONTRACTING</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="loader-progress"></div>
+        </div>
+    </div>
+</div>
 
 <!--Main Slider Start-->
 <section class="main-slider clearfix" id="hero-slider-sect" style="position: relative; height: var(--slider-height, 100vh); min-height: var(--slider-height, 100vh);">
@@ -772,8 +915,8 @@ $p_nam = 'home';
 </section>  --}}
 <!--News Carousel Page End-->
 <!--Hot Products Two Start-->
-<section class="hot-products-two">
-    <section class="testimonial-one">
+<section class="hot-products-two deferred-section">
+    <section class="testimonial-one deferred-section">
         <div class="testimonial-one__bg-img"
             style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-one__bg-img.jpg') }});">
         </div>
@@ -927,7 +1070,7 @@ $p_nam = 'home';
             </section> -->
 <!--Why Choose One End-->
 <!--About One Start-->
-<section class="banner-one my-5">
+<section class="banner-one my-5 deferred-section">
     <div class="container">
         <div class="section-title text-center">
             <span class="section-title__tagline">Our Certificate</span>
@@ -1117,7 +1260,7 @@ $p_nam = 'home';
         </div>
     </div>
 </section>
-<section class="about-one">
+<section class="about-one deferred-section">
     <div class="about-one__shape-11 float-bob-y">
         <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="" loading="lazy" class="lazy">
     </div>
@@ -1278,7 +1421,7 @@ $p_nam = 'home';
 
 
 <!--Video One Start-->
-<section class="video-one">
+<section class="video-one deferred-section">
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png') }})">
     </div>
@@ -1313,7 +1456,7 @@ $p_nam = 'home';
 </section>
 <!--Video One End-->
 <!--Categories One Start-->
-<section class="categories-one" style="padding-top: 75px;">
+<section class="categories-one deferred-section" style="padding-top: 75px;">
     <div class="container">
         <div class="section-title text-center">
             <span class="section-title__tagline">Our Sectors</span>
@@ -1389,7 +1532,7 @@ $p_nam = 'home';
 
 </section>
 <!--Cta One Start-->
-<section class="cta-one">
+<section class="cta-one deferred-section">
     <div class="cta-one__bg-img"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/OIU9I511-01-rotat-Copy.png') }});">
     </div>
@@ -1416,7 +1559,7 @@ $p_nam = 'home';
 <!--Cta One End-->
 
 <!--Categories One End-->
-<section class="testimonial-two">
+<section class="testimonial-two deferred-section">
     <div class="testimonial-two__bg"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg.jpg') }});">
     </div>
@@ -1466,7 +1609,7 @@ $p_nam = 'home';
 
 
 <!--Gallery Three Start-->
-<section class="gallery-three">
+<section class="gallery-three deferred-section">
     <div class="container">
         <div class="gallery-three__carousel owl-carousel owl-theme thm-owl__carousel" data-owl-options='{
                             "loop": true,

@@ -14,11 +14,11 @@ class MainHomePageController extends Controller
     public function index(){
         // Cache home page data for 1 hour (3600 seconds)
         $sectors = Cache::remember('home_sectors', 3600, function() {
-            return Sector::select('id', 'name', 'slug_name', 'icon')->get();
+            return Sector::select('id', 'name', 'title', 'photo')->get();
         });
 
         $events = Cache::remember('home_events', 3600, function() {
-            return Event::select('id', 'title', 'date', 'location', 'description')
+            return Event::select('id', 'title', 'description', 'mini_description', 'main_image', 'type')
                 ->latest()
                 ->take(5) // Limit to latest 5 events instead of all
                 ->get();

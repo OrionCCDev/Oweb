@@ -23,17 +23,11 @@ return new class extends Migration
         // Add indexes to events table for better query performance
         Schema::table('events', function (Blueprint $table) {
             $table->index('created_at', 'idx_events_created_at');
-            $table->index('date', 'idx_events_date');
         });
 
         // Add indexes to clients table for better query performance
         Schema::table('clients', function (Blueprint $table) {
             $table->index('logo', 'idx_clients_logo');
-        });
-
-        // Add indexes to sectors table for better query performance
-        Schema::table('sectors', function (Blueprint $table) {
-            $table->index('slug_name', 'idx_sectors_slug_name');
         });
 
         // Add indexes to project_gallaries table if it exists
@@ -68,17 +62,11 @@ return new class extends Migration
         // Remove indexes from events table
         Schema::table('events', function (Blueprint $table) {
             $table->dropIndex('idx_events_created_at');
-            $table->dropIndex('idx_events_date');
         });
 
         // Remove indexes from clients table
         Schema::table('clients', function (Blueprint $table) {
             $table->dropIndex('idx_clients_logo');
-        });
-
-        // Remove indexes from sectors table
-        Schema::table('sectors', function (Blueprint $table) {
-            $table->dropIndex('idx_sectors_slug_name');
         });
 
         // Remove indexes from project_gallaries table if it exists

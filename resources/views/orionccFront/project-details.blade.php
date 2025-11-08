@@ -52,46 +52,126 @@ $p_nam = 'projects';
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" />
 @endsection
 @section('cust_js')
+<!-- Critical scripts loaded immediately -->
 <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js') }}">
+
+<!-- Lazy loading implementation -->
+<script>
+    // Lazy loading for images
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+        if ("IntersectionObserver" in window) {
+            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src;
+                        if(lazyImage.dataset.srcset) {
+                            lazyImage.srcset = lazyImage.dataset.srcset;
+                        }
+                        lazyImage.classList.add("loaded");
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function(lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            let active = false;
+            const lazyLoad = function() {
+                if (active === false) {
+                    active = true;
+                    setTimeout(function() {
+                        lazyImages.forEach(function(lazyImage) {
+                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight &&
+                                 lazyImage.getBoundingClientRect().bottom >= 0) &&
+                                 getComputedStyle(lazyImage).display !== "none") {
+                                lazyImage.src = lazyImage.dataset.src;
+                                if(lazyImage.dataset.srcset) {
+                                    lazyImage.srcset = lazyImage.dataset.srcset;
+                                }
+                                lazyImage.classList.add("loaded");
+                                lazyImages = lazyImages.filter(function(image) {
+                                    return image !== lazyImage;
+                                });
+                                if (lazyImages.length === 0) {
+                                    document.removeEventListener("scroll", lazyLoad);
+                                    window.removeEventListener("resize", lazyLoad);
+                                    window.removeEventListener("orientationchange", lazyLoad);
+                                }
+                            }
+                        });
+                        active = false;
+                    }, 200);
+                }
+            };
+            document.addEventListener("scroll", lazyLoad);
+            window.addEventListener("resize", lazyLoad);
+            window.addEventListener("orientationchange", lazyLoad);
+            lazyLoad();
+        }
+
+        // Carousel lazy loading - load next/prev images when carousel slides
+        const carousel = document.querySelector('#carouselExampleIndicators');
+        if (carousel) {
+            carousel.addEventListener('slide.bs.carousel', function(e) {
+                const nextSlide = e.relatedTarget;
+                const lazyImg = nextSlide.querySelector('img.lazy');
+                if (lazyImg && lazyImg.dataset.src) {
+                    lazyImg.src = lazyImg.dataset.src;
+                    lazyImg.classList.remove('lazy');
+                    lazyImg.classList.add('loaded');
+                }
+            });
+        }
+    });
+
+    // Deferred script loading
+    function loadDeferredScripts() {
+        const scripts = [
+            "{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}",
+            "https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/lg-zoom/2.7.1/lg-zoom.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/lg-fullscreen/2.7.1/lg-fullscreen.min.js",
+            "{{ asset('orionFrontAssets/assets/js/main.js') }}"
+        ];
+
+        let loadedScripts = 0;
+        function loadScript(index) {
+            if (index >= scripts.length) return;
+
+            const script = document.createElement('script');
+            script.src = scripts[index];
+            script.onload = function() {
+                loadedScripts++;
+                loadScript(index + 1);
+            };
+            script.onerror = function() {
+                console.warn('Failed to load script:', scripts[index]);
+                loadScript(index + 1);
+            };
+            document.body.appendChild(script);
+        }
+        loadScript(0);
+    }
+
+    // Use requestIdleCallback or setTimeout to defer non-critical scripts
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadDeferredScripts);
+    } else {
+        setTimeout(loadDeferredScripts, 1000);
+    }
 </script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}">
-</script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-validate/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/odometer/odometer.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/tiny-slider/tiny-slider.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/wnumb/wNumb.min.js') }}"></script>
-<!-- related with loader -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/isotope/isotope.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/countdown/jquery.countdown.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/js/bootstrap-select.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/vegas/vegas.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.circleType.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.lettering.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}"></script>
-<!-- template js -->
-{{-- <script src="{{ asset('orionFrontAssets/assets/js/flip/jquery.flipster.min.js') }}"></script> --}}
-<!-- template js -->
-
-<!-- lightGallery JS + Plugins -->
-<!-- Add lightGallery JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-zoom/2.7.1/lg-zoom.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-fullscreen/2.7.1/lg-fullscreen.min.js"></script>
-
-
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
 @section('page_content')
 <!--Page Header Start-->
@@ -128,8 +208,8 @@ $p_nam = 'projects';
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
                     <div class="portfolio-details__img video-one video-one__video-link" style="position: relative">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
-                            alt="">
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
+                            alt="{{ $project->name }}" class="lazy" loading="lazy">
                         <a href="#" style="position: absolute;top:50%;left:50%;transform:translate(-50% , -50%)" class="video-popup-trigger" data-bs-toggle="modal" data-bs-target="#videoModal">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
@@ -137,18 +217,14 @@ $p_nam = 'projects';
                             </div>
                         </a>
                     </div>
-                    <script src="https://www.youtube.com/iframe_api"></script>
 
-                    <!-- Your existing HTML (modified iframe) -->
+                    <!-- Deferred YouTube iframe loading -->
                     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                             <div class="modal-content">
                                 <div class="modal-body video-modal">
                                     @if($videoUrl)
-                                    <iframe id="youtubePlayer"
-                                        src="{{ $videoUrl }}?autoplay=1&mute=1&enablejsapi=1&rel=0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowfullscreen></iframe>
+                                    <div id="youtubePlayerContainer" data-video-url="{{ $videoUrl }}"></div>
                                     @else
                                     <div class="alert alert-info">Video not available</div>
                                     @endif
@@ -334,7 +410,10 @@ $p_nam = 'projects';
                         <div class="carousel-inner">
                             @foreach($project->gallaries as $gallery)
                           <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}" class="d-block w-100" alt="...">
+                            <img {{ $loop->first ? 'src' : 'data-src' }}="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}"
+                                class="d-block w-100{{ $loop->first ? '' : ' lazy' }}"
+                                alt="{{ $project->name }} gallery image"
+                                {{ $loop->first ? '' : 'loading="lazy"' }}>
                           </div>
                           @endforeach
 
@@ -358,42 +437,47 @@ $p_nam = 'projects';
     </section>
 
     <script>
+    // Deferred YouTube iframe loading - only load when modal is opened
+    let youtubeLoaded = false;
+    let ytPlayer = null;
 
-// YouTube Player Instance
-let ytPlayer;
+    $('#videoModal').on('show.bs.modal', function() {
+        const container = document.getElementById('youtubePlayerContainer');
+        if (container && !youtubeLoaded) {
+            const videoUrl = container.dataset.videoUrl;
+            if (videoUrl) {
+                const iframe = document.createElement('iframe');
+                iframe.id = 'youtubePlayer';
+                iframe.src = videoUrl + '?autoplay=1&mute=1&enablejsapi=1&rel=0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '80vh';
+                iframe.style.border = 'none';
+                container.appendChild(iframe);
+                youtubeLoaded = true;
 
-// Initialize YouTube Player
-function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('youtubePlayer', {
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+                // Load YouTube API after iframe is created
+                if (!window.YT) {
+                    const tag = document.createElement('script');
+                    tag.src = 'https://www.youtube.com/iframe_api';
+                    document.body.appendChild(tag);
+                }
+            }
         }
     });
-}
 
-// Handle modal close events
-$('#videoModal').on('hidden.bs.modal', function() {
-    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-        ytPlayer.stopVideo();
-    }
-});
-
-// Optional: Pause video when closing with ESC or other methods
-$('#videoModal').on('hide.bs.modal', function() {
-    if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-        ytPlayer.pauseVideo();
-    }
-});
-
-// Remove the document click handler - Bootstrap handles closing on outside click by default
-
-
-        // Reset iframe source when modal is closed
-        // $('#videoModal').on('hidden.bs.modal', function() {
-        //     const $iframe = $(this).find('iframe');
-        //     $iframe.attr('src', $iframe.attr('src'));
-        // });
+    // Handle modal close events
+    $('#videoModal').on('hidden.bs.modal', function() {
+        const iframe = document.getElementById('youtubePlayer');
+        if (iframe) {
+            // Stop video by removing and re-adding iframe
+            const container = iframe.parentNode;
+            const videoUrl = container.dataset.videoUrl;
+            container.removeChild(iframe);
+            youtubeLoaded = false;
+        }
+    });
     </script>
 </div>
 
@@ -419,14 +503,14 @@ $('#videoModal').on('hide.bs.modal', function() {
                         <div class="gallery-one__single">
                             <div class="gallery-one__img-box">
                                 <div class="gallery-one__img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/' . $pro->slug_name . '/' . $pro->main_image) }}"
-                                        alt="">
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/project/' . $pro->slug_name . '/' . $pro->main_image) }}"
+                                        alt="{{ $pro->name }}" class="lazy" loading="lazy">
                                 </div>
                                 <div class="gallery-one__content-box">
                                     <div class="gallery-one__content">
                                         <div class="gallery-one__shape-1">
-                                            <img src="{{ asset('orionFrontAssets/assets/images/shapes/gallery-one-shape-1.png') }}"
-                                                alt="">
+                                            <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/gallery-one-shape-1.png') }}"
+                                                alt="" class="lazy" loading="lazy">
                                         </div>
                                         <div class="gallery-one__title-box">
                                             <h3 class="gallery-one__title"><a

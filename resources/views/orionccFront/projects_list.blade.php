@@ -88,8 +88,8 @@ $p_nam = 'projects';
                                 <div class="product-list__single-inner">
                                     <div class="product-list__img-box">
                                         <div class="product-list__img">
-                                            <img src="{{ asset('orionFrontAssets/assets/images/project/'.$data->slug_name.'/'.$data->main_image) }}"
-                                                alt="">
+                                            <img data-src="{{ asset('orionFrontAssets/assets/images/project/'.$data->slug_name.'/'.$data->main_image) }}"
+                                                alt="{{ $data->name }}" class="lazy" loading="lazy">
                                         </div>
 
                                     </div>
@@ -125,36 +125,110 @@ $p_nam = 'projects';
 @endsection
 
 @section('cust_js')
+<!-- Critical scripts loaded immediately -->
 <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ajaxchimp/jquery.ajaxchimp.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-circle-progress/jquery.circle-progress.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}">
-</script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/jquery-validate/jquery.validate.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.js') }}"></script> -->
-<!--<script src="{{ asset('orionFrontAssets/assets/vendors/odometer/odometer.min.js') }}"></script>  -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/tiny-slider/tiny-slider.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/wnumb/wNumb.min.js') }}"></script> -->
-<!-- related with loader -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/isotope/isotope.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/countdown/jquery.countdown.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/js/bootstrap-select.min.js') }}"></script> -->
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/vegas/vegas.min.js') }}"></script> -->
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}"></script>
-<!-- <script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.circleType.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.lettering.min.js') }}"></script>-->
-<script src="{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}"></script>
-<!-- template js -->
-<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
 
+<!-- Lazy loading implementation -->
+<script>
+    // Lazy loading for images
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+        if ("IntersectionObserver" in window) {
+            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src;
+                        if(lazyImage.dataset.srcset) {
+                            lazyImage.srcset = lazyImage.dataset.srcset;
+                        }
+                        lazyImage.classList.add("loaded");
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function(lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            let active = false;
+            const lazyLoad = function() {
+                if (active === false) {
+                    active = true;
+                    setTimeout(function() {
+                        lazyImages.forEach(function(lazyImage) {
+                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight &&
+                                 lazyImage.getBoundingClientRect().bottom >= 0) &&
+                                 getComputedStyle(lazyImage).display !== "none") {
+                                lazyImage.src = lazyImage.dataset.src;
+                                if(lazyImage.dataset.srcset) {
+                                    lazyImage.srcset = lazyImage.dataset.srcset;
+                                }
+                                lazyImage.classList.add("loaded");
+                                lazyImages = lazyImages.filter(function(image) {
+                                    return image !== lazyImage;
+                                });
+                                if (lazyImages.length === 0) {
+                                    document.removeEventListener("scroll", lazyLoad);
+                                    window.removeEventListener("resize", lazyLoad);
+                                    window.removeEventListener("orientationchange", lazyLoad);
+                                }
+                            }
+                        });
+                        active = false;
+                    }, 200);
+                }
+            };
+            document.addEventListener("scroll", lazyLoad);
+            window.addEventListener("resize", lazyLoad);
+            window.addEventListener("orientationchange", lazyLoad);
+            lazyLoad();
+        }
+    });
+
+    // Deferred script loading
+    function loadDeferredScripts() {
+        const scripts = [
+            "{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}",
+            "{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}",
+            "{{ asset('orionFrontAssets/assets/js/main.js') }}"
+        ];
+
+        let loadedScripts = 0;
+        function loadScript(index) {
+            if (index >= scripts.length) return;
+
+            const script = document.createElement('script');
+            script.src = scripts[index];
+            script.onload = function() {
+                loadedScripts++;
+                loadScript(index + 1);
+            };
+            script.onerror = function() {
+                console.warn('Failed to load script:', scripts[index]);
+                loadScript(index + 1);
+            };
+            document.body.appendChild(script);
+        }
+        loadScript(0);
+    }
+
+    // Use requestIdleCallback or setTimeout to defer non-critical scripts
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadDeferredScripts);
+    } else {
+        setTimeout(loadDeferredScripts, 1000);
+    }
+</script>
 @endsection

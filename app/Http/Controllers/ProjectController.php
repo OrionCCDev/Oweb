@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sector;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProjectController extends Controller
 {
@@ -14,9 +15,22 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $page = $request->get('page', 1);
-        $allData = Project::with(['Client','Sector'])->paginate(9);
+
+        // Cache project list for 30 minutes per page
+        $cacheKey = 'projects_grid_page_' . $page;
+        $allData = Cache::remember($cacheKey, 1800, function() {
+            return Project::select('id', 'name', 'slug_name', 'main_image', 'mini_desc', 'client_id', 'sector_id', 'priority')
+                ->with([
+                    'Client:id,name',
+                    'Sector:id,name'
+                ])
+                ->orderBy('priority')
+                ->paginate(9);
+        });
+
         return view('orionccFront.projects',['allData' => $allData , 'page' => $page]);
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,7 +38,18 @@ class ProjectController extends Controller
     {
         $page = $request->get('page', 1);
 
-        $allData = Project::with(['Client','Sector'])->paginate(9);
+        // Cache project list for 30 minutes per page
+        $cacheKey = 'projects_list_page_' . $page;
+        $allData = Cache::remember($cacheKey, 1800, function() {
+            return Project::select('id', 'name', 'slug_name', 'main_image', 'full_desc', 'client_id', 'sector_id', 'priority')
+                ->with([
+                    'Client:id,name',
+                    'Sector:id,name'
+                ])
+                ->orderBy('priority')
+                ->paginate(9);
+        });
+
         return view('orionccFront.projects_list',['allData' => $allData, 'page' => $page]);
     }
 
@@ -57,32 +82,25 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        // $suggested_projects = Project::where('sector_id', $project->sector_id)
-        // ->where('id', '!=', $project->id)
-        // ->with('Client')
-        // ->inRandomOrder()
-        // ->limit(3)
-        // ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
-        // $projectg = Project::with(['gallaries'])->where('id', $project->id)->first();
-        // // Pass the original video URL without modification
-        // $videoUrl = $project->video;
+        // Eager load necessary relationships with specific fields
+        $project->load([
+            'gallaries:id,project_id,image',
+            'sector:id,name',
+            'client:id,name',
+            'points:id,project_id,point'
+        ]);
 
-        // return view('orionccFront.project-details', [
-        //     'videoUrl' => $videoUrl,
-        //     'project' => $project,
-        //     'sug_proj' => $suggested_projects,
-        //     'projectg' => $projectg,
-        // ]);
-
-        // Eager load necessary relationships
-        $project->load(['gallaries', 'sector', 'client']);
-
-        $suggested_projects = Project::where('sector_id', $project->sector_id)
-            ->where('id', '!=', $project->id)
-            ->with('client')
-            ->inRandomOrder()
-            ->limit(3)
-            ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
+        // Cache suggested projects for this sector for 1 hour
+        $cacheKey = 'suggested_projects_sector_' . $project->sector_id . '_exclude_' . $project->id;
+        $suggested_projects = Cache::remember($cacheKey, 3600, function() use ($project) {
+            return Project::where('sector_id', $project->sector_id)
+                ->where('id', '!=', $project->id)
+                ->select('id', 'main_image', 'name', 'slug_name', 'client_id')
+                ->with('client:id,name')
+                ->inRandomOrder()
+                ->limit(3)
+                ->get();
+        });
 
         return view('orionccFront.project-details', [
             'videoUrl' => $project->video,

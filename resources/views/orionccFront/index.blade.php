@@ -435,9 +435,12 @@ $p_nam = 'home';
         }
 
         // Load background video
-        function loadBackgroundVideo() {
+        function loadBackgroundVideo(callback) {
             const videoContainer = document.getElementById('hero-slider-sect');
-            if (!videoContainer) return;
+            if (!videoContainer) {
+                if (callback) callback();
+                return;
+            }
 
             if (!!document.createElement('video').canPlayType) {
                 const video = document.createElement('video');
@@ -485,9 +488,17 @@ $p_nam = 'home';
                 video.appendChild(source);
                 videoContainer.prepend(video);
 
+                // Store video reference for later autoplay
+                window.heroVideo = video;
+
+                // Try to play immediately
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(error => {
+                    playPromise.then(() => {
+                        console.log('Video autoplaying successfully');
+                        if (callback) callback();
+                    }).catch(error => {
+                        console.log('Autoplay prevented initially, will retry after page load');
                         const playVideoOnInteraction = function() {
                             video.play().catch(e => console.log("Still couldn't play:", e));
                         };
@@ -504,6 +515,7 @@ $p_nam = 'home';
                             });
                             videoContainer.appendChild(playButton);
                         }
+                        if (callback) callback();
                     });
                 }
 
@@ -511,11 +523,18 @@ $p_nam = 'home';
                     videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
                     videoContainer.style.backgroundSize = "cover";
                     videoContainer.style.backgroundPosition = "center center";
+                    if (callback) callback();
+                });
+
+                // Ensure video is loaded
+                video.addEventListener('loadeddata', function() {
+                    if (callback) callback();
                 });
             } else {
                 videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
                 videoContainer.style.backgroundSize = "cover";
                 videoContainer.style.backgroundPosition = "center center";
+                if (callback) callback();
             }
         }
 
@@ -647,30 +666,46 @@ $p_nam = 'home';
             updateSliderHeight();
             window.addEventListener('resize', updateSliderHeight);
 
-            // Phase 2: Load hero video and setup lazy loading (40% progress)
+            // Phase 2: Load hero video (30-60% progress)
             updateProgress(30);
-            setupLazyLoading();
-            loadBackgroundVideo();
-            updateProgress(50);
+            loadBackgroundVideo(function() {
+                // Video loaded callback
+                updateProgress(60);
 
-            // Phase 3: Wait for critical content to be visible (70% progress)
-            setTimeout(function() {
-                updateProgress(70);
+                // Phase 3: Wait for hero section to render completely
+                setTimeout(function() {
+                    updateProgress(80);
 
-                // Phase 4: Hide preloader (90% progress)
-                updateProgress(90);
-                hidePreloader();
+                    // Phase 4: Hide preloader and autoplay video
+                    updateProgress(90);
+                    hidePreloader();
 
-                // Phase 5: Load deferred sections automatically
-                loadDeferredSections();
+                    // Ensure video autoplays after preloader is hidden
+                    setTimeout(function() {
+                        if (window.heroVideo) {
+                            window.heroVideo.play().catch(e => {
+                                console.log('Autoplay after preloader failed, user interaction needed');
+                            });
+                        }
+                    }, 600); // Wait for preloader fade-out
 
-                // Phase 6: Load non-critical scripts
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(loadDeferredScripts);
-                } else {
-                    setTimeout(loadDeferredScripts, 1000);
-                }
-            }, 800); // Give time for hero section to render
+                    // Phase 5: Setup scroll-based lazy loading for images AFTER hero section is ready
+                    setTimeout(function() {
+                        console.log('Initializing scroll-based image lazy loading...');
+                        setupLazyLoading();
+                    }, 800);
+
+                    // Phase 6: Load deferred sections automatically
+                    loadDeferredSections();
+
+                    // Phase 7: Load non-critical scripts
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(loadDeferredScripts);
+                    } else {
+                        setTimeout(loadDeferredScripts, 1000);
+                    }
+                }, 500); // Give time for hero section to render
+            });
         });
     })();
 </script>

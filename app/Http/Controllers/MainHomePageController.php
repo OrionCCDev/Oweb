@@ -29,7 +29,8 @@ class MainHomePageController extends Controller
         });
 
         $projects = Cache::remember('home_projects', 3600, function() {
-            return Project::select('id', 'name', 'slug_name', 'main_image', 'mini_desc', 'priority')
+            return Project::select('id', 'name', 'slug_name', 'main_image', 'mini_desc', 'priority', 'sector_id')
+                ->with(['Sector:id,name'])
                 ->orderBy('priority')
                 ->take(9)
                 ->get();

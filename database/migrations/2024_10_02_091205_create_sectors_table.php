@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sectors', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->string('title')->nullable();
-            $table->text('desc')->nullable();
-            $table->string('photo')->default(
-                'sectors_default.webp'
-            );
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('sectors')) {
+            Schema::create('sectors', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->nullable();
+                $table->string('title')->nullable();
+                $table->text('desc')->nullable();
+                $table->string('photo')->default(
+                    'sectors_default.webp'
+                );
+                $table->timestamps();
+            });
+        }
     }
 
     /**

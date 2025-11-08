@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_points', function (Blueprint $table) {
-            $table->id();
-            $table->string('point')->nullable();
-            $table->foreignId('project_id')->nullable()->constrained(
-                table: 'projects'
-            )->nullOnDelete();
-            
-        });
+        if (!Schema::hasTable('project_points')) {
+            Schema::create('project_points', function (Blueprint $table) {
+                $table->id();
+                $table->string('point')->nullable();
+                $table->foreignId('project_id')->nullable()->constrained(
+                    table: 'projects'
+                )->nullOnDelete();
+
+            });
+        }
     }
 
     /**

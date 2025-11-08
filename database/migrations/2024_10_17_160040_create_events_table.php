@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->nullable();
-            $table->longText('description')->nullable();
-            $table->text('mini_description')->nullable();
-            $table->string('main_image')->nullable();
-            $table->string('type')->nullable();
-            $table->string('video_url')->nullable();
-            $table->string('tags')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('events')) {
+            Schema::create('events', function (Blueprint $table) {
+                $table->id();
+                $table->string('title')->nullable();
+                $table->longText('description')->nullable();
+                $table->text('mini_description')->nullable();
+                $table->string('main_image')->nullable();
+                $table->string('type')->nullable();
+                $table->string('video_url')->nullable();
+                $table->string('tags')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('achieve_points', function (Blueprint $table) {
-            $table->id();
-            $table->text('desc')->nullable();
-            $table->foreignId('project_id')->nullable()->constrained(
-                table: 'projects'
-            )->nullOnDelete();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('achieve_points')) {
+            Schema::create('achieve_points', function (Blueprint $table) {
+                $table->id();
+                $table->text('desc')->nullable();
+                $table->foreignId('project_id')->nullable()->constrained(
+                    table: 'projects'
+                )->nullOnDelete();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

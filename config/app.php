@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
@@ -125,11 +126,27 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'providers' => [
+    'providers' => ServiceProvider::defaultProviders()->merge([
         /*
          * Package Service Providers...
          */
         // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
-    ],
+    ])->merge([
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        // App\Providers\AuthServiceProvider::class,
+        // App\Providers\EventServiceProvider::class,
+        // App\Providers\RouteServiceProvider::class,
+    ])->merge([
+        /*
+         * Added Service Providers (Do not remove this line)...
+         */
+    ])->toArray(),
+
+    'aliases' => Facade::defaultAliases()->merge([
+        // 'Example' => App\Facades\Example::class,
+    ])->toArray(),
 
 ];

@@ -84,7 +84,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        $project->load(['sector', 'client', 'projectPoints', 'projectGallaries']);
+        $project->load(['sector', 'client', 'points', 'gallaries']);
         $sectors = Sector::all();
         $clients = Client::all();
         return view('admin.projects.edit', compact('project', 'sectors', 'clients'));
@@ -132,7 +132,7 @@ class ProjectController extends Controller
 
         // Update project points
         if ($request->has('project_points')) {
-            $project->projectPoints()->delete();
+            $project->points()->delete();
             foreach ($request->project_points as $point) {
                 if ($point) {
                     ProjectPoint::create([
@@ -150,8 +150,8 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         // Delete related data
-        $project->projectPoints()->delete();
-        $project->projectGallaries()->delete();
+        $project->points()->delete();
+        $project->gallaries()->delete();
         $project->clearMediaCollection('projects');
         $project->delete();
 

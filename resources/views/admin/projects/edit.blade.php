@@ -111,10 +111,10 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Project Points</label>
             <div id="project-points" class="space-y-2">
-                @foreach($project->projectPoints as $point)
+                @foreach($project->points as $point)
                     <input type="text" name="project_points[]" value="{{ $point->point }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                 @endforeach
-                @if($project->projectPoints->count() == 0)
+                @if($project->points->count() == 0)
                     <input type="text" name="project_points[]" placeholder="Achievement point 1" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                 @endif
             </div>

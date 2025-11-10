@@ -129,7 +129,7 @@ return [
         /*
          * Package Service Providers...
          */
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
 ];

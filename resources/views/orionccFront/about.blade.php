@@ -285,9 +285,9 @@ new Chart(equipmentCtx, {
             <ul class="thm-breadcrumb list-unstyled">
                 <li><a href="{{ route('home') }}">Home</a></li>
                 <li><span>/</span></li>
-                <li><a>Certifications</a></li>
+                <li><a>About Us</a></li>
             </ul>
-            <h2 class="fnt-clr-g">Orion Certification</h2>
+            <h2 class="fnt-clr-g">About Orion</h2>
         </div>
     </div>
 </section>

@@ -462,53 +462,122 @@ $p_nam = 'home';
                 // Append the video to the container
                 videoContainer.prepend(video);
 
-                // Wait for video to be loaded enough to play, then autoplay
-                video.addEventListener('loadeddata', function() {
-                    console.log('Video loaded, attempting autoplay');
+                const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                let autoplayAttempted = false;
+                let autoplaySucceeded = false;
+                let interactionFallbackArmed = false;
+                let mobilePlayButton;
 
-                    // Attempt to play after video is fully loaded
+                const ensureMobilePlayButton = () => {
+                    if (!isMobileDevice || mobilePlayButton) {
+                        return;
+                    }
+                    mobilePlayButton = document.createElement('div');
+                    mobilePlayButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%; height:75px; width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.55); color:white; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 24px rgba(0,0,0,0.4);';
+                    mobilePlayButton.innerHTML = '<i class="fa fa-play" style="font-size:26px;"></i>';
+                    mobilePlayButton.addEventListener('click', function() {
+                        video.play().then(() => {
+                            autoplaySucceeded = true;
+                            this.style.display = 'none';
+                        }).catch(e => console.log('Still could not play from button:', e));
+                    }, { once: true });
+                    videoContainer.appendChild(mobilePlayButton);
+                };
+
+                const enableInteractionFallback = () => {
+                    if (interactionFallbackArmed) {
+                        return;
+                    }
+                    interactionFallbackArmed = true;
+
+                    const playVideoOnInteraction = function() {
+                        video.play().then(() => {
+                            autoplaySucceeded = true;
+                            if (mobilePlayButton) {
+                                mobilePlayButton.style.display = 'none';
+                            }
+                        }).catch(e => console.log('Still could not play after interaction:', e));
+                        document.removeEventListener('touchstart', playVideoOnInteraction);
+                        document.removeEventListener('click', playVideoOnInteraction);
+                    };
+
+                    document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
+                    document.addEventListener('click', playVideoOnInteraction, { once: true });
+                    ensureMobilePlayButton();
+                };
+
+                const attemptAutoplay = (reason) => {
+                    if (autoplayAttempted || autoplaySucceeded) {
+                        return;
+                    }
+                    autoplayAttempted = true;
+                    console.log(`Attempting video autoplay (${reason})`);
+
                     const playPromise = video.play();
                     if (playPromise !== undefined) {
                         playPromise.then(() => {
-                            console.log('Video autoplay successful');
-                        }).catch(error => {
-                            console.log("Autoplay prevented, will try after user interaction:", error);
-
-                            // iOS requires user interaction to play video
-                            const playVideoOnInteraction = function() {
-                                video.play().then(() => {
-                                    console.log('Video playing after user interaction');
-                                }).catch(e => console.log("Still couldn't play:", e));
-                                document.removeEventListener('touchstart', playVideoOnInteraction);
-                                document.removeEventListener('click', playVideoOnInteraction);
-                            };
-
-                            document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
-                            document.addEventListener('click', playVideoOnInteraction, { once: true });
-
-                            // Add visible play button for better UX on mobile
-                            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                                const playButton = document.createElement('div');
-                                playButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%;height:75px;width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.5); color:white; padding:20px; border-radius:50%; cursor:pointer;';
-                                playButton.innerHTML = '<i class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></i>';
-                                playButton.addEventListener('click', function() {
-                                    video.play();
-                                    this.style.display = 'none';
-                                });
-                                videoContainer.appendChild(playButton);
+                            autoplaySucceeded = true;
+                            console.log(`Video autoplay successful (${reason})`);
+                            if (mobilePlayButton) {
+                                mobilePlayButton.style.display = 'none';
                             }
+                        }).catch(error => {
+                            console.log(`Autoplay prevented (${reason}), waiting for user interaction:`, error);
+                            enableInteractionFallback();
                         });
+                    } else {
+                        autoplaySucceeded = true;
+                        console.log(`Video autoplay succeeded synchronously (${reason})`);
                     }
+                };
+
+                const isFullyBuffered = () => {
+                    try {
+                        if (!video.duration || !video.buffered.length) {
+                            return false;
+                        }
+                        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+                        return bufferedEnd >= (video.duration - 0.1);
+                    } catch (error) {
+                        return false;
+                    }
+                };
+
+                const maybeAutoplayWhenBuffered = (reason) => {
+                    if (!autoplaySucceeded && !autoplayAttempted && isFullyBuffered()) {
+                        attemptAutoplay(reason);
+                    }
+                };
+
+                video.addEventListener('canplaythrough', () => {
+                    console.log('Video can play through; verifying buffer before autoplay');
+                    maybeAutoplayWhenBuffered('canplaythrough');
+                }, { once: true });
+
+                video.addEventListener('progress', () => {
+                    maybeAutoplayWhenBuffered('buffered');
                 });
 
-                // Also try to play immediately in case loadeddata event already fired
-                const immediatePlayPromise = video.play();
-                if (immediatePlayPromise !== undefined) {
-                    immediatePlayPromise.catch(() => {
-                        // Silently catch, we'll handle this in loadeddata event
-                        console.log('Immediate play failed, waiting for loadeddata event');
-                    });
-                }
+                video.addEventListener('loadeddata', () => {
+                    maybeAutoplayWhenBuffered('loadeddata');
+                });
+
+                video.addEventListener('loadedmetadata', () => {
+                    console.log('Video metadata loaded; ensuring download is forced');
+                    video.setAttribute('preload', 'auto');
+                    video.preload = 'auto';
+                    video.load();
+                }, { once: true });
+
+                // In case the browser already cached the video
+                maybeAutoplayWhenBuffered('initial');
+
+                // Safety fallback in case the browser never fires canplaythrough
+                setTimeout(() => {
+                    if (!autoplaySucceeded && !autoplayAttempted) {
+                        attemptAutoplay('timeout');
+                    }
+                }, 8000);
 
                 // Add error handling
                 video.addEventListener('error', function() {

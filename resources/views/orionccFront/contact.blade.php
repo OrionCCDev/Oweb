@@ -14,10 +14,33 @@ $p_nam = 'contact';
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicons/favicon32.webp" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicons/favicon16.webp" />
     <meta name="description"
-        content="ORION Leading contracting company in Ras Al Khaimah, UAE, specializing in residential, commercial, and industrial projects. Trusted for quality, reliability, and timely delivery. Contact us for your construction needs." />
+        content="Contact Orion Contracting Company - Get in touch with our construction experts in Ras Al Khaimah, UAE. We serve UAE and Saudi Arabia with commercial, industrial, and MEP construction services. Call +971 7 2335531 or email info@orioncc.com" />
     <meta name="keywords"
-        content="constructing, contracting, build, UAE, Ras Al Khaimah, Dubai,Mechanical electrical and plumbing ,Businesses, construct, mep, MEP, INFRASTRUCTURE, roads, LANDSCAPE">
+        content="contact Orion Contracting, construction company contact UAE, Ras Al Khaimah contractors, get quote construction, construction inquiry UAE, MEP contractors contact, commercial construction contact">
+    <meta name="author" content="Orion Contracting Company">
     <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ route('contact') }}" />
+
+    <!-- Hreflang Tags -->
+    <link rel="alternate" hreflang="en-ae" href="{{ route('contact') }}" />
+    <link rel="alternate" hreflang="en-sa" href="{{ route('contact') }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ route('contact') }}" />
+
+    <!-- Open Graph Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Contact Us - Orion Contracting Company | Get Your Free Quote" />
+    <meta property="og:description" content="Contact Orion Contracting Company for your construction needs in UAE and Saudi Arabia. Expert services in commercial, industrial, and MEP projects." />
+    <meta property="og:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}" />
+    <meta property="og:url" content="{{ route('contact') }}" />
+    <meta property="og:site_name" content="Orion Contracting Company" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Contact Us - Orion Contracting Company" />
+    <meta name="twitter:description" content="Get in touch with Orion Contracting Company for construction services in UAE and Saudi Arabia." />
+    <meta name="twitter:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}" />
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
 
@@ -554,6 +577,58 @@ $p_nam = 'contact';
 
     <a href="#" data-target="html" class="scroll-to-target scroll-to-top"><i class="icon-up-arrow"></i></a>
 
+    <!-- ContactPage Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contact Orion Contracting Company",
+      "description": "Get in touch with Orion Contracting Company for construction services in UAE and Saudi Arabia",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Orion Contracting Company",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Al-Hamra Industrial Area",
+          "addressLocality": "Ras Al Khaimah",
+          "addressRegion": "Ras Al Khaimah",
+          "addressCountry": "AE"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+971-7-2335531",
+          "contactType": "customer service",
+          "email": "info@orioncc.com",
+          "areaServed": ["AE", "SA"],
+          "availableLanguage": ["English", "Arabic"]
+        }
+      }
+    }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ url('/') }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Contact Us",
+          "item": "{{ route('contact') }}"
+        }
+      ]
+    }
+    </script>
 
     <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

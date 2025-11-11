@@ -115,19 +115,38 @@
             if (card.closest('.swiper-slide')) {
                 return;
             }
-            const parent = card.parentElement;
-            if (!parent) {
+            let groupContainer = card.parentElement;
+            if (!groupContainer) {
                 return;
             }
-            if (!parentMap.has(parent)) {
-                parentMap.set(parent, []);
+            if (groupContainer.matches('[class*="col-"]')) {
+                const potentialRow = groupContainer.parentElement;
+                if (potentialRow) {
+                    groupContainer = potentialRow;
+                }
             }
-            parentMap.get(parent).push(card);
+            const rowContainer = card.closest('.row');
+            if (rowContainer) {
+                groupContainer = rowContainer;
+            }
+            if (!parentMap.has(groupContainer)) {
+                parentMap.set(groupContainer, []);
+            }
+            parentMap.get(groupContainer).push(card);
         });
 
-        parentMap.forEach((group) => {
+        parentMap.forEach((group, container) => {
+            if (!group || !group.length) {
+                return;
+            }
+            const visibleCards = group.filter((card) => {
+                return card.offsetParent !== null;
+            });
+            if (!visibleCards.length) {
+                return;
+            }
             let maxHeight = 0;
-            group.forEach((card) => {
+            visibleCards.forEach((card) => {
                 const rect = card.getBoundingClientRect();
                 const height = rect.height;
                 if (height > maxHeight) {
@@ -137,7 +156,7 @@
             if (!maxHeight) {
                 return;
             }
-            group.forEach((card) => {
+            visibleCards.forEach((card) => {
                 card.style.minHeight = `${maxHeight}px`;
             });
         });
@@ -180,6 +199,16 @@
 
         window.addEventListener('resize', scheduleEqualize);
         window.addEventListener('load', scheduleEqualize, { once: true });
+
+        const cardImages = document.querySelectorAll(CARD_SELECTORS.join(',') + ' img');
+        cardImages.forEach((img) => {
+            if (img.complete) {
+                scheduleEqualize();
+            } else {
+                img.addEventListener('load', scheduleEqualize, { once: true });
+                img.addEventListener('error', scheduleEqualize, { once: true });
+            }
+        });
     };
 
     if (document.readyState === 'loading') {

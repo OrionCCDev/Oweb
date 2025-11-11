@@ -187,6 +187,46 @@ $p_nam = 'home';
         opacity: 1;
         background: #10ca9d;
     }
+
+    /* Shining hover effect for project cards */
+    .hot-products__single {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .hot-products__single::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 70%
+        );
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+        transition: transform 0.6s ease;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .hot-products__single:hover::before {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+
+    .hot-products__single:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .hot-products__single-inner {
+        position: relative;
+        z-index: 2;
+    }
 </style>
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
@@ -237,9 +277,46 @@ $p_nam = 'home';
             }
         });
 
-        const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+        // Separate priority images (above the fold) from project images
+        const priorityImages = [].slice.call(document.querySelectorAll(".feature-one img.lazy, .main-slider img.lazy"));
+        const projectImages = [].slice.call(document.querySelectorAll(".hot-products__img img.lazy"));
+        const otherImages = [].slice.call(document.querySelectorAll("img.lazy:not(.hot-products__img img):not(.feature-one img):not(.main-slider img)"));
 
         if ("IntersectionObserver" in window) {
+            // Observer for priority images (load immediately)
+            let priorityImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src;
+                        if(lazyImage.dataset.srcset) {
+                            lazyImage.srcset = lazyImage.dataset.srcset;
+                        }
+                        lazyImage.classList.add("loaded");
+                        priorityImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            // Observer for project images (load with delay after priority content)
+            let projectImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        // Delay loading project images by 500ms to prioritize hero content
+                        setTimeout(function() {
+                            lazyImage.src = lazyImage.dataset.src;
+                            if(lazyImage.dataset.srcset) {
+                                lazyImage.srcset = lazyImage.dataset.srcset;
+                            }
+                            lazyImage.classList.add("loaded");
+                        }, 500);
+                        projectImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            // Observer for other images
             let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
@@ -254,19 +331,31 @@ $p_nam = 'home';
                 });
             });
 
-            lazyImages.forEach(function(lazyImage) {
+            // Load priority images first
+            priorityImages.forEach(function(lazyImage) {
+                priorityImageObserver.observe(lazyImage);
+            });
+
+            // Load project images after priority
+            projectImages.forEach(function(lazyImage) {
+                projectImageObserver.observe(lazyImage);
+            });
+
+            // Load other images normally
+            otherImages.forEach(function(lazyImage) {
                 lazyImageObserver.observe(lazyImage);
             });
         } else {
             // Fallback for browsers without intersection observer
             let active = false;
+            let allLazyImages = priorityImages.concat(projectImages).concat(otherImages);
 
             const lazyLoad = function() {
                 if (active === false) {
                     active = true;
 
                     setTimeout(function() {
-                        lazyImages.forEach(function(lazyImage) {
+                        allLazyImages.forEach(function(lazyImage) {
                             if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
                                 lazyImage.src = lazyImage.dataset.src;
                                 if(lazyImage.dataset.srcset) {
@@ -274,11 +363,11 @@ $p_nam = 'home';
                                 }
                                 lazyImage.classList.add("loaded");
 
-                                lazyImages = lazyImages.filter(function(image) {
+                                allLazyImages = allLazyImages.filter(function(image) {
                                     return image !== lazyImage;
                                 });
 
-                                if (lazyImages.length === 0) {
+                                if (allLazyImages.length === 0) {
                                     document.removeEventListener("scroll", lazyLoad);
                                     window.removeEventListener("resize", lazyLoad);
                                     window.removeEventListener("orientationchange", lazyLoad);
@@ -373,33 +462,51 @@ $p_nam = 'home';
                 // Append the video to the container
                 videoContainer.prepend(video);
 
-                // Attempt to play - enhanced for mobile support
-                const playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Autoplay prevented, will try after user interaction:", error);
+                // Wait for video to be loaded enough to play, then autoplay
+                video.addEventListener('loadeddata', function() {
+                    console.log('Video loaded, attempting autoplay');
 
-                        // iOS requires user interaction to play video
-                        const playVideoOnInteraction = function() {
-                            video.play().catch(e => console.log("Still couldn't play:", e));
-                            document.removeEventListener('touchstart', playVideoOnInteraction);
-                            document.removeEventListener('click', playVideoOnInteraction);
-                        };
+                    // Attempt to play after video is fully loaded
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            console.log('Video autoplay successful');
+                        }).catch(error => {
+                            console.log("Autoplay prevented, will try after user interaction:", error);
 
-                        document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
-                        document.addEventListener('click', playVideoOnInteraction, { once: true });
+                            // iOS requires user interaction to play video
+                            const playVideoOnInteraction = function() {
+                                video.play().then(() => {
+                                    console.log('Video playing after user interaction');
+                                }).catch(e => console.log("Still couldn't play:", e));
+                                document.removeEventListener('touchstart', playVideoOnInteraction);
+                                document.removeEventListener('click', playVideoOnInteraction);
+                            };
 
-                        // Add visible play button for better UX on mobile
-                        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                            const playButton = document.createElement('div');
-                            playButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%;height:75px;width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.5); color:white; padding:20px; border-radius:50%; cursor:pointer;';
-                            playButton.innerHTML = '<i class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></i>';
-                            playButton.addEventListener('click', function() {
-                                video.play();
-                                this.style.display = 'none';
-                            });
-                            videoContainer.appendChild(playButton);
-                        }
+                            document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
+                            document.addEventListener('click', playVideoOnInteraction, { once: true });
+
+                            // Add visible play button for better UX on mobile
+                            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                                const playButton = document.createElement('div');
+                                playButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%;height:75px;width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.5); color:white; padding:20px; border-radius:50%; cursor:pointer;';
+                                playButton.innerHTML = '<i class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></i>';
+                                playButton.addEventListener('click', function() {
+                                    video.play();
+                                    this.style.display = 'none';
+                                });
+                                videoContainer.appendChild(playButton);
+                            }
+                        });
+                    }
+                });
+
+                // Also try to play immediately in case loadeddata event already fired
+                const immediatePlayPromise = video.play();
+                if (immediatePlayPromise !== undefined) {
+                    immediatePlayPromise.catch(() => {
+                        // Silently catch, we'll handle this in loadeddata event
+                        console.log('Immediate play failed, waiting for loadeddata event');
                     });
                 }
 

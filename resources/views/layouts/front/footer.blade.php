@@ -216,14 +216,16 @@
         "foundingDate": "2008",
         "address": {
             "@type": "PostalAddress",
-            "addressLocality": "Dubai",
-            "addressRegion": "Dubai",
-            "addressCountry": "United Arab Emirates"
+            "streetAddress": "Al-Hamra Industrial Area",
+            "addressLocality": "Ras Al Khaimah",
+            "addressRegion": "Ras Al Khaimah",
+            "addressCountry": "AE"
         },
         "contactPoint": [{
             "@type": "ContactPoint",
-            "telephone": "+971-4-123-4567",
+            "telephone": "+971-7-2335531",
             "contactType": "customer service",
+            "email": "info@orioncc.com",
             "areaServed": ["AE", "SA"],
             "availableLanguage": ["English", "Arabic"]
         }],

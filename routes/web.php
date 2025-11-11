@@ -6,6 +6,7 @@ use App\Http\Controllers\MainHomePageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SectorController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\SectorController as AdminSectorController;
@@ -44,6 +45,9 @@ Route::get('/our-team', function () {
 Route::get('/about-us', function () {
     return view('orionccFront.about');
 })->name('about');
+
+// Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Route::get('/contact-us', function () {
 //     return view('orionccFront.contact');

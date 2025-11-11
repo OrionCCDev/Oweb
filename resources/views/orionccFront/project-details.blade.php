@@ -1,8 +1,76 @@
 @extends('layouts.front.app')
 @php
 $p_nam = 'projects';
+$projectImage = $project->hasMedia('images') ? $project->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
+$projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$project->Sector->name} project by Orion Contracting Company. Completed in " . \Carbon\Carbon::parse($project->end)->format('Y') . " with expertise in commercial and industrial construction.";
 @endphp
 @section('page_name' , $project->name )
+
+{{-- SEO Meta Tags --}}
+@section('meta_description', $projectDescription)
+@section('meta_keywords', "{{ $project->name }}, {{ $project->Sector->name }}, construction project UAE, {{ $project->Client?->name }}, Orion Contracting, MEP project, construction company")
+@section('canonical_url', route('projects.show', $project->id))
+
+{{-- Open Graph Tags --}}
+@section('og_type', 'article')
+@section('og_title', "{$project->name} - {$project->Sector->name} Project | Orion Contracting")
+@section('og_description', $projectDescription)
+@section('og_image', $projectImage)
+@section('og_url', route('projects.show', $project->id))
+
+{{-- Twitter Card Tags --}}
+@section('twitter_title', "{$project->name} - {$project->Sector->name} Project | Orion Contracting")
+@section('twitter_description', $projectDescription)
+@section('twitter_image', $projectImage)
+
+@section('meta_tags')
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Projects",
+      "item": "{{ route('projects.index') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ $project->name }}",
+      "item": "{{ route('projects.show', $project->id) }}"
+    }
+  ]
+}
+</script>
+
+<!-- Project Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Project",
+  "name": "{{ $project->name }}",
+  "description": "{{ $projectDescription }}",
+  "image": "{{ $projectImage }}",
+  "startDate": "{{ $project->start }}",
+  "endDate": "{{ $project->end }}",
+  "contractor": {
+    "@type": "Organization",
+    "name": "Orion Contracting Company",
+    "url": "{{ url('/') }}"
+  },
+  "category": "{{ $project->Sector->name }}"
+}
+</script>
+@endsection
 
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
@@ -129,7 +197,7 @@ $p_nam = 'projects';
                     </div>
                     <div class="portfolio-details__img video-one video-one__video-link" style="position: relative">
                         <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
-                            alt="">
+                            alt="{{ $project->name }} - Main Project Image" loading="lazy">
                         <a href="#" style="position: absolute;top:50%;left:50%;transform:translate(-50% , -50%)" class="video-popup-trigger" data-bs-toggle="modal" data-bs-target="#videoModal">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
@@ -334,7 +402,7 @@ $p_nam = 'projects';
                         <div class="carousel-inner">
                             @foreach($project->gallaries as $gallery)
                           <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}" class="d-block w-100" alt="...">
+                            <img src="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
                           </div>
                           @endforeach
 
@@ -420,7 +488,7 @@ $('#videoModal').on('hide.bs.modal', function() {
                             <div class="gallery-one__img-box">
                                 <div class="gallery-one__img">
                                     <img src="{{ asset('orionFrontAssets/assets/images/project/' . $pro->slug_name . '/' . $pro->main_image) }}"
-                                        alt="">
+                                        alt="{{ $pro->name }} - Related Project" loading="lazy">
                                 </div>
                                 <div class="gallery-one__content-box">
                                     <div class="gallery-one__content">

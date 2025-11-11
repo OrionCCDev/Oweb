@@ -4,7 +4,70 @@
 $p_nam = 'about';
 @endphp
 
-@section('page_name' , 'About Orion')
+@section('page_name' , 'About Orion Contracting Company')
+
+{{-- SEO Meta Tags --}}
+@section('meta_description', 'Learn about Orion Contracting Company - a premier construction and contracting firm established in 2008 with over 15 years of expertise in commercial, industrial, and MEP projects across UAE and Saudi Arabia.')
+@section('meta_keywords', 'about Orion Contracting, construction company UAE, company profile, construction expertise, MEP contractors, industrial construction UAE, commercial construction Dubai, Ras Al Khaimah contractors')
+@section('canonical_url', route('about'))
+
+{{-- Open Graph Tags --}}
+@section('og_type', 'website')
+@section('og_title', 'About Us - Orion Contracting Company | 15+ Years of Construction Excellence')
+@section('og_description', 'Discover Orion Contracting Company - Your trusted partner for construction projects in UAE and Saudi Arabia since 2008. Specializing in commercial, industrial, and MEP services.')
+@section('og_url', route('about'))
+
+{{-- Twitter Card Tags --}}
+@section('twitter_title', 'About Us - Orion Contracting Company | 15+ Years of Construction Excellence')
+@section('twitter_description', 'Discover Orion Contracting Company - Your trusted partner for construction projects in UAE and Saudi Arabia since 2008.')
+
+@section('meta_tags')
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "About Us",
+      "item": "{{ route('about') }}"
+    }
+  ]
+}
+</script>
+
+<!-- AboutPage Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "About Orion Contracting Company",
+  "description": "Orion Contracting Company has been providing exceptional construction services since 2008, with expertise in commercial, industrial, and MEP projects across UAE and Saudi Arabia.",
+  "mainEntity": {
+    "@type": "Organization",
+    "name": "Orion Contracting Company",
+    "foundingDate": "2008",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Al-Hamra Industrial Area",
+      "addressLocality": "Ras Al Khaimah",
+      "addressRegion": "Ras Al Khaimah",
+      "addressCountry": "AE"
+    }
+  }
+}
+</script>
+@endsection
 
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />

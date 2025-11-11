@@ -1,8 +1,84 @@
 @extends('layouts.front.app')
 @php
 $p_nam = 'news';
+$eventImage = $event->hasMedia('images') ? $event->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/blog/' . $event->main_image);
+$eventDescription = $event->mini_description ?: strip_tags($event->description);
+$eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 @endphp
-@section('page_name' , 'News & Events' )
+@section('page_name' , $event->title )
+
+{{-- SEO Meta Tags --}}
+@section('meta_description', $eventDescription)
+@section('meta_keywords', "{{ $event->title }}, Orion Contracting news, construction news UAE, events, {{ $eventDate }}")
+@section('canonical_url', route('news.show', $event->id))
+
+{{-- Open Graph Tags --}}
+@section('og_type', 'article')
+@section('og_title', "{{ $event->title }} | Orion Contracting Company News")
+@section('og_description', $eventDescription)
+@section('og_image', $eventImage)
+@section('og_url', route('news.show', $event->id))
+
+{{-- Twitter Card Tags --}}
+@section('twitter_title', "{{ $event->title }} | Orion Contracting Company News")
+@section('twitter_description', $eventDescription)
+@section('twitter_image', $eventImage)
+
+@section('meta_tags')
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Events",
+      "item": "{{ route('news.index') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ $event->title }}",
+      "item": "{{ route('news.show', $event->id) }}"
+    }
+  ]
+}
+</script>
+
+<!-- Article Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ $event->title }}",
+  "description": "{{ $eventDescription }}",
+  "image": "{{ $eventImage }}",
+  "datePublished": "{{ $event->created_at->toIso8601String() }}",
+  "dateModified": "{{ $event->updated_at->toIso8601String() }}",
+  "author": {
+    "@type": "Organization",
+    "name": "Orion Contracting Company",
+    "url": "{{ url('/') }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Orion Contracting Company",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}"
+    }
+  }
+}
+</script>
+@endsection
 
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
@@ -141,7 +217,7 @@ $p_nam = 'news';
                 {{-- @dd($event) --}}
                 <div class="news-details__left">
                     <div class="news-details__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/blog/'.$event->main_image) }}" alt="">
+                        <img src="{{ asset('orionFrontAssets/assets/images/blog/'.$event->main_image) }}" alt="{{ $event->title }}" loading="lazy">
                         <div class="news-details__date">
                             <p>{{ $event->created_at}}</p>
                         </div>
@@ -184,7 +260,7 @@ $p_nam = 'news';
                             <li>
                                 <div class="sidebar__post-image">
                                     <img src="{{ asset('orionFrontAssets/assets/images/blogs/' . $eventt->main_image) }}"
-                                        alt="">
+                                        alt="{{ $eventt->title }}" loading="lazy">
                                 </div>
                                 <div class="sidebar__post-content">
                                     <h3>

@@ -53,6 +53,7 @@
         href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
         rel="stylesheet">
     @yield('css_style_links')
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/custom-overrides.css') }}" />
 </head>
 
 <body class="custom-cursor">

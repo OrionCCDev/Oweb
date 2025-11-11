@@ -1,0 +1,139 @@
+/* Global interactive enhancements */
+:root {
+    --orion-hover-primary: #10ca9d;
+    --orion-hover-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
+    --orion-hover-shadow-soft: 0 14px 28px rgba(16, 202, 157, 0.35);
+}
+
+/* Card shine effect */
+.global-hover-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+    border-radius: inherit;
+    will-change: transform, box-shadow;
+    min-height: 100%;
+}
+
+.global-hover-card::after,
+.global-hover-card::before {
+    content: '';
+    position: absolute;
+    inset: -45%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.global-hover-card::before {
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: inherit;
+    transform: scale(0.85);
+    filter: blur(0.5px);
+    mix-blend-mode: screen;
+}
+
+.global-hover-card::after {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 65%);
+    transform: translate3d(-65%, -35%, 0) rotate(18deg);
+    mix-blend-mode: overlay;
+}
+
+.global-hover-card:hover,
+.global-hover-card:focus-within {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: var(--orion-hover-shadow);
+}
+
+.global-hover-card:hover::before,
+.global-hover-card:focus-within::before {
+    opacity: 0.65;
+    transform: scale(1);
+}
+
+.global-hover-card:hover::after,
+.global-hover-card:focus-within::after {
+    opacity: 1;
+    transform: translate3d(65%, 35%, 0) rotate(18deg);
+}
+
+.global-hover-card > :last-child {
+    margin-top: auto;
+}
+
+/* Button hover enhancement */
+.global-hover-btn {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background 0.35s ease, color 0.35s ease;
+    will-change: transform, box-shadow;
+    isolation: isolate;
+}
+
+.global-hover-btn::after {
+    content: '';
+    position: absolute;
+    inset: -5%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: translateX(-120%);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.global-hover-btn:hover,
+.global-hover-btn:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--orion-hover-shadow-soft);
+}
+
+.global-hover-btn:hover::after,
+.global-hover-btn:focus-visible::after {
+    transform: translateX(120%);
+}
+
+.global-hover-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 15px rgba(16, 202, 157, 0.35);
+}
+
+.global-hover-btn.thm-btn {
+    background-image: linear-gradient(135deg, rgba(16, 202, 157, 0.85) 0%, rgba(16, 202, 157, 1) 50%, rgba(6, 143, 112, 1) 100%);
+    border: none;
+}
+
+.global-hover-btn.thm-btn:hover,
+.global-hover-btn.thm-btn:focus-visible {
+    background-image: linear-gradient(130deg, rgba(24, 212, 167, 1) 0%, rgba(10, 180, 140, 1) 50%, rgba(16, 202, 157, 0.95) 100%);
+    color: #fff;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .global-hover-card,
+    .global-hover-card::after,
+    .global-hover-card::before,
+    .global-hover-btn,
+    .global-hover-btn::after {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        animation-duration: 0.01ms !important;
+    }
+
+    .global-hover-card:hover,
+    .global-hover-card:focus-within,
+    .global-hover-btn:hover,
+    .global-hover-btn:focus-visible {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .global-hover-card::after,
+    .global-hover-card::before,
+    .global-hover-btn::after {
+        opacity: 0;
+    }
+}
+

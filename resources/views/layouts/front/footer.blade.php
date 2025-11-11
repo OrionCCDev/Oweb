@@ -267,6 +267,7 @@
     <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+    <script src="{{ asset('orionFrontAssets/assets/js/custom-effects.js') }}" defer></script>
 
     <!-- Direct mobile menu initialization -->
     <script>

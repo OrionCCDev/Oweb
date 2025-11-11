@@ -400,6 +400,11 @@ $p_nam = 'home';
                 video.setAttribute('playsinline', 'playsinline');
                 video.setAttribute('id', 'background-video');
                 video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
+                video.muted = true;
+                video.defaultMuted = true;
+                video.playsInline = true;
+                video.autoplay = true;
+                video.loop = true;
                 // Force video to be visible on mobile and full height
                 video.style.display = 'block';
                 video.style.zIndex = '0';
@@ -463,9 +468,10 @@ $p_nam = 'home';
                 videoContainer.prepend(video);
 
                 const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                let autoplayAttempted = false;
                 let autoplaySucceeded = false;
                 let interactionFallbackArmed = false;
+                let autoplayBlocked = false;
+                let retryTimer = null;
                 let mobilePlayButton;
 
                 const ensureMobilePlayButton = () => {
@@ -506,11 +512,14 @@ $p_nam = 'home';
                     ensureMobilePlayButton();
                 };
 
-                const attemptAutoplay = (reason) => {
-                    if (autoplayAttempted || autoplaySucceeded) {
+                const attemptAutoplay = (reason, allowRetry = true) => {
+                    if (autoplaySucceeded || autoplayBlocked) {
                         return;
                     }
-                    autoplayAttempted = true;
+                    if (retryTimer) {
+                        clearTimeout(retryTimer);
+                        retryTimer = null;
+                    }
                     console.log(`Attempting video autoplay (${reason})`);
 
                     const playPromise = video.play();
@@ -522,8 +531,13 @@ $p_nam = 'home';
                                 mobilePlayButton.style.display = 'none';
                             }
                         }).catch(error => {
-                            console.log(`Autoplay prevented (${reason}), waiting for user interaction:`, error);
-                            enableInteractionFallback();
+                            console.log(`Autoplay attempt failed (${reason})`, error);
+                            if (error && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')) {
+                                autoplayBlocked = true;
+                                enableInteractionFallback();
+                            } else if (allowRetry) {
+                                retryTimer = setTimeout(() => attemptAutoplay('retry-after-error'), 600);
+                            }
                         });
                     } else {
                         autoplaySucceeded = true;
@@ -544,15 +558,29 @@ $p_nam = 'home';
                 };
 
                 const maybeAutoplayWhenBuffered = (reason) => {
-                    if (!autoplaySucceeded && !autoplayAttempted && isFullyBuffered()) {
-                        attemptAutoplay(reason);
+                    if (autoplaySucceeded || autoplayBlocked) {
+                        return;
                     }
+                    if (isFullyBuffered() || video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+                        attemptAutoplay(reason, false);
+                    }
+                };
+
+                const waitForCompleteDownload = () => {
+                    if (autoplaySucceeded || autoplayBlocked) {
+                        return;
+                    }
+                    if (isFullyBuffered()) {
+                        attemptAutoplay('fully-buffered', false);
+                        return;
+                    }
+                    setTimeout(waitForCompleteDownload, 400);
                 };
 
                 video.addEventListener('canplaythrough', () => {
                     console.log('Video can play through; verifying buffer before autoplay');
-                    maybeAutoplayWhenBuffered('canplaythrough');
-                }, { once: true });
+                    attemptAutoplay('canplaythrough');
+                });
 
                 video.addEventListener('progress', () => {
                     maybeAutoplayWhenBuffered('buffered');
@@ -560,6 +588,7 @@ $p_nam = 'home';
 
                 video.addEventListener('loadeddata', () => {
                     maybeAutoplayWhenBuffered('loadeddata');
+                    waitForCompleteDownload();
                 });
 
                 video.addEventListener('loadedmetadata', () => {
@@ -567,14 +596,12 @@ $p_nam = 'home';
                     video.setAttribute('preload', 'auto');
                     video.preload = 'auto';
                     video.load();
+                    waitForCompleteDownload();
                 }, { once: true });
-
-                // In case the browser already cached the video
-                maybeAutoplayWhenBuffered('initial');
 
                 // Safety fallback in case the browser never fires canplaythrough
                 setTimeout(() => {
-                    if (!autoplaySucceeded && !autoplayAttempted) {
+                    if (!autoplaySucceeded && !autoplayBlocked) {
                         attemptAutoplay('timeout');
                     }
                 }, 8000);

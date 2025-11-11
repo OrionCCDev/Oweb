@@ -25,9 +25,7 @@
         '.event-two__single',
         '.testimonial-one__single',
         '.categories-two__single',
-        '.footer-widget__gallery-img',
-        '.certificates-slider .swiper-slide',
-        '.sectors-slider .swiper-slide'
+        '.footer-widget__gallery-img'
     ];
 
     const BUTTON_SELECTORS = [
@@ -114,6 +112,9 @@
                 return;
             }
             card.style.minHeight = '';
+            if (card.closest('.swiper-slide')) {
+                return;
+            }
             const parent = card.parentElement;
             if (!parent) {
                 return;

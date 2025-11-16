@@ -265,17 +265,21 @@ $p_nam = 'home';
 </div>
 @endsection --}}
 @section('cust_js')
-<!-- Optimized home page scripts loaded as external file for better caching -->
+<!-- Load vendor scripts in correct order -->
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}"></script>
+<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+
+<!-- Optimized home page scripts -->
 <script>
-    // Set video source for lazy initialization
-    const videoContainer = document.getElementById('hero-slider-sect');
-    if (videoContainer) {
-        videoContainer.dataset.videoSrc = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
-    }
-</script>
-<script src="{{ asset('orionFrontAssets/assets/js/home-page.js') }}" defer></script>
-<script>
-    // Minimal inline script - old script replaced with optimized external file
     document.addEventListener('DOMContentLoaded', function() {
         // Set slider height (optimized)
         const setSliderHeight = () => {
@@ -285,8 +289,163 @@ $p_nam = 'home';
         };
         setSliderHeight();
         window.addEventListener('resize', setSliderHeight, { passive: true });
+
+        // Lazy loading with IntersectionObserver
+        const lazyImages = document.querySelectorAll("img.lazy");
+
+        if ("IntersectionObserver" in window) {
+            const imageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const lazyImage = entry.target;
+                        if (lazyImage.dataset.src) {
+                            lazyImage.src = lazyImage.dataset.src;
+                        }
+                        if(lazyImage.dataset.srcset) {
+                            lazyImage.srcset = lazyImage.dataset.srcset;
+                        }
+                        lazyImage.classList.add("loaded");
+                        imageObserver.unobserve(lazyImage);
+                    }
+                });
+            }, { rootMargin: '50px' });
+
+            lazyImages.forEach(function(lazyImage) {
+                imageObserver.observe(lazyImage);
+            });
+        } else {
+            // Fallback for browsers without IntersectionObserver
+            lazyImages.forEach(function(lazyImage) {
+                if (lazyImage.dataset.src) {
+                    lazyImage.src = lazyImage.dataset.src;
+                }
+                if(lazyImage.dataset.srcset) {
+                    lazyImage.srcset = lazyImage.dataset.srcset;
+                }
+                lazyImage.classList.add("loaded");
+            });
+        }
+
+        // Initialize hero video
+        const videoContainer = document.getElementById('hero-slider-sect');
+        if (videoContainer && document.createElement('video').canPlayType) {
+            const video = document.createElement('video');
+            video.setAttribute('muted', 'muted');
+            video.setAttribute('loop', 'loop');
+            video.setAttribute('autoplay', 'autoplay');
+            video.setAttribute('playsinline', 'playsinline');
+            video.setAttribute('id', 'background-video');
+            video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
+            video.muted = true;
+            video.playsInline = true;
+            video.autoplay = true;
+            video.loop = true;
+            video.preload = 'metadata';
+
+            const setVideoStyles = () => {
+                const height = window.innerWidth <= 400 ? '50vh' :
+                              window.innerWidth <= 900 ? '70vh' : '100vh';
+                const objectFit = window.innerWidth <= 900 ? 'fill' : 'cover';
+
+                video.style.cssText = `display:block;z-index:0;height:${height};width:100%;object-fit:${objectFit};position:absolute;top:0;left:0;`;
+                videoContainer.style.height = height;
+                videoContainer.style.minHeight = height;
+
+                const overlay = document.getElementById('video-overlay');
+                if (overlay) overlay.style.height = height;
+            };
+
+            setVideoStyles();
+            window.addEventListener('resize', setVideoStyles, { passive: true });
+
+            const source = document.createElement('source');
+            source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
+            source.type = "video/mp4";
+            video.appendChild(source);
+            videoContainer.prepend(video);
+
+            // Simple autoplay with mobile fallback
+            video.play().catch(() => {
+                if (/Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    const playBtn = document.createElement('div');
+                    playBtn.style.cssText = 'position:absolute;z-index:10;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);color:white;border-radius:50%;cursor:pointer;width:70px;height:70px;display:flex;align-items:center;justify-content:center;';
+                    playBtn.innerHTML = '<i class="fa fa-play" style="font-size:24px;"></i>';
+                    playBtn.onclick = () => {
+                        video.play();
+                        playBtn.remove();
+                    };
+                    videoContainer.appendChild(playBtn);
+                }
+            });
+        }
+
+        // Initialize Swiper sliders after a short delay
+        setTimeout(function() {
+            if (typeof Swiper !== 'undefined') {
+                // Certificate slider
+                const certSlider = document.querySelector('.certificates-slider');
+                if (certSlider && certSlider.dataset.swiperOptions) {
+                    try {
+                        const options = JSON.parse(certSlider.dataset.swiperOptions.replace(/'/g, '"'));
+                        new Swiper('.certificates-slider', options);
+                    } catch (e) {
+                        console.error('Certificate slider init failed:', e);
+                    }
+                }
+
+                // Sectors slider
+                const sectorsSlider = document.querySelector('.sectors-slider');
+                if (sectorsSlider && sectorsSlider.dataset.swiperOptions) {
+                    try {
+                        const options = JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"'));
+                        new Swiper('.sectors-slider', options);
+                    } catch (e) {
+                        console.error('Sectors slider init failed:', e);
+                    }
+                }
+            }
+        }, 100);
     });
-    // All other scripts moved to external file: home-page.js
+
+    // Load particles.js after page load
+    window.addEventListener('load', function() {
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadParticles);
+        } else {
+            setTimeout(loadParticles, 1000);
+        }
+    });
+
+    function loadParticles() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
+        script.async = true;
+        script.onload = function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS("particles-js", {
+                    particles: {
+                        number: { value: 60, density: { enable: true, value_area: 800 } },
+                        color: { value: "#aef490" },
+                        shape: { type: "star" },
+                        opacity: { value: 0.5 },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: true, distance: 150, color: "#fff", opacity: 0.4, width: 1 },
+                        move: { enable: true, speed: 6, direction: "none", random: true, out_mode: "bounce" }
+                    },
+                    interactivity: {
+                        detect_on: "canvas",
+                        events: {
+                            onhover: { enable: true, mode: "grab" },
+                            onclick: { enable: true, mode: "push" },
+                            resize: true
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
+        };
+        document.head.appendChild(script);
+    }
 </script>
 @endsection
 
@@ -727,7 +886,7 @@ $p_nam = 'home';
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
@@ -755,7 +914,7 @@ $p_nam = 'home';
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
@@ -783,7 +942,7 @@ $p_nam = 'home';
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
@@ -811,7 +970,7 @@ $p_nam = 'home';
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
@@ -838,7 +997,7 @@ $p_nam = 'home';
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
+                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
                                         alt="" class="lazy">
                                 </div>
                                 <div class="banner-one__shape-5">
@@ -1175,7 +1334,7 @@ $p_nam = 'home';
         style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg.jpg') }});">
     </div>
     <div class="testimonial-two__bg-img"
-        style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg-img.png') }});">
+        style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg.jpg') }});">
     </div>
     <div class="testimonial-two__shape-1">
         <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/testimonial-two-shape-1.png') }}" alt="" class="lazy">

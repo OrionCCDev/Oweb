@@ -122,6 +122,7 @@
     overflow: hidden;
     /* override inline min-height set by scripts */
     min-height: auto !important;
+    height: 100%;
 }
 
 .hot-products__single-inner {
@@ -175,6 +176,19 @@
 
 .hot-products__btn-box {
     margin-top: auto;
+}
+
+/* Make all project cards equal height per row */
+.filter-layout {
+    align-items: stretch;
+}
+
+.filter-layout .filter-item {
+    display: flex;
+}
+
+.filter-layout .filter-item > .hot-products__single {
+    flex: 1 1 auto;
 }
 
 /* Button hover enhancement */

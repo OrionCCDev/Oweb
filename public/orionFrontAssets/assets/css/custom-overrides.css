@@ -58,6 +58,35 @@
     transform: translate3d(65%, 35%, 0) rotate(18deg);
 }
 
+/* Lighter, modern hover specifically for Feature section cards */
+.feature-one__single.global-hover-card {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    box-shadow: none;
+    transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.feature-one__single.global-hover-card::before,
+.feature-one__single.global-hover-card::after {
+    display: none; /* remove glossy overlays for a cleaner look */
+}
+
+.feature-one__single.global-hover-card:hover,
+.feature-one__single.global-hover-card:focus-within {
+    transform: translateY(-1px);
+    background-color: rgba(16, 202, 157, 0.04); /* subtle brand tint */
+    border-color: rgba(16, 202, 157, 0.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Tone down icon animation on hover for this section */
+.feature-one__single.global-hover-card:hover .feature-one__icon span,
+.feature-one__single.global-hover-card:focus-within .feature-one__icon span {
+    transform: none;
+    opacity: 0.95;
+}
+
 /* Project cards layout adjustments */
 .hot-products__single-inner {
     display: flex;

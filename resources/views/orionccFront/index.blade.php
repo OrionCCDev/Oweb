@@ -1015,8 +1015,26 @@ $p_nam = 'home';
                                 <div class="hot-products__single-inner">
                                     <div class="hot-products__img-box">
                                         <div class="hot-products__img">
-                                            <img loading="lazy" data-src="{{ asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image) }}"
-                                                alt="{{ $project->name }}" class="lazy">
+                                            @php
+                                                $resolveMain = function($proj){
+                                                    $name = $proj->main_image;
+                                                    $candidates = [];
+                                                    $candidates[] = $name;
+                                                    if ($name && !str_contains($name, '/')) {
+                                                        $candidates[] = $proj->slug_name . '/' . $name;
+                                                        $candidates[] = $proj->slug_name . '/gallery/' . $name;
+                                                    }
+                                                    foreach (array_unique($candidates) as $c) {
+                                                        if (Storage::disk('projects')->exists($c)) {
+                                                            return Storage::disk('projects')->url($c);
+                                                        }
+                                                    }
+                                                    return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
+                                                };
+                                                $cardMainUrl = $resolveMain($project);
+                                            @endphp
+                                            <img src="{{ $cardMainUrl }}"
+                                                alt="{{ $project->name }}">
                                         </div>
                                     </div>
                                     <div class="hot-products__content">

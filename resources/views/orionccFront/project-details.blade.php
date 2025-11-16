@@ -215,8 +215,12 @@ if (!isset($resolveProjectImage)) {
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
                     <div class="portfolio-details__img video-one video-one__video-link" style="position: relative">
-                        <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
-                            alt="{{ $project->name }} - Main Project Image" loading="lazy">
+                        @php
+                            $mainName = $project->gif ?: $project->main_image;
+                            $mainUrl = $resolveProjectImage($mainName ?? '');
+                        @endphp
+                        <img src="{{ $mainUrl }}"
+                            alt="{{ $project->name }} - Main Project Image">
                         <a href="#" style="position: absolute;top:50%;left:50%;transform:translate(-50% , -50%)" class="video-popup-trigger" data-bs-toggle="modal" data-bs-target="#videoModal">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
@@ -432,7 +436,7 @@ if (!isset($resolveProjectImage)) {
                     </div>
                 </div>
                 <div class="col-xl-8">
-                    <div id="carouselExampleIndicators" class="carousel slide">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
                         {{-- <div class="carousel-indicators">
                           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -444,7 +448,7 @@ if (!isset($resolveProjectImage)) {
                             @php
                                 $imgUrl = $resolveProjectImage($gallery->image ?? '');
                             @endphp
-                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
+                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}">
                           </div>
                           @endforeach
 

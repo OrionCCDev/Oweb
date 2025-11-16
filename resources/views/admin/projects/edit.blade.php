@@ -136,7 +136,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     @foreach($project->gallaries as $gallery)
                         <div class="relative group">
-                            <img src="{{ Storage::url($gallery->image) }}" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                            <img src="{{ Storage::disk('projects')->url($gallery->image) }}" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
                             <button type="button" onclick="deleteGalleryImage({{ $gallery->id }})" class="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

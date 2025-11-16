@@ -43,6 +43,13 @@ return [
             'url'    => env('APP_URL').'/orionFrontAssets/media',
         ],
 
+        'projects' => [
+            'driver' => 'local',
+            'root'   => public_path('orionFrontAssets/assets/images/project'),
+            'url'    => env('APP_URL').'/orionFrontAssets/assets/images/project',
+            'visibility' => 'public',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

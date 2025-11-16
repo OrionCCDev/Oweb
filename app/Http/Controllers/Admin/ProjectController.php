@@ -63,8 +63,9 @@ class ProjectController extends Controller
         // Handle gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                // Store in project-specific folder: projects/{slug}/gallery
-                $path = $image->store("projects/{$project->slug_name}/gallery", 'public');
+                // Store in project-specific folder: {slug}/gallery
+                // Base path (orionFrontAssets/assets/images/project/) is handled by 'projects' disk
+                $path = $image->store("{$project->slug_name}/gallery", 'projects');
                 ProjectGallary::create([
                     'project_id' => $project->id,
                     'image' => $path,
@@ -133,8 +134,9 @@ class ProjectController extends Controller
         // Handle new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                // Store in project-specific folder: projects/{slug}/gallery
-                $path = $image->store("projects/{$project->slug_name}/gallery", 'public');
+                // Store in project-specific folder: {slug}/gallery
+                // Base path (orionFrontAssets/assets/images/project/) is handled by 'projects' disk
+                $path = $image->store("{$project->slug_name}/gallery", 'projects');
                 ProjectGallary::create([
                     'project_id' => $project->id,
                     'image' => $path,
@@ -189,9 +191,9 @@ class ProjectController extends Controller
     {
         $gallery = ProjectGallary::findOrFail($id);
 
-        // Delete the file from storage
-        if (\Storage::disk('public')->exists($gallery->image)) {
-            \Storage::disk('public')->delete($gallery->image);
+        // Delete the file from storage using the 'projects' disk
+        if (\Storage::disk('projects')->exists($gallery->image)) {
+            \Storage::disk('projects')->delete($gallery->image);
         }
 
         $gallery->delete();

@@ -17,7 +17,9 @@ class CustomPathGenerator implements PathGenerator
         // Determine subfolder based on collection name
         $subfolder = $media->collection_name === 'flipster' ? 'images' : 'gallery';
 
-        return "projects/{$projectSlug}/{$subfolder}/";
+        // Path structure: {project-slug}/{subfolder}/
+        // Base path (orionFrontAssets/assets/images/project/) is handled by disk root
+        return "{$projectSlug}/{$subfolder}/";
     }
 
     public function getPathForConversions(Media $media): string

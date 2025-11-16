@@ -19,11 +19,11 @@ class Project extends Model implements HasMedia
     {
         $this->addMediaCollection('flipster')
             ->withResponsiveImages()
-            ->useDisk('public');
+            ->useDisk('projects');
 
         $this->addMediaCollection('mini_gallary')
             ->withResponsiveImages()
-            ->useDisk('public');
+            ->useDisk('projects');
     }
 
     public function registerMediaConversions(?Media $media = null): void

@@ -319,8 +319,8 @@ $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$pro
 
                                     var galleryImages = @json($project->gallaries->map(function($gallery) use ($project) {
                                     return [
-                                        'src' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
-                                        'thumb' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
+                                        'src' => Storage::disk('projects')->url($gallery->image),
+                                        'thumb' => Storage::disk('projects')->url($gallery->image),
                                     ];
 
                                 }));
@@ -402,7 +402,7 @@ $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$pro
                         <div class="carousel-inner">
                             @foreach($project->gallaries as $gallery)
                           <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
+                            <img src="{{ Storage::disk('projects')->url($gallery->image) }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
                           </div>
                           @endforeach
 

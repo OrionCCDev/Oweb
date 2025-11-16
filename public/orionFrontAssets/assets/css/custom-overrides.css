@@ -5,6 +5,84 @@
     --orion-hover-shadow-soft: 0 14px 28px rgba(16, 202, 157, 0.35);
 }
 
+/* Sectors slider cards - refined hover */
+.categories-one__single.global-hover-card {
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, background-color 0.35s ease, border-color 0.35s ease;
+    will-change: transform, box-shadow;
+    background-clip: padding-box;
+}
+
+/* Remove glossy overlays on these to keep it clean */
+.categories-one__single.global-hover-card::before,
+.categories-one__single.global-hover-card::after {
+    display: none;
+}
+
+.categories-one__single.global-hover-card .categories-one__img {
+    overflow: hidden;
+    border-radius: 50%;
+    transition: filter 0.45s ease;
+}
+
+.categories-one__single.global-hover-card .categories-one__img img {
+    transform: scale(1.001);
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
+    will-change: transform;
+}
+
+.categories-one__single.global-hover-card .categories-one__content {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+    transform: translateY(2px);
+}
+
+.categories-one__single.global-hover-card .categories-one__arrow-box,
+.categories-one__single.global-hover-card .categories-one__arrow {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+}
+
+.categories-one__single.global-hover-card .categories-one__arrow {
+    transform: translateX(-6px);
+    opacity: 0.6;
+}
+
+.categories-one__single.global-hover-card:hover,
+.categories-one__single.global-hover-card:focus-within {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+}
+
+.categories-one__single.global-hover-card:hover .categories-one__img img,
+.categories-one__single.global-hover-card:focus-within .categories-one__img img {
+    transform: scale(1.06);
+    filter: saturate(1.02) contrast(1.02);
+}
+
+.categories-one__single.global-hover-card:hover .categories-one__content,
+.categories-one__single.global-hover-card:focus-within .categories-one__content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.categories-one__single.global-hover-card:hover .categories-one__arrow,
+.categories-one__single.global-hover-card:focus-within .categories-one__arrow {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Reduce motion friendly */
+@media (prefers-reduced-motion: reduce) {
+    .categories-one__single.global-hover-card {
+        transition-duration: 0.01ms !important;
+    }
+    .categories-one__single.global-hover-card:hover,
+    .categories-one__single.global-hover-card:focus-within {
+        transform: none;
+        box-shadow: none;
+    }
+}
+
 /* Card shine effect */
 .global-hover-card {
     position: relative;

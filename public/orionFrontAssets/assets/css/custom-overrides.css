@@ -183,7 +183,7 @@
 }
 
 .hot-products__btn-box {
-    margin-top: auto;
+    margin-top: 12px; /* keep content compact; avoid large empty space at card bottom */
 }
 
 /* Make all project cards equal height per row */

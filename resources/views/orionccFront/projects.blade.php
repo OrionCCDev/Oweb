@@ -92,8 +92,26 @@ $p_nam = 'projects';
                                     <a href="{{ route('projects.show' ,['project'=>$data['id']] ) }}">
                                         <div class="product__all-single-inner">
                                             <div class="product__all-img">
-                                                <img src="{{ asset('orionFrontAssets/assets/images/project/' . $data->slug_name . '/main.webp') }}"
-                                                    alt="">
+                                                            @php
+                                                                $resolveMain = function($proj){
+                                                                    $name = $proj->main_image ?: 'main.webp';
+                                                                    $candidates = [];
+                                                                    $candidates[] = $name;
+                                                                    if ($name && !str_contains($name, '/')) {
+                                                                        $candidates[] = $proj->slug_name . '/' . $name;
+                                                                        $candidates[] = $proj->slug_name . '/gallery/' . $name;
+                                                                    }
+                                                                    foreach (array_unique($candidates) as $c) {
+                                                                        if (Storage::disk('projects')->exists($c)) {
+                                                                            return Storage::disk('projects')->url($c);
+                                                                        }
+                                                                    }
+                                                                    return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
+                                                                };
+                                                                $cardMainUrl = $resolveMain($data);
+                                                            @endphp
+                                                            <img src="{{ $cardMainUrl }}"
+                                                                alt="{{ $data->name }}">
                                             </div>
                                             <div class="product__all-content">
                                                 <h4 class="product__all-title"><a

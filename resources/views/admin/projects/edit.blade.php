@@ -109,13 +109,47 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Add New Main Images</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Main Images (Flipster)</label>
+            @if($project->getMedia('flipster')->count() > 0)
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    @foreach($project->getMedia('flipster') as $media)
+                        <div class="relative group">
+                            <img src="{{ $media->getUrl() }}" alt="Project Image" class="w-full h-32 object-cover rounded-lg">
+                            <button type="button" onclick="deleteImage({{ $media->id }})" class="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-sm text-gray-500 mb-2">No images uploaded yet.</p>
+            @endif
             <input type="file" name="images[]" multiple accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">Add new main images. Max 10MB per image.</p>
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Add New Gallery Images</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Gallery Images</label>
+            @if($project->gallaries->count() > 0)
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    @foreach($project->gallaries as $gallery)
+                        <div class="relative group">
+                            <img src="{{ Storage::url($gallery->image) }}" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                            <button type="button" onclick="deleteGalleryImage({{ $gallery->id }})" class="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-sm text-gray-500 mb-2">No gallery images uploaded yet.</p>
+            @endif
             <input type="file" name="gallery[]" multiple accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">Add new gallery images. Max 10MB per image.</p>
         </div>
 
         <div>
@@ -147,6 +181,59 @@ function addProjectPoint() {
     input.placeholder = 'Achievement point ' + (container.children.length + 1);
     input.className = 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent';
     container.appendChild(input);
+}
+
+function deleteImage(mediaId) {
+    if (!confirm('Are you sure you want to delete this image?')) {
+        return;
+    }
+
+    fetch('{{ route("admin.projects.deleteImage") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ media_id: mediaId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to delete image');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the image');
+    });
+}
+
+function deleteGalleryImage(galleryId) {
+    if (!confirm('Are you sure you want to delete this gallery image?')) {
+        return;
+    }
+
+    fetch(`/admin/projects/gallery/${galleryId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Failed to delete gallery image');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the gallery image');
+    });
 }
 </script>
 @endsection

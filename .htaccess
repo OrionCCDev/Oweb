@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# If your cPanel document root is public_html (project root), forward all requests to /public
+	RewriteRule ^$ public/ [L]
+	RewriteCond %{REQUEST_URI} !^/public/
+	RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Disallow directory listing at the project root
+Options -Indexes
+
+

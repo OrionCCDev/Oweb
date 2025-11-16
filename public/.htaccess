@@ -1,4 +1,19 @@
 <IfModule mod_rewrite.c>
+	Options -Indexes
+	RewriteEngine On
+
+	# Send non-existing files/dirs to index.php (Laravel)
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^ index.php [L]
+</IfModule>
+
+# Basic hardening for common sensitive files if ever placed in public by mistake
+<FilesMatch "^(composer\.(json|lock)|package\.json|phpunit\.xml|artisan|\.env(\.example)?|webpack\.mix\.js|vite\.config\.js)$">
+	Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>

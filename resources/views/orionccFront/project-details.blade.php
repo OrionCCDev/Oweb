@@ -3,6 +3,25 @@
 $p_nam = 'projects';
 $projectImage = $project->hasMedia('images') ? $project->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
 $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$project->Sector->name} project by Orion Contracting Company. Completed in " . \Carbon\Carbon::parse($project->end)->format('Y') . " with expertise in commercial and industrial construction.";
+// Backward-compatible image resolver for gallery images
+// Ensures old flat structure `project/{slug}/` and new `project/{slug}/gallery/` both work
+if (!isset($resolveProjectImage)) {
+    $resolveProjectImage = function (string $path) use ($project) {
+        $candidates = [];
+        $candidates[] = $path;
+        if ($path !== '' && !str_contains($path, '/')) {
+            $candidates[] = $project->slug_name . '/' . $path;
+        }
+        $candidates[] = str_replace($project->slug_name . '/gallery/', $project->slug_name . '/', $path);
+        $candidates = array_values(array_unique(array_filter($candidates)));
+        foreach ($candidates as $candidate) {
+            if (Storage::disk('projects')->exists($candidate)) {
+                return Storage::disk('projects')->url($candidate);
+            }
+        }
+        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
+    };
+}
 @endphp
 @section('page_name' , $project->name )
 

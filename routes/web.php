@@ -63,7 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         // Projects Management
-        Route::resource('projects', AdminProjectController::class);
+        Route::resource('projects', AdminProjectController::class)->middleware('can:manage-projects');
         Route::delete('projects/image/delete', [AdminProjectController::class, 'deleteImage'])->name('projects.deleteImage');
         Route::delete('projects/gallery/{id}', [AdminProjectController::class, 'deleteGalleryImage'])->name('projects.deleteGalleryImage');
 

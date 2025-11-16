@@ -53,10 +53,10 @@ class ProjectController extends Controller
 
         $project = Project::create($projectData);
 
-        // Handle main images
+        // Handle main images (flipster collection)
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMedia($image)->toMediaCollection('projects');
+                $project->addMedia($image)->toMediaCollection('flipster');
             }
         }
 
@@ -121,10 +121,10 @@ class ProjectController extends Controller
 
         $project->update($projectData);
 
-        // Handle new main images
+        // Handle new main images (flipster collection)
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMedia($image)->toMediaCollection('projects');
+                $project->addMedia($image)->toMediaCollection('flipster');
             }
         }
 
@@ -160,7 +160,8 @@ class ProjectController extends Controller
         // Delete related data
         $project->points()->delete();
         $project->gallaries()->delete();
-        $project->clearMediaCollection('projects');
+        $project->clearMediaCollection('flipster');
+        $project->clearMediaCollection('mini_gallary');
         $project->delete();
 
         return redirect()->route('admin.projects.index')

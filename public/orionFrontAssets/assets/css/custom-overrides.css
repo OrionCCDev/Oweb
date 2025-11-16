@@ -127,6 +127,9 @@
 
 .hot-products__single-inner {
     gap: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
 }
 
 .hot-products__img-box {
@@ -134,6 +137,8 @@
     overflow: hidden;
     border-top-left-radius: 14px;
     border-top-right-radius: 14px;
+    margin: 0;
+    flex: 0 0 auto;
 }
 
 .hot-products__img {
@@ -141,6 +146,7 @@
     width: 100%;
     height: auto;
     overflow: hidden;
+    margin: 0;
 }
 
 .hot-products__img img {

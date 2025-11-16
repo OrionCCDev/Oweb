@@ -63,9 +63,11 @@ class ProjectController extends Controller
         // Handle gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
+                // Store in project-specific folder: projects/{slug}/gallery
+                $path = $image->store("projects/{$project->slug_name}/gallery", 'public');
                 ProjectGallary::create([
                     'project_id' => $project->id,
-                    'image' => $image->store('gallery', 'public'),
+                    'image' => $path,
                 ]);
             }
         }
@@ -131,9 +133,11 @@ class ProjectController extends Controller
         // Handle new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
+                // Store in project-specific folder: projects/{slug}/gallery
+                $path = $image->store("projects/{$project->slug_name}/gallery", 'public');
                 ProjectGallary::create([
                     'project_id' => $project->id,
-                    'image' => $image->store('gallery', 'public'),
+                    'image' => $path,
                 ]);
             }
         }

@@ -157,6 +157,8 @@
 
 .hot-products__content {
     padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
 }
 
 .hot-products__title {
@@ -181,6 +183,7 @@
 /* Make all project cards equal height per row */
 .filter-layout {
     align-items: stretch;
+    gap: 24px; /* add space between cards */
 }
 
 .filter-layout .filter-item {

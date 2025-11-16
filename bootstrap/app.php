@@ -18,5 +18,4 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withProviders([
         App\Providers\FilesServiceProvider::class,
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ])->create();

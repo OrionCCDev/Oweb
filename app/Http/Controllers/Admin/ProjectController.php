@@ -40,14 +40,18 @@ class ProjectController extends Controller
             'sector_id' => 'required|exists:sectors,id',
             'client_id' => 'nullable|exists:clients,id',
             'video' => 'nullable|url',
+            'mini_desc' => 'nullable|string',
+            'full_desc' => 'nullable|string',
             'images.*' => 'image|max:10240',
             'gallery.*' => 'image|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
-        $validated['slug_name'] = Str::slug($request->name);
+        // Remove file fields from validated data before creating project
+        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
+        $projectData['slug_name'] = Str::slug($request->name);
 
-        $project = Project::create($validated);
+        $project = Project::create($projectData);
 
         // Handle main images
         if ($request->hasFile('images')) {
@@ -104,14 +108,18 @@ class ProjectController extends Controller
             'sector_id' => 'required|exists:sectors,id',
             'client_id' => 'nullable|exists:clients,id',
             'video' => 'nullable|url',
+            'mini_desc' => 'nullable|string',
+            'full_desc' => 'nullable|string',
             'images.*' => 'image|max:10240',
             'gallery.*' => 'image|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
-        $validated['slug_name'] = Str::slug($request->name);
+        // Remove file fields from validated data before updating project
+        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
+        $projectData['slug_name'] = Str::slug($request->name);
 
-        $project->update($validated);
+        $project->update($projectData);
 
         // Handle new main images
         if ($request->hasFile('images')) {

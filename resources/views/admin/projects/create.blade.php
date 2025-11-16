@@ -93,6 +93,16 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+            <textarea name="mini_desc" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Brief description for project preview">{{ old('mini_desc') }}</textarea>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Full Description</label>
+            <textarea name="full_desc" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Detailed project description">{{ old('full_desc') }}</textarea>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Video URL (YouTube, Vimeo, etc.)</label>
             <input type="url" name="video" value="{{ old('video') }}" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>

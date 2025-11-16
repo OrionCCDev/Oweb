@@ -202,7 +202,9 @@
     min-height: auto !important;
     height: 100%;
 }
-
+.certificates-slider, .sectors-slider{
+    padding-top: 25px;
+}
 .hot-products__single-inner {
     gap: 0;
     display: flex;

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
+
 class Project extends Model implements HasMedia
 {
     use HasFactory;
@@ -16,14 +18,16 @@ class Project extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('flipster')
-            ->withResponsiveImages();
+            ->withResponsiveImages()
+            ->useDisk('public');
 
         $this->addMediaCollection('mini_gallary')
-            ->withResponsiveImages();
+            ->withResponsiveImages()
+            ->useDisk('public');
     }
+
     public function registerMediaConversions(?Media $media = null): void
     {
-
         $this->addMediaConversion('flip_out')
             ->width(350)
             ->height(380)
@@ -41,6 +45,7 @@ class Project extends Model implements HasMedia
             ->height(340)
             ->performOnCollections('mini_gallary');
     }
+
     public function Client(){
         return $this->belongsTo(Client::class , 'client_id' , 'id');
     }

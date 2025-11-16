@@ -315,15 +315,35 @@ $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$pro
                             <script>
                                 var videoUrl = @json($videoUrl);
                                 var projectg = @json($projectg->gallaries);
-
-
-                                    var galleryImages = @json($project->gallaries->map(function($gallery) use ($project) {
-                                    return [
-                                        'src' => Storage::disk('projects')->url($gallery->image),
-                                        'thumb' => Storage::disk('projects')->url($gallery->image),
-                                    ];
-
-                                }));
+                                </script>
+                                @php
+                                    // Resolve image URL with backward compatibility:
+                                    // 1) Stored path as-is
+                                    // 2) Prepend slug if missing
+                                    // 3) Replace slug/gallery/ with slug/ (old flat structure)
+                                    $resolveProjectImage = function (string $path) use ($project) {
+                                        $candidates = [];
+                                        $candidates[] = $path;
+                                        if (!str_contains($path, '/')) {
+                                            $candidates[] = $project->slug_name . '/' . $path;
+                                        }
+                                        $candidates[] = str_replace($project->slug_name . '/gallery/', $project->slug_name . '/', $path);
+                                        $candidates = array_values(array_unique(array_filter($candidates)));
+                                        foreach ($candidates as $candidate) {
+                                            if (Storage::disk('projects')->exists($candidate)) {
+                                                return Storage::disk('projects')->url($candidate);
+                                            }
+                                        }
+                                        // Fallback to asset path to avoid breaking the UI
+                                        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
+                                    };
+                                    $galleryImagesArray = $project->gallaries->map(function ($gallery) use ($resolveProjectImage) {
+                                        $url = $resolveProjectImage($gallery->image ?? '');
+                                        return ['src' => $url, 'thumb' => $url];
+                                    })->values();
+                                @endphp
+                                <script>
+                                    var galleryImages = @json($galleryImagesArray);
                                 var lgContainer = document.getElementById('inline-gallery-container');
                                     var inlineGallery = lightGallery(lgContainer, {
                                         container: lgContainer,
@@ -402,7 +422,10 @@ $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$pro
                         <div class="carousel-inner">
                             @foreach($project->gallaries as $gallery)
                           <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            <img src="{{ Storage::disk('projects')->url($gallery->image) }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
+                            @php
+                                $imgUrl = $resolveProjectImage($gallery->image ?? '');
+                            @endphp
+                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
                           </div>
                           @endforeach
 

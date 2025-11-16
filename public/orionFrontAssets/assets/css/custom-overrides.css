@@ -110,9 +110,9 @@
     padding: 22px 24px 28px;
 }
 
-.global-hover-card > :last-child {
+/* .global-hover-card > :last-child {
     margin-top: auto;
-}
+} */
 
 /* Our Projects: modern compact card */
 .hot-products__single {
@@ -189,11 +189,12 @@
 /* Make all project cards equal height per row */
 .filter-layout {
     align-items: stretch;
-    gap: 24px; /* add space between cards */
+    /* gap: 24px; add space between cards */
 }
 
 .filter-layout .filter-item {
     display: flex;
+    margin-bottom: 20px;
 }
 
 .filter-layout .filter-item > .hot-products__single {

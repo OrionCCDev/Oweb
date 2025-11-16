@@ -114,6 +114,69 @@
     margin-top: auto;
 }
 
+/* Our Projects: modern compact card */
+.hot-products__single {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    background: #fff;
+    overflow: hidden;
+    /* override inline min-height set by scripts */
+    min-height: auto !important;
+}
+
+.hot-products__single-inner {
+    gap: 0;
+}
+
+.hot-products__img-box {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+}
+
+.hot-products__img {
+    aspect-ratio: 16/9;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+.hot-products__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.001);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hot-products__single:hover .hot-products__img img {
+    transform: scale(1.04);
+}
+
+.hot-products__content {
+    padding: 16px 18px 18px;
+}
+
+.hot-products__title {
+    font-size: 20px;
+    line-height: 1.35;
+    margin: 2px 0 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hot-products__price {
+    margin: 0 0 14px;
+    color: #7b8a8f;
+}
+
+.hot-products__btn-box {
+    margin-top: auto;
+}
+
 /* Button hover enhancement */
 .global-hover-btn {
     position: relative;

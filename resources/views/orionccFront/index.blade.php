@@ -4,23 +4,34 @@ $p_nam = 'home';
 @endphp
 @section('page_name' , 'Home')
 @section('css_style_links')
+<!-- Preload critical resources for faster page load -->
+<link rel="preload" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" as="style" />
+<link rel="preload" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" as="style" />
+<link rel="preload" href="{{ asset('orionFrontAssets/assets/vendors/fontawesome/css/all.min.css') }}" as="style" />
+
+<!-- Critical CSS loaded immediately -->
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/custom-animate.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/fontawesome/css/all.min.css') }}" />
-<!-- used in popup video -->
-<link rel="stylesheet"
-    href="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css') }}" />
-<!-- used on mobile for slider -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.pips.css') }}" />
-<!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/odometer/odometer.min.css') }}" /> -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}">
-<!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/tiny-slider/tiny-slider.min.css') }}" /> -->
-<!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/reey-font/stylesheet.css') }}" /> -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
+
+<!-- Defer non-critical CSS to improve initial load time -->
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/custom-animate.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" media="print" onload="this.media='all'" />
+
+<!-- Fallback for browsers that don't support onload -->
+<noscript>
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/custom-animate.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
+</noscript>
 @section('meta_tags')
 <title>Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia</title>
 <meta name="description" content="Premier construction and contracting company with 15+ years expertise in commercial, industrial and residential projects across UAE and Saudi Arabia. ISO certified, innovative solutions and guaranteed quality.">
@@ -254,506 +265,28 @@ $p_nam = 'home';
 </div>
 @endsection --}}
 @section('cust_js')
+<!-- Optimized home page scripts loaded as external file for better caching -->
 <script>
-    // Lazy loading function
+    // Set video source for lazy initialization
+    const videoContainer = document.getElementById('hero-slider-sect');
+    if (videoContainer) {
+        videoContainer.dataset.videoSrc = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
+    }
+</script>
+<script src="{{ asset('orionFrontAssets/assets/js/home-page.js') }}" defer></script>
+<script>
+    // Minimal inline script - old script replaced with optimized external file
     document.addEventListener('DOMContentLoaded', function() {
-        // Set slider height based on screen width
-        if (window.innerWidth <= 400) {
-            document.documentElement.style.setProperty('--slider-height', '50vh');
-        } else if (window.innerWidth <= 900) {
-            document.documentElement.style.setProperty('--slider-height', '70vh');
-        } else {
-            document.documentElement.style.setProperty('--slider-height', '100vh');
-        }
-
-        // Update on resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth <= 400) {
-                document.documentElement.style.setProperty('--slider-height', '50vh');
-            } else if (window.innerWidth <= 900) {
-                document.documentElement.style.setProperty('--slider-height', '70vh');
-            } else {
-                document.documentElement.style.setProperty('--slider-height', '100vh');
-            }
-        });
-
-        // Separate priority images (above the fold) from project images
-        const priorityImages = [].slice.call(document.querySelectorAll(".feature-one img.lazy, .main-slider img.lazy"));
-        const projectImages = [].slice.call(document.querySelectorAll(".hot-products__img img.lazy"));
-        const otherImages = [].slice.call(document.querySelectorAll("img.lazy:not(.hot-products__img img):not(.feature-one img):not(.main-slider img)"));
-
-        if ("IntersectionObserver" in window) {
-            // Observer for priority images (load immediately)
-            let priorityImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        if(lazyImage.dataset.srcset) {
-                            lazyImage.srcset = lazyImage.dataset.srcset;
-                        }
-                        lazyImage.classList.add("loaded");
-                        priorityImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            // Observer for project images (load with delay after priority content)
-            let projectImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        // Delay loading project images by 500ms to prioritize hero content
-                        setTimeout(function() {
-                            lazyImage.src = lazyImage.dataset.src;
-                            if(lazyImage.dataset.srcset) {
-                                lazyImage.srcset = lazyImage.dataset.srcset;
-                            }
-                            lazyImage.classList.add("loaded");
-                        }, 500);
-                        projectImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            // Observer for other images
-            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        if(lazyImage.dataset.srcset) {
-                            lazyImage.srcset = lazyImage.dataset.srcset;
-                        }
-                        lazyImage.classList.add("loaded");
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            // Load priority images first
-            priorityImages.forEach(function(lazyImage) {
-                priorityImageObserver.observe(lazyImage);
-            });
-
-            // Load project images after priority
-            projectImages.forEach(function(lazyImage) {
-                projectImageObserver.observe(lazyImage);
-            });
-
-            // Load other images normally
-            otherImages.forEach(function(lazyImage) {
-                lazyImageObserver.observe(lazyImage);
-            });
-        } else {
-            // Fallback for browsers without intersection observer
-            let active = false;
-            let allLazyImages = priorityImages.concat(projectImages).concat(otherImages);
-
-            const lazyLoad = function() {
-                if (active === false) {
-                    active = true;
-
-                    setTimeout(function() {
-                        allLazyImages.forEach(function(lazyImage) {
-                            if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
-                                lazyImage.src = lazyImage.dataset.src;
-                                if(lazyImage.dataset.srcset) {
-                                    lazyImage.srcset = lazyImage.dataset.srcset;
-                                }
-                                lazyImage.classList.add("loaded");
-
-                                allLazyImages = allLazyImages.filter(function(image) {
-                                    return image !== lazyImage;
-                                });
-
-                                if (allLazyImages.length === 0) {
-                                    document.removeEventListener("scroll", lazyLoad);
-                                    window.removeEventListener("resize", lazyLoad);
-                                    window.removeEventListener("orientationchange", lazyLoad);
-                                }
-                            }
-                        });
-
-                        active = false;
-                    }, 200);
-                }
-            };
-
-            document.addEventListener("scroll", lazyLoad);
-            window.addEventListener("resize", lazyLoad);
-            window.addEventListener("orientationchange", lazyLoad);
-            lazyLoad();
-        }
-
-        // Create the video element with proper loading strategy
-        const videoContainer = document.getElementById('hero-slider-sect');
-        if (videoContainer) {
-            // Check if browser supports HTML5 video
-            if (!!document.createElement('video').canPlayType) {
-                const video = document.createElement('video');
-
-                // Set video attributes
-                video.setAttribute('muted', 'muted');
-                video.setAttribute('loop', 'loop');
-                video.setAttribute('autoplay', 'autoplay');
-                video.setAttribute('playsinline', 'playsinline');
-                video.setAttribute('id', 'background-video');
-                video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
-                video.muted = true;
-                video.defaultMuted = true;
-                video.playsInline = true;
-                video.autoplay = true;
-                video.loop = true;
-                // Force video to be visible on mobile and full height
-                video.style.display = 'block';
-                video.style.zIndex = '0';
-
-                // Set responsive height based on screen width
-                if (window.innerWidth <= 400) {
-                    video.style.height = '50vh';
-                    videoContainer.style.height = '50vh';
-                    videoContainer.style.minHeight = '50vh';
-                    document.getElementById('video-overlay').style.height = '50vh';
-                    video.style.objectFit = 'fill';
-                } else if (window.innerWidth <= 900) {
-                    video.style.height = '70vh';
-                    videoContainer.style.height = '70vh';
-                    videoContainer.style.minHeight = '70vh';
-                    document.getElementById('video-overlay').style.height = '70vh';
-                    video.style.objectFit = 'fill';
-                } else {
-                    video.style.height = '100vh';
-                    videoContainer.style.height = '100vh';
-                    videoContainer.style.minHeight = '100vh';
-                    document.getElementById('video-overlay').style.height = '100vh';
-                    video.style.objectFit = 'cover';
-                }
-
-                video.style.width = '100%';
-                video.preload = 'auto';
-
-                // Add resize listener to adjust video height on window resize
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth <= 400) {
-                        video.style.height = '50vh';
-                        videoContainer.style.height = '50vh';
-                        videoContainer.style.minHeight = '50vh';
-                        document.getElementById('video-overlay').style.height = '50vh';
-                        video.style.objectFit = 'fill';
-                    } else if (window.innerWidth <= 900) {
-                        video.style.height = '70vh';
-                        videoContainer.style.height = '70vh';
-                        videoContainer.style.minHeight = '70vh';
-                        document.getElementById('video-overlay').style.height = '70vh';
-                        video.style.objectFit = 'fill';
-                    } else {
-                        video.style.height = '100vh';
-                        videoContainer.style.height = '100vh';
-                        videoContainer.style.minHeight = '100vh';
-                        document.getElementById('video-overlay').style.height = '100vh';
-                        video.style.objectFit = 'cover';
-                    }
-                });
-
-                // Create the source element
-                const source = document.createElement('source');
-                source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
-                source.type = "video/mp4";
-
-                // Append the source to the video
-                video.appendChild(source);
-
-                // Append the video to the container
-                videoContainer.prepend(video);
-
-                const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                let autoplaySucceeded = false;
-                let interactionFallbackArmed = false;
-                let autoplayBlocked = false;
-                let retryTimer = null;
-                let mobilePlayButton;
-
-                const ensureMobilePlayButton = () => {
-                    if (!isMobileDevice || mobilePlayButton) {
-                        return;
-                    }
-                    mobilePlayButton = document.createElement('div');
-                    mobilePlayButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%; height:75px; width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.55); color:white; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 24px rgba(0,0,0,0.4);';
-                    mobilePlayButton.innerHTML = '<i class="fa fa-play" style="font-size:26px;"></i>';
-                    mobilePlayButton.addEventListener('click', function() {
-                        video.play().then(() => {
-                            autoplaySucceeded = true;
-                            this.style.display = 'none';
-                        }).catch(e => console.log('Still could not play from button:', e));
-                    }, { once: true });
-                    videoContainer.appendChild(mobilePlayButton);
-                };
-
-                const enableInteractionFallback = () => {
-                    if (interactionFallbackArmed) {
-                        return;
-                    }
-                    interactionFallbackArmed = true;
-
-                    const playVideoOnInteraction = function() {
-                        video.play().then(() => {
-                            autoplaySucceeded = true;
-                            if (mobilePlayButton) {
-                                mobilePlayButton.style.display = 'none';
-                            }
-                        }).catch(e => console.log('Still could not play after interaction:', e));
-                        document.removeEventListener('touchstart', playVideoOnInteraction);
-                        document.removeEventListener('click', playVideoOnInteraction);
-                    };
-
-                    document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
-                    document.addEventListener('click', playVideoOnInteraction, { once: true });
-                    ensureMobilePlayButton();
-                };
-
-                const attemptAutoplay = (reason, allowRetry = true) => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (retryTimer) {
-                        clearTimeout(retryTimer);
-                        retryTimer = null;
-                    }
-                    console.log(`Attempting video autoplay (${reason})`);
-
-                    const playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            autoplaySucceeded = true;
-                            console.log(`Video autoplay successful (${reason})`);
-                            if (mobilePlayButton) {
-                                mobilePlayButton.style.display = 'none';
-                            }
-                        }).catch(error => {
-                            console.log(`Autoplay attempt failed (${reason})`, error);
-                            if (error && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')) {
-                                autoplayBlocked = true;
-                                enableInteractionFallback();
-                            } else if (allowRetry) {
-                                retryTimer = setTimeout(() => attemptAutoplay('retry-after-error'), 600);
-                            }
-                        });
-                    } else {
-                        autoplaySucceeded = true;
-                        console.log(`Video autoplay succeeded synchronously (${reason})`);
-                    }
-                };
-
-                const isFullyBuffered = () => {
-                    try {
-                        if (!video.duration || !video.buffered.length) {
-                            return false;
-                        }
-                        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-                        return bufferedEnd >= (video.duration - 0.1);
-                    } catch (error) {
-                        return false;
-                    }
-                };
-
-                const maybeAutoplayWhenBuffered = (reason) => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (isFullyBuffered() || video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
-                        attemptAutoplay(reason, false);
-                    }
-                };
-
-                const waitForCompleteDownload = () => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (isFullyBuffered()) {
-                        attemptAutoplay('fully-buffered', false);
-                        return;
-                    }
-                    setTimeout(waitForCompleteDownload, 400);
-                };
-
-                video.addEventListener('canplaythrough', () => {
-                    console.log('Video can play through; verifying buffer before autoplay');
-                    attemptAutoplay('canplaythrough');
-                });
-
-                video.addEventListener('progress', () => {
-                    maybeAutoplayWhenBuffered('buffered');
-                });
-
-                video.addEventListener('loadeddata', () => {
-                    maybeAutoplayWhenBuffered('loadeddata');
-                    waitForCompleteDownload();
-                });
-
-                video.addEventListener('loadedmetadata', () => {
-                    console.log('Video metadata loaded; ensuring download is forced');
-                    video.setAttribute('preload', 'auto');
-                    video.preload = 'auto';
-                    video.load();
-                    waitForCompleteDownload();
-                }, { once: true });
-
-                // Safety fallback in case the browser never fires canplaythrough
-                setTimeout(() => {
-                    if (!autoplaySucceeded && !autoplayBlocked) {
-                        attemptAutoplay('timeout');
-                    }
-                }, 8000);
-
-                // Add error handling
-                video.addEventListener('error', function() {
-                    console.log("Video playback error, falling back to background image");
-                    setFallbackBackground();
-                });
-            } else {
-                // Browser doesn't support HTML5 video
-                console.log("Browser doesn't support HTML5 video, using fallback");
-                setFallbackBackground();
-            }
-
-            // Fallback function
-            function setFallbackBackground() {
-                videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
-                videoContainer.style.backgroundSize = "cover";
-                videoContainer.style.backgroundPosition = "center center";
-            }
-        }
-
-        // Initialize certificate slider specifically
-        if (typeof Swiper !== 'undefined') {
-            // Check if the Swiper container exists
-            const certificateSlider = document.querySelector('.certificates-slider');
-            if (certificateSlider) {
-                // Get swiper options from data attribute
-                const options = certificateSlider.dataset.swiperOptions ?
-                    JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                // Initialize the swiper
-                new Swiper('.certificates-slider', options);
-            }
-        } else {
-            // If Swiper isn't loaded yet, wait for it
-            const checkSwiper = setInterval(function() {
-                if (typeof Swiper !== 'undefined') {
-                    clearInterval(checkSwiper);
-
-                    const certificateSlider = document.querySelector('.certificates-slider');
-                    if (certificateSlider) {
-                        const options = certificateSlider.dataset.swiperOptions ?
-                            JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                        new Swiper('.certificates-slider', options);
-                    }
-                }
-            }, 100);
-        }
-    });
-
-    // Defer loading of particles.js until after critical content
-    function loadParticles() {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
-        script.onload = function() {
-            particlesJS("particles-js", {
-                "particles": {
-                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                    "color": { "value": "#aef490" },
-                    "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
-                    "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                    "size": { "value": 3, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
-                    "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 },
-                    "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": { "enable": true, "mode": "grab" },
-                        "onclick": { "enable": true, "mode": "push" },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": { "distance": 400, "line_linked": { "opacity": 1 } },
-                        "push": { "particles_nb": 4 }
-                    }
-                },
-                "retina_detect": true
-            });
+        // Set slider height (optimized)
+        const setSliderHeight = () => {
+            const height = window.innerWidth <= 400 ? '50vh' :
+                          window.innerWidth <= 900 ? '70vh' : '100vh';
+            document.documentElement.style.setProperty('--slider-height', height);
         };
-        document.body.appendChild(script);
-    }
-
-    // Load non-critical scripts
-    function loadDeferredScripts() {
-        const scripts = [
-            '{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}',
-            '{{ asset('orionFrontAssets/assets/js/main.js') }}'
-        ];
-
-        let loadedCount = 0;
-
-        function loadScript(index) {
-            if (index >= scripts.length) {
-                // All scripts loaded
-                loadParticles();
-                return;
-            }
-
-            const script = document.createElement('script');
-            script.src = scripts[index];
-            script.onload = function() {
-                loadedCount++;
-                loadScript(index + 1);
-
-                // Initialize certificate slider after swiper.min.js is loaded
-                if (script.src.includes('swiper.min.js')) {
-                    setTimeout(function() {
-                        const certificateSlider = document.querySelector('.certificates-slider');
-                        if (certificateSlider) {
-                            const options = certificateSlider.dataset.swiperOptions ?
-                                JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.certificates-slider', options);
-                        }
-
-                        // Initialize sectors slider
-                        const sectorsSlider = document.querySelector('.sectors-slider');
-                        if (sectorsSlider) {
-                            const options = sectorsSlider.dataset.swiperOptions ?
-                                JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.sectors-slider', options);
-                        }
-                    }, 500);
-                }
-            };
-            document.body.appendChild(script);
-        }
-
-        // Start loading scripts
-        loadScript(0);
-    }
-
-    // Use requestIdleCallback or setTimeout to defer non-critical tasks
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadDeferredScripts);
-    } else {
-        setTimeout(loadDeferredScripts, 2000);
-    }
+        setSliderHeight();
+        window.addEventListener('resize', setSliderHeight, { passive: true });
+    });
+    // All other scripts moved to external file: home-page.js
 </script>
 @endsection
 

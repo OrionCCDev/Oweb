@@ -74,10 +74,10 @@
 
 .feature-one__single.global-hover-card:hover,
 .feature-one__single.global-hover-card:focus-within {
-    transform: translateY(-1px);
-    background-color: rgba(16, 202, 157, 0.04); /* subtle brand tint */
-    border-color: rgba(16, 202, 157, 0.18);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transform: none; /* no bounce for a calmer feel */
+    background-color: rgba(16, 202, 157, 0.03); /* very light brand tint */
+    border-color: rgba(16, 202, 157, 0.28); /* slightly clearer outline */
+    box-shadow: 0 0 0 2px rgba(16, 202, 157, 0.08); /* soft outer ring, no drop shadow */
 }
 
 /* Tone down icon animation on hover for this section */

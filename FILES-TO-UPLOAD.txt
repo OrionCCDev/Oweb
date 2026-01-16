@@ -1,0 +1,194 @@
+================================================================================
+SECURITY FIX DEPLOYMENT - FILES TO UPLOAD TO CPANEL
+================================================================================
+
+IMPORTANT: Upload files to the correct directories as shown below!
+
+================================================================================
+STEP 1: MERGE TO MAIN BRANCH ON GITHUB
+================================================================================
+
+1. Go to: https://github.com/OrionCCDev/Oweb
+2. Click "Pull requests"
+3. Find or create PR: claude/secure-htaccess-config-i2Jvi → main
+4. Click "Merge pull request"
+5. Click "Confirm merge"
+
+OR visit directly:
+https://github.com/OrionCCDev/Oweb/compare/main...claude/secure-htaccess-config-i2Jvi
+
+================================================================================
+STEP 2: DOWNLOAD REPOSITORY
+================================================================================
+
+1. Go to: https://github.com/OrionCCDev/Oweb
+2. Click "Code" → "Download ZIP"
+3. Extract ZIP
+
+================================================================================
+STEP 3: UPLOAD FILES TO CPANEL
+================================================================================
+
+LOGIN: cPanel → File Manager
+
+--------------------------------------------------------------------------------
+A. SECURITY SCRIPTS → Upload to: /home/orionccc/ (HOME DIRECTORY)
+--------------------------------------------------------------------------------
+
+These 4 files go in your HOME directory (/home/orionccc/):
+
+  ✓ rotate-credentials.sh
+  ✓ scan-root-directory.sh
+  ✓ fix-critical-permissions.sh
+  ✓ cpanel-security-commands.sh
+
+After upload, make executable in Terminal:
+  chmod +x ~/*.sh
+
+--------------------------------------------------------------------------------
+B. DOCUMENTATION → Upload to: /home/orionccc/public_html/ (OPTIONAL)
+--------------------------------------------------------------------------------
+
+These guide files (for your reference):
+
+  ✓ START-HERE-SECURITY-EMERGENCY.md
+  ✓ URGENT-ROTATE-CREDENTIALS.md
+  ✓ SECURITY_HARDENING.md
+  ✓ ROOT-DIRECTORY-SECURITY-ANALYSIS.md
+  ✓ DEPLOYMENT-GUIDE.md
+  ✓ QUICK-START-DEPLOYMENT.md
+
+(You can also keep these on your computer and just read them there)
+
+--------------------------------------------------------------------------------
+C. SECURE .HTACCESS FILES → REPLACE EXISTING (CRITICAL!)
+--------------------------------------------------------------------------------
+
+BACKUP FIRST! Then replace:
+
+  ✓ .htaccess → /home/orionccc/public_html/.htaccess
+    (OVERWRITES malicious .htaccess on server)
+
+  ✓ public/.htaccess → /home/orionccc/public_html/public/.htaccess
+    (Enhanced security for Laravel)
+
+CLICK "OVERWRITE" WHEN ASKED!
+
+--------------------------------------------------------------------------------
+D. .ENV.EXAMPLE → Reference Only
+--------------------------------------------------------------------------------
+
+  ✓ .env.example → /home/orionccc/public_html/.env.example
+    (Template only - DO NOT overwrite your actual .env file!)
+
+================================================================================
+STEP 4: RUN SECURITY SCRIPTS (CPANEL TERMINAL)
+================================================================================
+
+Open: cPanel → Terminal
+
+Run in this exact order:
+
+1. Fix Permissions (2 min):
+   bash ~/fix-critical-permissions.sh
+
+2. Scan for Malware (5 min):
+   bash ~/scan-root-directory.sh
+
+3. Rotate Credentials (10 min):
+   First change DB password in cPanel → MySQL Databases
+   Then run:
+   cd ~/public_html && bash ~/rotate-credentials.sh
+
+================================================================================
+COMPLETE FILE LIST (14 FILES TOTAL)
+================================================================================
+
+SCRIPTS (4):
+  1. rotate-credentials.sh
+  2. scan-root-directory.sh
+  3. fix-critical-permissions.sh
+  4. cpanel-security-commands.sh
+
+DOCUMENTATION (6):
+  5. START-HERE-SECURITY-EMERGENCY.md
+  6. URGENT-ROTATE-CREDENTIALS.md
+  7. SECURITY_HARDENING.md
+  8. ROOT-DIRECTORY-SECURITY-ANALYSIS.md
+  9. DEPLOYMENT-GUIDE.md
+  10. QUICK-START-DEPLOYMENT.md
+
+CONFIGURATION (3):
+  11. .htaccess (root)
+  12. public/.htaccess
+  13. .env.example
+
+REFERENCE:
+  14. This file (FILES-TO-UPLOAD.txt)
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+UPLOAD LOCATION SUMMARY:
+
+~/                              (Home directory)
+  ├── rotate-credentials.sh
+  ├── scan-root-directory.sh
+  ├── fix-critical-permissions.sh
+  └── cpanel-security-commands.sh
+
+~/public_html/                  (Website root)
+  ├── .htaccess                 (REPLACE existing)
+  ├── .env.example              (Reference only)
+  └── public/
+      └── .htaccess             (REPLACE existing)
+
+~/public_html/docs/             (Optional - for documentation)
+  ├── START-HERE-SECURITY-EMERGENCY.md
+  ├── URGENT-ROTATE-CREDENTIALS.md
+  ├── SECURITY_HARDENING.md
+  ├── ROOT-DIRECTORY-SECURITY-ANALYSIS.md
+  ├── DEPLOYMENT-GUIDE.md
+  └── QUICK-START-DEPLOYMENT.md
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. ✓ Merge PR on GitHub (makes files available on main branch)
+2. ✓ Download ZIP from GitHub
+3. ✓ Upload files to cPanel as shown above
+4. ✓ Run fix-critical-permissions.sh
+5. ✓ Run scan-root-directory.sh
+6. ✓ Change DB password in cPanel
+7. ✓ Run rotate-credentials.sh
+8. ✓ Test website: https://orioncc.com
+
+TOTAL TIME: ~30 minutes
+
+================================================================================
+HELP & DOCUMENTATION
+================================================================================
+
+Start here: QUICK-START-DEPLOYMENT.md
+  → 30-minute checklist with all steps
+
+Need details: DEPLOYMENT-GUIDE.md
+  → Complete deployment instructions with troubleshooting
+
+Emergency reference: START-HERE-SECURITY-EMERGENCY.md
+  → Master emergency response guide
+
+================================================================================
+QUESTIONS?
+================================================================================
+
+- Check DEPLOYMENT-GUIDE.md for troubleshooting
+- Review security scan results in ~/root-security-scan-*.txt
+- Check Laravel logs: ~/public_html/storage/logs/laravel.log
+- Check Apache logs: ~/public_html/error_log
+
+================================================================================
+END OF FILE
+================================================================================

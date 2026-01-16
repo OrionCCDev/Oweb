@@ -1,6 +1,25 @@
 # Website Security Hardening Guide
 
-## 🚨 CRITICAL: Malicious Code Detected
+## 🚨🚨 CRITICAL PRIORITY: .ENV CREDENTIALS EXPOSED 🚨🚨
+
+**STOP - DO THIS FIRST:**
+
+Your .env file credentials were exposed publicly. This is MORE CRITICAL than the .htaccess malware.
+
+**Exposed credentials:**
+- APP_KEY (allows decryption of all encrypted data)
+- Database password (full database access)
+- Database username and database name
+
+**ACTION REQUIRED NOW:**
+1. Read: `URGENT-ROTATE-CREDENTIALS.md` (detailed instructions)
+2. Run: `bash rotate-credentials.sh` (automated rotation script)
+
+**DO NOT PROCEED** with .htaccess fixes until you've rotated these credentials!
+
+---
+
+## 🚨 CRITICAL: Malicious .htaccess Code Detected
 
 The .htaccess code you found contains a **cloaking attack** used by hackers to:
 - Inject SEO spam into Google's index
@@ -8,9 +27,25 @@ The .htaccess code you found contains a **cloaking attack** used by hackers to:
 - Hide malicious behavior from website owners
 - Create hidden backdoors
 
+**Note:** Fix your .env credentials FIRST, then address this malware.
+
 ---
 
 ## IMMEDIATE ACTIONS REQUIRED
+
+### PRIORITY 1: ROTATE CREDENTIALS (Do This First!)
+
+See: `URGENT-ROTATE-CREDENTIALS.md` for complete instructions.
+
+Quick steps:
+```bash
+# 1. Change database password in cPanel
+# 2. Run rotation script
+cd ~/public_html
+bash rotate-credentials.sh
+```
+
+### PRIORITY 2: Remove Malicious .htaccess Code
 
 ### 1. Find and Remove Malicious Files (Run in cPanel Terminal)
 

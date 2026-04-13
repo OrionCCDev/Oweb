@@ -19,3 +19,13 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
+*.zip
+.htaccess
+web.config
+odc.com/
+orioncc.com/
+orionacsys.com/
+logistics.com/
+sapry.com/
+public/uploads/
+vendor/

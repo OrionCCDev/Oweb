@@ -3,25 +3,6 @@
 $p_nam = 'projects';
 $projectImage = $project->hasMedia('images') ? $project->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
 $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$project->Sector->name} project by Orion Contracting Company. Completed in " . \Carbon\Carbon::parse($project->end)->format('Y') . " with expertise in commercial and industrial construction.";
-// Backward-compatible image resolver for gallery images
-// Ensures old flat structure `project/{slug}/` and new `project/{slug}/gallery/` both work
-if (!isset($resolveProjectImage)) {
-    $resolveProjectImage = function (string $path) use ($project) {
-        $candidates = [];
-        $candidates[] = $path;
-        if ($path !== '' && !str_contains($path, '/')) {
-            $candidates[] = $project->slug_name . '/' . $path;
-        }
-        $candidates[] = str_replace($project->slug_name . '/gallery/', $project->slug_name . '/', $path);
-        $candidates = array_values(array_unique(array_filter($candidates)));
-        foreach ($candidates as $candidate) {
-            if (Storage::disk('projects')->exists($candidate)) {
-                return Storage::disk('projects')->url($candidate);
-            }
-        }
-        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
-    };
-}
 @endphp
 @section('page_name' , $project->name )
 
@@ -215,12 +196,8 @@ if (!isset($resolveProjectImage)) {
                         <h5>{{ $project->sub_name }}</h5>
                     </div>
                     <div class="portfolio-details__img video-one video-one__video-link" style="position: relative">
-                        @php
-                            $mainName = $project->gif ?: $project->main_image;
-                            $mainUrl = $resolveProjectImage($mainName ?? '');
-                        @endphp
-                        <img src="{{ $mainUrl }}"
-                            alt="{{ $project->name }} - Main Project Image">
+                        <img src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name . '/' . $project->gif ?? $project->main_image) }}"
+                            alt="{{ $project->name }} - Main Project Image" loading="lazy">
                         <a href="#" style="position: absolute;top:50%;left:50%;transform:translate(-50% , -50%)" class="video-popup-trigger" data-bs-toggle="modal" data-bs-target="#videoModal">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
@@ -338,35 +315,15 @@ if (!isset($resolveProjectImage)) {
                             <script>
                                 var videoUrl = @json($videoUrl);
                                 var projectg = @json($projectg->gallaries);
-                                </script>
-                                @php
-                                    // Resolve image URL with backward compatibility:
-                                    // 1) Stored path as-is
-                                    // 2) Prepend slug if missing
-                                    // 3) Replace slug/gallery/ with slug/ (old flat structure)
-                                    $resolveProjectImage = function (string $path) use ($project) {
-                                        $candidates = [];
-                                        $candidates[] = $path;
-                                        if (!str_contains($path, '/')) {
-                                            $candidates[] = $project->slug_name . '/' . $path;
-                                        }
-                                        $candidates[] = str_replace($project->slug_name . '/gallery/', $project->slug_name . '/', $path);
-                                        $candidates = array_values(array_unique(array_filter($candidates)));
-                                        foreach ($candidates as $candidate) {
-                                            if (Storage::disk('projects')->exists($candidate)) {
-                                                return Storage::disk('projects')->url($candidate);
-                                            }
-                                        }
-                                        // Fallback to asset path to avoid breaking the UI
-                                        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
-                                    };
-                                    $galleryImagesArray = $project->gallaries->map(function ($gallery) use ($resolveProjectImage) {
-                                        $url = $resolveProjectImage($gallery->image ?? '');
-                                        return ['src' => $url, 'thumb' => $url];
-                                    })->values();
-                                @endphp
-                                <script>
-                                    var galleryImages = @json($galleryImagesArray);
+
+
+                                    var galleryImages = @json($project->gallaries->map(function($gallery) use ($project) {
+                                    return [
+                                        'src' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
+                                        'thumb' => asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $gallery->image),
+                                    ];
+
+                                }));
                                 var lgContainer = document.getElementById('inline-gallery-container');
                                     var inlineGallery = lightGallery(lgContainer, {
                                         container: lgContainer,
@@ -436,7 +393,7 @@ if (!isset($resolveProjectImage)) {
                     </div>
                 </div>
                 <div class="col-xl-8">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                    <div id="carouselExampleIndicators" class="carousel slide">
                         {{-- <div class="carousel-indicators">
                           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -445,10 +402,7 @@ if (!isset($resolveProjectImage)) {
                         <div class="carousel-inner">
                             @foreach($project->gallaries as $gallery)
                           <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            @php
-                                $imgUrl = $resolveProjectImage($gallery->image ?? '');
-                            @endphp
-                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}">
+                            <img src="{{ asset('orionFrontAssets/assets/images/project/' .$project->slug_name .  '/' . $gallery->image ) }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}" loading="lazy">
                           </div>
                           @endforeach
 

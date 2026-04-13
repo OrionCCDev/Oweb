@@ -25,6 +25,7 @@ Route::get('/contact', function(){
     return view('orionccFront.contact');
 })->name('contact');
 
+
 // Route::get('/our-projects', function () {
 //     return view('orionccFront.projects');
 // })->name('projects');
@@ -63,7 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
         // Projects Management
-        Route::resource('projects', AdminProjectController::class)->middleware('can:manage-projects');
+        Route::resource('projects', AdminProjectController::class);
         Route::delete('projects/image/delete', [AdminProjectController::class, 'deleteImage'])->name('projects.deleteImage');
         Route::delete('projects/gallery/{id}', [AdminProjectController::class, 'deleteGalleryImage'])->name('projects.deleteGalleryImage');
 

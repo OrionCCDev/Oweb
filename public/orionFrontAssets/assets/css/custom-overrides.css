@@ -5,84 +5,6 @@
     --orion-hover-shadow-soft: 0 14px 28px rgba(16, 202, 157, 0.35);
 }
 
-/* Sectors slider cards - refined hover */
-.categories-one__single.global-hover-card {
-    border-radius: 18px;
-    overflow: visible; /* allow circular arrow and shadows to render outside */
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, background-color 0.35s ease, border-color 0.35s ease;
-    will-change: transform, box-shadow;
-    background-clip: padding-box;
-}
-
-/* Remove glossy overlays on these to keep it clean */
-.categories-one__single.global-hover-card::before,
-.categories-one__single.global-hover-card::after {
-    display: none;
-}
-
-.categories-one__single.global-hover-card .categories-one__img {
-    overflow: hidden;
-    border-radius: 50%;
-    transition: filter 0.45s ease;
-}
-
-.categories-one__single.global-hover-card .categories-one__img img {
-    transform: scale(1.001);
-    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
-    will-change: transform;
-}
-
-.categories-one__single.global-hover-card .categories-one__content {
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
-    transform: translateY(2px);
-}
-
-.categories-one__single.global-hover-card .categories-one__arrow-box,
-.categories-one__single.global-hover-card .categories-one__arrow {
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
-}
-
-.categories-one__single.global-hover-card .categories-one__arrow {
-    transform: translateX(-6px);
-    opacity: 0.6;
-}
-
-.categories-one__single.global-hover-card:hover,
-.categories-one__single.global-hover-card:focus-within {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
-}
-
-.categories-one__single.global-hover-card:hover .categories-one__img img,
-.categories-one__single.global-hover-card:focus-within .categories-one__img img {
-    transform: scale(1.06);
-    filter: saturate(1.02) contrast(1.02);
-}
-
-.categories-one__single.global-hover-card:hover .categories-one__content,
-.categories-one__single.global-hover-card:focus-within .categories-one__content {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.categories-one__single.global-hover-card:hover .categories-one__arrow,
-.categories-one__single.global-hover-card:focus-within .categories-one__arrow {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-/* Reduce motion friendly */
-@media (prefers-reduced-motion: reduce) {
-    .categories-one__single.global-hover-card {
-        transition-duration: 0.01ms !important;
-    }
-    .categories-one__single.global-hover-card:hover,
-    .categories-one__single.global-hover-card:focus-within {
-        transform: none;
-        box-shadow: none;
-    }
-}
-
 /* Card shine effect */
 .global-hover-card {
     position: relative;
@@ -120,165 +42,24 @@
 
 .global-hover-card:hover,
 .global-hover-card:focus-within {
-    transform: translateY(-2px) scale(1.002);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.10);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: var(--orion-hover-shadow);
 }
 
 .global-hover-card:hover::before,
 .global-hover-card:focus-within::before {
-    opacity: 0.20;
+    opacity: 0.65;
     transform: scale(1);
 }
 
 .global-hover-card:hover::after,
 .global-hover-card:focus-within::after {
-    opacity: 0.35;
+    opacity: 1;
     transform: translate3d(65%, 35%, 0) rotate(18deg);
 }
 
-/* Lighter, modern hover specifically for Feature section cards */
-.feature-one__single.global-hover-card {
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    box-shadow: none;
-    transition: background-color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
-}
-
-.feature-one__single.global-hover-card::before,
-.feature-one__single.global-hover-card::after {
-    display: none; /* remove glossy overlays for a cleaner look */
-}
-
-.feature-one__single.global-hover-card:hover,
-.feature-one__single.global-hover-card:focus-within {
-    transform: none; /* no bounce for a calmer feel */
-    background-color: rgba(16, 202, 157, 0.03); /* very light brand tint */
-    border-color: rgba(16, 202, 157, 0.28); /* slightly clearer outline */
-    box-shadow: 0 0 0 2px rgba(16, 202, 157, 0.08); /* soft outer ring, no drop shadow */
-}
-
-/* Tone down icon animation on hover for this section */
-.feature-one__single.global-hover-card:hover .feature-one__icon span,
-.feature-one__single.global-hover-card:focus-within .feature-one__icon span {
-    transform: none;
-    opacity: 0.95;
-}
-
-/* Project cards layout adjustments */
-.hot-products__single-inner {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-}
-
-.hot-products__img-box,
-.hot-products__img {
-    margin: 0;
-}
-
-.hot-products__img img {
-    display: block;
-    width: 100%;
-}
-
-.hot-products__content {
-    flex: 1 1 auto;
-    margin-top: 0;
-    padding: 22px 24px 28px;
-}
-
-/* .global-hover-card > :last-child {
+.global-hover-card > :last-child {
     margin-top: auto;
-} */
-
-/* Our Projects: modern compact card */
-.hot-products__single {
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 14px;
-    background: #fff;
-    overflow: hidden;
-    /* override inline min-height set by scripts */
-    min-height: auto !important;
-    height: 100%;
-}
-.certificates-slider, .sectors-slider{
-    padding-top: 25px;
-}
-.hot-products__single-inner {
-    gap: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-}
-
-.hot-products__img-box {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-    border-top-left-radius: 14px;
-    border-top-right-radius: 14px;
-    margin: 0;
-    flex: 0 0 auto;
-}
-
-.hot-products__img {
-    aspect-ratio: 16/9;
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    margin: 0;
-}
-
-.hot-products__img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.001);
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hot-products__single:hover .hot-products__img img {
-    transform: scale(1.04);
-}
-
-.hot-products__content {
-    padding: 16px 18px 18px;
-    display: flex;
-    flex-direction: column;
-}
-
-.hot-products__title {
-    font-size: 20px;
-    line-height: 1.35;
-    margin: 2px 0 6px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.hot-products__price {
-    margin: 0 0 14px;
-    color: #7b8a8f;
-}
-
-.hot-products__btn-box {
-    margin-top: 12px; /* keep content compact; avoid large empty space at card bottom */
-}
-
-/* Make all project cards equal height per row */
-.filter-layout {
-    align-items: stretch;
-    /* gap: 24px; add space between cards */
-}
-
-.filter-layout .filter-item {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.filter-layout .filter-item > .hot-products__single {
-    flex: 1 1 auto;
 }
 
 /* Button hover enhancement */

@@ -40,35 +40,28 @@ class ProjectController extends Controller
             'sector_id' => 'required|exists:sectors,id',
             'client_id' => 'nullable|exists:clients,id',
             'video' => 'nullable|url',
-            'mini_desc' => 'nullable|string',
-            'full_desc' => 'nullable|string',
             'images.*' => 'image|max:10240',
             'gallery.*' => 'image|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
-        // Remove file fields from validated data before creating project
-        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
-        $projectData['slug_name'] = Str::slug($request->name);
+        $validated['slug_name'] = Str::slug($request->name);
 
-        $project = Project::create($projectData);
+        $project = Project::create($validated);
 
-        // Handle main images (flipster collection)
+        // Handle main images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMedia($image)->toMediaCollection('flipster');
+                $project->addMedia($image)->toMediaCollection('projects');
             }
         }
 
         // Handle gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                // Store in project-specific folder: {slug}/gallery
-                // Base path (orionFrontAssets/assets/images/project/) is handled by 'projects' disk
-                $path = $image->store("{$project->slug_name}/gallery", 'projects');
                 ProjectGallary::create([
                     'project_id' => $project->id,
-                    'image' => $path,
+                    'image' => $image->store('gallery', 'public'),
                 ]);
             }
         }
@@ -111,35 +104,28 @@ class ProjectController extends Controller
             'sector_id' => 'required|exists:sectors,id',
             'client_id' => 'nullable|exists:clients,id',
             'video' => 'nullable|url',
-            'mini_desc' => 'nullable|string',
-            'full_desc' => 'nullable|string',
             'images.*' => 'image|max:10240',
             'gallery.*' => 'image|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
-        // Remove file fields from validated data before updating project
-        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
-        $projectData['slug_name'] = Str::slug($request->name);
+        $validated['slug_name'] = Str::slug($request->name);
 
-        $project->update($projectData);
+        $project->update($validated);
 
-        // Handle new main images (flipster collection)
+        // Handle new main images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMedia($image)->toMediaCollection('flipster');
+                $project->addMedia($image)->toMediaCollection('projects');
             }
         }
 
         // Handle new gallery images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
-                // Store in project-specific folder: {slug}/gallery
-                // Base path (orionFrontAssets/assets/images/project/) is handled by 'projects' disk
-                $path = $image->store("{$project->slug_name}/gallery", 'projects');
                 ProjectGallary::create([
                     'project_id' => $project->id,
-                    'image' => $path,
+                    'image' => $image->store('gallery', 'public'),
                 ]);
             }
         }
@@ -166,8 +152,7 @@ class ProjectController extends Controller
         // Delete related data
         $project->points()->delete();
         $project->gallaries()->delete();
-        $project->clearMediaCollection('flipster');
-        $project->clearMediaCollection('mini_gallary');
+        $project->clearMediaCollection('projects');
         $project->delete();
 
         return redirect()->route('admin.projects.index')
@@ -191,9 +176,9 @@ class ProjectController extends Controller
     {
         $gallery = ProjectGallary::findOrFail($id);
 
-        // Delete the file from storage using the 'projects' disk
-        if (\Storage::disk('projects')->exists($gallery->image)) {
-            \Storage::disk('projects')->delete($gallery->image);
+        // Delete the file from storage
+        if (\Storage::disk('public')->exists($gallery->image)) {
+            \Storage::disk('public')->delete($gallery->image);
         }
 
         $gallery->delete();

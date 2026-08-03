@@ -1,12 +1,52 @@
 <IfModule mod_rewrite.c>
-	Options -Indexes
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Block common exploit attempts in query strings
+<IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	# Send non-existing files/dirs to index.php (Laravel)
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule ^ index.php [L]
+	RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+	RewriteCond %{QUERY_STRING} GLOBALS(=|[|%[0-9A-Z]{0,2}) [OR]
+	RewriteCond %{QUERY_STRING} _REQUEST(=|[|%[0-9A-Z]{0,2}) [OR]
+	RewriteCond %{QUERY_STRING} proc/self/environ [NC,OR]
+	RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|%3D) [OR]
+	RewriteCond %{QUERY_STRING} base64_(en|de)code\(.*\) [NC,OR]
+	RewriteCond %{QUERY_STRING} (\.\.//|\.\.\\|%2e%2e) [NC,OR]
+	RewriteCond %{QUERY_STRING} (eval\(|execute\(|union.*select) [NC]
+	RewriteRule .* - [F,L]
+
+	# Block suspicious/empty user agents (common bot/scanner signatures)
+	RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+	RewriteCond %{HTTP_USER_AGENT} (libwww|wget|python|nikto|scan|clshttp|loader) [NC,OR]
+	RewriteCond %{HTTP_USER_AGENT} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC]
+	RewriteRule .* - [F,L]
 </IfModule>
+
+# Prevent PHP execution in uploads/storage directories
+<DirectoryMatch "^.*(storage|uploads|cache|temp).*$">
+	<FilesMatch "\.php$">
+		Require all denied
+	</FilesMatch>
+</DirectoryMatch>
 
 # Browser caching for static assets
 <IfModule mod_expires.c>
@@ -32,6 +72,11 @@
 	<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|css|js|mp4)$">
 		Header set Cache-Control "public, max-age=31536000, immutable"
 	</FilesMatch>
+
+	# Basic headers for static assets (dynamic pages get the fuller set,
+	# including CSP, from App\Http\Middleware\SecurityHeaders)
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set X-Content-Type-Options "nosniff"
 </IfModule>
 
 # Compress text-based assets
@@ -42,28 +87,6 @@
 </IfModule>
 
 # Basic hardening for common sensitive files if ever placed in public by mistake
-<FilesMatch "^(composer\.(json|lock)|package\.json|phpunit\.xml|artisan|\.env(\.example)?|webpack\.mix\.js|vite\.config\.js)$">
+<FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|artisan|\.env.*|webpack\.mix\.js|vite\.config\.js|\.git.*|\.htaccess|\.htpasswd)$">
 	Require all denied
 </FilesMatch>
-
-<IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
-    RewriteEngine On
-
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-</IfModule>

@@ -1,13 +1,41 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
+	# Force HTTPS (exclude cPanel domain-validation paths)
+	RewriteCond %{HTTPS} !=on
+	RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+	RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+	RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+	# Remove www prefix
+	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+	RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
 	# If your cPanel document root is public_html (project root), forward all requests to /public
 	RewriteRule ^$ public/ [L]
 	RewriteCond %{REQUEST_URI} !^/public/
 	RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
+# Security headers (public/.htaccess and App\Http\Middleware\SecurityHeaders
+# cover the rest, including CSP, for requests that reach Laravel)
+<IfModule mod_headers.c>
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
 # Disallow directory listing at the project root
 Options -Indexes
 
+# Block access to sensitive files and directories
+<FilesMatch "^(\..+|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|artisan|\.env.*|webpack\.mix\.js|vite\.config\.js|README\.md|SECURITY_HARDENING\.md)$">
+	Require all denied
+</FilesMatch>
 
+# Prevent PHP execution in uploads/storage directories
+<DirectoryMatch "^.*(storage|uploads|cache|temp).*$">
+	<FilesMatch "\.php$">
+		Require all denied
+	</FilesMatch>
+</DirectoryMatch>

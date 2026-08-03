@@ -28,7 +28,7 @@ class SettingController extends Controller
             'hero_video' => 'nullable|url',
             'about_title' => 'nullable|string',
             'about_description' => 'nullable|string',
-            'about_image' => 'nullable|image|max:10240',
+            'about_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'services_title' => 'nullable|string',
             'services_description' => 'nullable|string',
             'projects_title' => 'nullable|string',

@@ -42,8 +42,8 @@ class ProjectController extends Controller
             'video' => 'nullable|url',
             'mini_desc' => 'nullable|string',
             'full_desc' => 'nullable|string',
-            'images.*' => 'image|max:10240',
-            'gallery.*' => 'image|max:10240',
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+            'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
@@ -113,8 +113,8 @@ class ProjectController extends Controller
             'video' => 'nullable|url',
             'mini_desc' => 'nullable|string',
             'full_desc' => 'nullable|string',
-            'images.*' => 'image|max:10240',
-            'gallery.*' => 'image|max:10240',
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+            'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 

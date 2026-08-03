@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Define a simple ability for managing projects.
+        // Gate for the entire /admin panel (sectors, events, clients, settings, projects).
         // Admin emails are read from env PROJECT_ADMIN_EMAILS as a comma-separated list.
         Gate::define('manage-projects', function ($user) {
             $emailsEnv = (string) env('PROJECT_ADMIN_EMAILS', 'ahmed@orion.com');

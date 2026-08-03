@@ -72,8 +72,8 @@ $p_nam = 'certificate';
 <script src="{{ asset('orionFrontAssets/assets/vendors/circleType/jquery.lettering.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/nice-select/jquery.nice-select.min.js') }}"></script> -->
 <!-- template js -->
-<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
 @endsection
 

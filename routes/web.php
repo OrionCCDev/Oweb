@@ -22,7 +22,7 @@ Route::resource('sectors' , SectorController::class);
 Route::resource('news' , EventController::class);
 Route::get('/projects-list', [ProjectController::class , 'indexOfList'])->name('indexOfList');
 Route::get('/contact', function(){
-    return view('orionccFront.contact');
+    return view('orionccFront.contact-us');
 })->name('contact');
 
 // Route::get('/our-projects', function () {
@@ -48,9 +48,6 @@ Route::get('/about-us', function () {
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
-// Route::get('/contact-us', function () {
-//     return view('orionccFront.contact');
-// })->name('contact');
 Route::middleware(['auth', 'verified'])->group(function () {
     // Main Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -61,9 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Admin Routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('can:manage-projects')->group(function () {
         // Projects Management
-        Route::resource('projects', AdminProjectController::class)->middleware('can:manage-projects');
+        Route::resource('projects', AdminProjectController::class);
         Route::delete('projects/image/delete', [AdminProjectController::class, 'deleteImage'])->name('projects.deleteImage');
         Route::delete('projects/gallery/{id}', [AdminProjectController::class, 'deleteGalleryImage'])->name('projects.deleteGalleryImage');
 

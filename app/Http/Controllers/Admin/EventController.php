@@ -28,7 +28,7 @@ class EventController extends Controller
             'type' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
             'video_url' => 'nullable|url',
-            'main_image' => 'nullable|image|max:10240',
+            'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $event = Event::create($validated);
@@ -55,7 +55,7 @@ class EventController extends Controller
             'type' => 'nullable|string|max:100',
             'tags' => 'nullable|string',
             'video_url' => 'nullable|url',
-            'main_image' => 'nullable|image|max:10240',
+            'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $event->update($validated);

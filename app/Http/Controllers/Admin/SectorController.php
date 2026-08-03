@@ -25,7 +25,7 @@ class SectorController extends Controller
             'name' => 'required|string|max:255',
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'photo' => 'nullable|image|max:10240',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $sector = Sector::create($validated);
@@ -49,7 +49,7 @@ class SectorController extends Controller
             'name' => 'required|string|max:255',
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'photo' => 'nullable|image|max:10240',
+            'photo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $sector->update($validated);

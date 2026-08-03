@@ -24,7 +24,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo' => 'nullable|image|max:10240',
+            'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $client = Client::create($validated);
@@ -47,7 +47,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo' => 'nullable|image|max:10240',
+            'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
         $client->update($validated);

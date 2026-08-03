@@ -149,8 +149,8 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.3.0/lightgallery.min.js"
     integrity="sha512-+1CyleTPoFvPO15/CfBZ5h6k/mu/qCQe9uxq1tEfO7SRJ52MnCAQ561bAYkvrsGtnG7AkcvKtVwdeoZc8ps7bQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
 <script>
     $(document).ready(function () {
       // Initialize LightGallery

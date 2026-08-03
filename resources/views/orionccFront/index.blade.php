@@ -2,7 +2,25 @@
 @php
 $p_nam = 'home';
 @endphp
-@section('page_name' , 'Home')
+@section('page_name' , 'Home | Leading Construction Company in UAE & Saudi Arabia')
+
+{{-- SEO Meta Tags --}}
+@section('meta_description', 'Orion Contracting Company: premier construction and contracting firm with 15+ years of expertise in commercial, industrial, and residential projects across UAE and Saudi Arabia. ISO certified, trusted for quality and timely delivery.')
+@section('meta_keywords', 'construction company UAE, contracting Saudi Arabia, commercial construction, industrial projects, MEP contractors, construction management, building contractors, Orion Contracting, Dubai construction, Ras Al Khaimah construction company')
+@section('canonical_url', route('home'))
+
+{{-- Open Graph Tags --}}
+@section('og_type', 'website')
+@section('og_title', 'Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia')
+@section('og_description', 'Leading construction experts delivering innovative solutions across UAE & Saudi Arabia. 15+ years of excellence in commercial and industrial projects.')
+@section('og_image', asset('orionFrontAssets/assets/images/resources/logo-blue.webp'))
+@section('og_url', route('home'))
+
+{{-- Twitter Card Tags --}}
+@section('twitter_title', 'Orion Contracting - Construction Excellence in UAE & KSA')
+@section('twitter_description', 'Leading construction and contracting experts with 15+ years of experience across UAE and Saudi Arabia.')
+@section('twitter_image', asset('orionFrontAssets/assets/images/resources/logo-blue.webp'))
+
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/animate.min.css') }}" />
@@ -22,24 +40,33 @@ $p_nam = 'home';
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
 @section('meta_tags')
-<title>Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia</title>
-<meta name="description" content="Premier construction and contracting company with 15+ years expertise in commercial, industrial and residential projects across UAE and Saudi Arabia. ISO certified, innovative solutions and guaranteed quality.">
-<meta name="keywords" content="construction company UAE, contracting Saudi Arabia, commercial construction, industrial projects, MEP contractors, construction management, building contractors, Orion Contracting, Dubai construction, Saudi construction company">
-<meta name="robots" content="index, follow">
-<meta name="author" content="Orion Contracting Company">
-
-<!-- Open Graph / Social Media -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Orion Contracting Company - Construction Excellence">
-<meta property="og:description" content="Leading construction experts delivering innovative solutions across UAE & Saudi Arabia. 15+ years of excellence in commercial and industrial projects.">
-<meta property="og:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
-<meta property="og:url" content="{{ url()->current() }}">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Orion Contracting - Construction Excellence in UAE & KSA">
-<meta name="twitter:description" content="Leading construction and contracting experts with 15+ years of experience">
-<meta name="twitter:image" content="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
+<!-- Organization Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  "name": "Orion Contracting Company",
+  "url": "{{ url('/') }}",
+  "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+  "image": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+  "telephone": "+97172335531",
+  "email": "info@orioncc.com",
+  "foundingDate": "2008",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Al-Hamra Industrial Area",
+    "addressLocality": "Ras Al Khaimah",
+    "addressRegion": "Ras Al Khaimah",
+    "addressCountry": "AE"
+  },
+  "sameAs": [
+    "https://www.facebook.com/orioncontractingcompany",
+    "https://www.linkedin.com/company/orion-contracting-company-llc/",
+    "https://www.youtube.com/@orioncontracting9881",
+    "https://www.instagram.com/orioncontracting/"
+  ]
+}
+</script>
 @endsection
 <style>
     #particles-js {
@@ -761,9 +788,20 @@ $p_nam = 'home';
 @section('page_content')
 
 <!--Main Slider Start-->
-<section class="main-slider clearfix" id="hero-slider-sect" style="position: relative; height: var(--slider-height, 100vh); min-height: var(--slider-height, 100vh);">
-    <!-- Video is added via JS -->
+<section class="main-slider clearfix" id="hero-slider-sect" style="position: relative; height: var(--slider-height, 100vh); min-height: var(--slider-height, 100vh); background-image: url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}'); background-size: cover; background-position: center;">
+    {{-- Hero video source file (orionFrontAssets/assets/video/11188(9).mp4) is currently missing from public/,
+         so the JS below always fails to load it and this background-image is the fallback that actually renders.
+         Drop a compressed replacement (ideally <8MB, h264 mp4) at that path to restore the video, or remove
+         the video-creation JS entirely if a static hero image is preferred going forward. --}}
     <div id="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: var(--slider-height, 100vh); background-color: rgba(0,0,0,0.3); z-index: 1;"></div>
+    <div class="hero-heading" style="position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); z-index: 2; text-align: center; padding: 0 20px;">
+        <h1 style="color: #fff; font-weight: 800; font-size: clamp(28px, 5vw, 64px); line-height: 1.15; margin: 0 0 16px; text-shadow: 0 2px 12px rgba(0,0,0,0.5);">
+            Leading Construction &amp; Contracting Company in UAE &amp; Saudi Arabia
+        </h1>
+        <p style="color: #fff; font-size: clamp(16px, 2vw, 20px); margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">
+            You Dream We Build — 15+ Years of Excellence in Commercial, Industrial &amp; MEP Projects
+        </p>
+    </div>
     <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
                 "effect": "fade",
                 "pagination": {

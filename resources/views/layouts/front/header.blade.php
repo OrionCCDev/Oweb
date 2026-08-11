@@ -52,8 +52,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap"
         rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap"
+        rel="stylesheet">
     @yield('css_style_links')
     <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/custom-overrides.css') }}" />
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/theme-crystal.css') }}" />
 </head>
 
 <body class="custom-cursor">
@@ -131,9 +135,6 @@
                                                 <li @class(['current'=> $p_nam == 'news'])>
                                                     <a href="{{ route('news.index') }}">Our News</a>
                                                 </li>
-                                                {{-- <li @class(['current'=> $p_nam == 'team'])>
-                                                    <a href="{{ route('team') }}">Our Team</a>
-                                                </li> --}}
                                                 <li @class(['current'=> $p_nam == 'about'])>
                                                     <a href="{{ route('about') }}">About Us</a>
                                                 </li>
@@ -144,8 +145,9 @@
 
                                                 <div class="main-menu__btn-box">
                                                     <a href="{{ route('contact') }}"
-                                                        class="thm-btn main-menu__btn">Contact
-                                                        Us</a>
+                                                        class="thm-btn main-menu__btn">Contact Us
+                                                        <span class="thm-btn__arrow"><svg width="12" height="9" viewBox="0 0 14 10" fill="none"><path d="M1 5h11.5M8 1l4.5 4L8 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

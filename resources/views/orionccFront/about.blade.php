@@ -320,17 +320,21 @@ new Chart(equipmentCtx, {
                             </div>
                             <div class="section-title text-left">
                                 <span class="section-title__tagline">Get to Know us</span>
-                                <h2 class="section-title__title">Welcome to Orion Contracting Company</h2>
+                                <h2 class="section-title__title">{{ setting('about_intro_title', 'Welcome to Orion Contracting Company') }}</h2>
                             </div>
-                            <p class="about-three__text-1">We Experienced in Dealing with Local Authorities
-                            </p>
-                            <p class="about-three__text-1">We have Long Experience in Local Market and relationships
-                                with Key providers
-                            </p>
-                            <p class="about-three__text-1">Dedicated Services After the Completion of the Contractual
-                                Commitment
+                            @if (setting('about_intro_text'))
+                                <p class="about-three__text-1">{{ setting('about_intro_text') }}</p>
+                            @else
+                                <p class="about-three__text-1">We Experienced in Dealing with Local Authorities
+                                </p>
+                                <p class="about-three__text-1">We have Long Experience in Local Market and relationships
+                                    with Key providers
+                                </p>
+                                <p class="about-three__text-1">Dedicated Services After the Completion of the Contractual
+                                    Commitment
 
-                            </p>
+                                </p>
+                            @endif
                             <ul class="about-three__points list-unstyled">
                                 <li>
                                     <div class="about-three__count"></div>
@@ -459,9 +463,7 @@ new Chart(equipmentCtx, {
                     <div class="why-choose-one__left">
                         <div class="section-title text-left">
                             <span class="section-title__tagline fnt-clr-g">ORION Mission</span>
-                            <h2 class="section-title__title fs-18">To become the highest-value provider of UAE
-                                contracting
-                                services and technical expertise.</h2>
+                            <h2 class="section-title__title fs-18">{{ setting('about_mission', 'To become the highest-value provider of UAE contracting services and technical expertise.') }}</h2>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -480,9 +482,8 @@ new Chart(equipmentCtx, {
                 <div class="col-xl-6 ">
                     <div class="why-choose-one__left">
                         <div class="section-title text-left">
-                            <span class="section-title__tagline fnt-clr-g">ORION Vission</span>
-                            <h2 class="section-title__title fs-18">To design, construct, and deliver high-quality,
-                                cost-effective, and timely construction projects to our clients .</h2>
+                            <span class="section-title__tagline fnt-clr-g">ORION Vision</span>
+                            <h2 class="section-title__title fs-18">{{ setting('about_vision', 'To design, construct, and deliver high-quality, cost-effective, and timely construction projects to our clients.') }}</h2>
                         </div>
                         <div class="row">
                             <div class="col-12">

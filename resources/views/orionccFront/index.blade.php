@@ -69,31 +69,6 @@ $p_nam = 'home';
 </script>
 @endsection
 <style>
-    #particles-js {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-    /* Add CSS custom property for slider height */
-    :root {
-        --slider-height: 100vh;
-    }
-
-    @media screen and (max-width: 900px) {
-        :root {
-            --slider-height: 70vh;
-        }
-    }
-
-    @media screen and (max-width: 400px) {
-        :root {
-            --slider-height: 50vh;
-        }
-    }
-
     /* Add preload styles to improve above-the-fold loading */
     .lazy-load {
         opacity: 0;
@@ -101,80 +76,6 @@ $p_nam = 'home';
     }
     .lazy-load.loaded {
         opacity: 1;
-    }
-    /* Critical CSS for improved above-the-fold rendering */
-    .main-slider {
-        position: relative;
-        overflow: hidden;
-        min-height: 100vh; /* Full viewport height */
-    }
-    #background-video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh; /* Full viewport height */
-        object-fit: cover;
-        z-index: 0;
-    }
-
-    /* Ensure video works on mobile */
-    @media (max-width: 767px) {
-        #background-video {
-            height: 70vh; /* 70% viewport height on mobile */
-            min-height: 70%;
-            width: 100%;
-            z-index: 0;
-        }
-        .main-slider {
-            min-height: 70vh; /* 70% viewport height on mobile */
-        }
-    }
-
-    /* Override the global style that hides videos on mobile */
-    @media screen and (max-width: 900px) {
-        #background-video {
-            display: block !important;
-            z-index: 0;
-            height: 70vh; /* 70% viewport height */
-        }
-        .swiper-container,
-        .main-slider__content {
-            position: relative;
-            z-index: 5;
-        }
-    }
-
-    /* Center content in full-height video section */
-    .main-slider .container {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        z-index: 5;
-    }
-
-    /* Adjust main slider container height on mobile */
-    @media screen and (max-width: 900px) {
-        .main-slider .container {
-            height: 70vh;
-        }
-        .main-slider {
-            min-height: 70vh;
-            height: 70vh;
-        }
-    }
-
-    /* Fix z-index issues for slider content */
-    .main-slider__content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .swiper-container {
-        position: relative;
-        z-index: 2;
     }
 
     /* Certificate slider custom styles */
@@ -275,11 +176,71 @@ $p_nam = 'home';
 
 
 
-{{-- @section('pageLoader')
-<div class="preloader">
-    <div class="preloader__image"></div>
+@section('pageLoader')
+<div id="site-intro" class="site-intro">
+    <video id="site-intro-video" class="site-intro__video" autoplay muted playsinline preload="auto">
+        <source src="{{ asset('orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
+    </video>
+    <div class="site-intro__overlay"></div>
+    <div class="site-intro__logo">
+        <img src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company">
+    </div>
+    <button type="button" id="site-intro-skip" class="site-intro__skip">
+        <span>Skip Intro</span>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h11.5M8 1l4.5 4L8 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="site-intro__progress"><div class="site-intro__progress-bar" id="site-intro-progress-bar"></div></div>
 </div>
-@endsection --}}
+<script>
+(function () {
+    var intro = document.getElementById('site-intro');
+    if (!intro) return;
+
+    if (sessionStorage.getItem('orion_intro_seen') === '1') {
+        intro.style.display = 'none';
+        return;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    var video = document.getElementById('site-intro-video');
+    var skipBtn = document.getElementById('site-intro-skip');
+    var progressBar = document.getElementById('site-intro-progress-bar');
+    var closed = false;
+
+    function closeIntro() {
+        if (closed) return;
+        closed = true;
+        sessionStorage.setItem('orion_intro_seen', '1');
+        intro.classList.add('site-intro--hidden');
+        document.body.style.overflow = '';
+        setTimeout(function () {
+            intro.style.display = 'none';
+            if (video) video.pause();
+        }, 650);
+    }
+
+    if (skipBtn) skipBtn.addEventListener('click', closeIntro);
+
+    if (video) {
+        video.addEventListener('ended', closeIntro);
+        video.addEventListener('timeupdate', function () {
+            if (video.duration && progressBar) {
+                progressBar.style.width = ((video.currentTime / video.duration) * 100) + '%';
+            }
+        });
+        video.play().catch(closeIntro);
+
+        // Safety net: if the video never loads (network issue etc.), don't trap the visitor
+        setTimeout(function () {
+            if (!closed && video.readyState === 0) closeIntro();
+        }, 4000);
+    } else {
+        closeIntro();
+    }
+})();
+</script>
+@endsection
 @section('cust_js')
 <script>
     // Lazy loading function
@@ -413,245 +374,6 @@ $p_nam = 'home';
             lazyLoad();
         }
 
-        // Create the video element with proper loading strategy
-        const videoContainer = document.getElementById('hero-slider-sect');
-        if (videoContainer) {
-            // Check if browser supports HTML5 video
-            if (!!document.createElement('video').canPlayType) {
-                const video = document.createElement('video');
-
-                // Set video attributes
-                video.setAttribute('muted', 'muted');
-                video.setAttribute('loop', 'loop');
-                video.setAttribute('autoplay', 'autoplay');
-                video.setAttribute('playsinline', 'playsinline');
-                video.setAttribute('id', 'background-video');
-                video.setAttribute('poster', '{{ asset('orionFrontAssets/assets/video/video-screen.png') }}');
-                video.muted = true;
-                video.defaultMuted = true;
-                video.playsInline = true;
-                video.autoplay = true;
-                video.loop = true;
-                // Force video to be visible on mobile and full height
-                video.style.display = 'block';
-                video.style.zIndex = '0';
-
-                // Set responsive height based on screen width
-                if (window.innerWidth <= 400) {
-                    video.style.height = '50vh';
-                    videoContainer.style.height = '50vh';
-                    videoContainer.style.minHeight = '50vh';
-                    document.getElementById('video-overlay').style.height = '50vh';
-                    video.style.objectFit = 'fill';
-                } else if (window.innerWidth <= 900) {
-                    video.style.height = '70vh';
-                    videoContainer.style.height = '70vh';
-                    videoContainer.style.minHeight = '70vh';
-                    document.getElementById('video-overlay').style.height = '70vh';
-                    video.style.objectFit = 'fill';
-                } else {
-                    video.style.height = '100vh';
-                    videoContainer.style.height = '100vh';
-                    videoContainer.style.minHeight = '100vh';
-                    document.getElementById('video-overlay').style.height = '100vh';
-                    video.style.objectFit = 'cover';
-                }
-
-                video.style.width = '100%';
-                video.preload = 'auto';
-
-                // Add resize listener to adjust video height on window resize
-                window.addEventListener('resize', function() {
-                    if (window.innerWidth <= 400) {
-                        video.style.height = '50vh';
-                        videoContainer.style.height = '50vh';
-                        videoContainer.style.minHeight = '50vh';
-                        document.getElementById('video-overlay').style.height = '50vh';
-                        video.style.objectFit = 'fill';
-                    } else if (window.innerWidth <= 900) {
-                        video.style.height = '70vh';
-                        videoContainer.style.height = '70vh';
-                        videoContainer.style.minHeight = '70vh';
-                        document.getElementById('video-overlay').style.height = '70vh';
-                        video.style.objectFit = 'fill';
-                    } else {
-                        video.style.height = '100vh';
-                        videoContainer.style.height = '100vh';
-                        videoContainer.style.minHeight = '100vh';
-                        document.getElementById('video-overlay').style.height = '100vh';
-                        video.style.objectFit = 'cover';
-                    }
-                });
-
-                // Create the source element
-                const source = document.createElement('source');
-                source.src = '{{ asset('orionFrontAssets/assets/video/11188(9).mp4') }}';
-                source.type = "video/mp4";
-
-                // Append the source to the video
-                video.appendChild(source);
-
-                // Append the video to the container
-                videoContainer.prepend(video);
-
-                const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                let autoplaySucceeded = false;
-                let interactionFallbackArmed = false;
-                let autoplayBlocked = false;
-                let retryTimer = null;
-                let mobilePlayButton;
-
-                const ensureMobilePlayButton = () => {
-                    if (!isMobileDevice || mobilePlayButton) {
-                        return;
-                    }
-                    mobilePlayButton = document.createElement('div');
-                    mobilePlayButton.style.cssText = 'position:absolute; z-index:10; top:50%; left:50%; height:75px; width:75px; transform:translate(-50%,-50%); background:rgba(0,0,0,0.55); color:white; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 12px 24px rgba(0,0,0,0.4);';
-                    mobilePlayButton.innerHTML = '<i class="fa fa-play" style="font-size:26px;"></i>';
-                    mobilePlayButton.addEventListener('click', function() {
-                        video.play().then(() => {
-                            autoplaySucceeded = true;
-                            this.style.display = 'none';
-                        }).catch(e => console.log('Still could not play from button:', e));
-                    }, { once: true });
-                    videoContainer.appendChild(mobilePlayButton);
-                };
-
-                const enableInteractionFallback = () => {
-                    if (interactionFallbackArmed) {
-                        return;
-                    }
-                    interactionFallbackArmed = true;
-
-                    const playVideoOnInteraction = function() {
-                        video.play().then(() => {
-                            autoplaySucceeded = true;
-                            if (mobilePlayButton) {
-                                mobilePlayButton.style.display = 'none';
-                            }
-                        }).catch(e => console.log('Still could not play after interaction:', e));
-                        document.removeEventListener('touchstart', playVideoOnInteraction);
-                        document.removeEventListener('click', playVideoOnInteraction);
-                    };
-
-                    document.addEventListener('touchstart', playVideoOnInteraction, { once: true });
-                    document.addEventListener('click', playVideoOnInteraction, { once: true });
-                    ensureMobilePlayButton();
-                };
-
-                const attemptAutoplay = (reason, allowRetry = true) => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (retryTimer) {
-                        clearTimeout(retryTimer);
-                        retryTimer = null;
-                    }
-                    console.log(`Attempting video autoplay (${reason})`);
-
-                    const playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            autoplaySucceeded = true;
-                            console.log(`Video autoplay successful (${reason})`);
-                            if (mobilePlayButton) {
-                                mobilePlayButton.style.display = 'none';
-                            }
-                        }).catch(error => {
-                            console.log(`Autoplay attempt failed (${reason})`, error);
-                            if (error && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')) {
-                                autoplayBlocked = true;
-                                enableInteractionFallback();
-                            } else if (allowRetry) {
-                                retryTimer = setTimeout(() => attemptAutoplay('retry-after-error'), 600);
-                            }
-                        });
-                    } else {
-                        autoplaySucceeded = true;
-                        console.log(`Video autoplay succeeded synchronously (${reason})`);
-                    }
-                };
-
-                const isFullyBuffered = () => {
-                    try {
-                        if (!video.duration || !video.buffered.length) {
-                            return false;
-                        }
-                        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-                        return bufferedEnd >= (video.duration - 0.1);
-                    } catch (error) {
-                        return false;
-                    }
-                };
-
-                const maybeAutoplayWhenBuffered = (reason) => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (isFullyBuffered() || video.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
-                        attemptAutoplay(reason, false);
-                    }
-                };
-
-                const waitForCompleteDownload = () => {
-                    if (autoplaySucceeded || autoplayBlocked) {
-                        return;
-                    }
-                    if (isFullyBuffered()) {
-                        attemptAutoplay('fully-buffered', false);
-                        return;
-                    }
-                    setTimeout(waitForCompleteDownload, 400);
-                };
-
-                video.addEventListener('canplaythrough', () => {
-                    console.log('Video can play through; verifying buffer before autoplay');
-                    attemptAutoplay('canplaythrough');
-                });
-
-                video.addEventListener('progress', () => {
-                    maybeAutoplayWhenBuffered('buffered');
-                });
-
-                video.addEventListener('loadeddata', () => {
-                    maybeAutoplayWhenBuffered('loadeddata');
-                    waitForCompleteDownload();
-                });
-
-                video.addEventListener('loadedmetadata', () => {
-                    console.log('Video metadata loaded; ensuring download is forced');
-                    video.setAttribute('preload', 'auto');
-                    video.preload = 'auto';
-                    video.load();
-                    waitForCompleteDownload();
-                }, { once: true });
-
-                // Safety fallback in case the browser never fires canplaythrough
-                setTimeout(() => {
-                    if (!autoplaySucceeded && !autoplayBlocked) {
-                        attemptAutoplay('timeout');
-                    }
-                }, 8000);
-
-                // Add error handling
-                video.addEventListener('error', function() {
-                    console.log("Video playback error, falling back to background image");
-                    setFallbackBackground();
-                });
-            } else {
-                // Browser doesn't support HTML5 video
-                console.log("Browser doesn't support HTML5 video, using fallback");
-                setFallbackBackground();
-            }
-
-            // Fallback function
-            function setFallbackBackground() {
-                videoContainer.style.backgroundImage = "url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}')";
-                videoContainer.style.backgroundSize = "cover";
-                videoContainer.style.backgroundPosition = "center center";
-            }
-        }
-
         // Initialize certificate slider specifically
         if (typeof Swiper !== 'undefined') {
             // Check if the Swiper container exists
@@ -682,39 +404,6 @@ $p_nam = 'home';
         }
     });
 
-    // Defer loading of particles.js until after critical content
-    function loadParticles() {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
-        script.onload = function() {
-            particlesJS("particles-js", {
-                "particles": {
-                    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                    "color": { "value": "#aef490" },
-                    "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
-                    "opacity": { "value": 0.5, "random": false, "anim": { "enable": false, "speed": 1, "opacity_min": 0.1, "sync": false } },
-                    "size": { "value": 3, "random": true, "anim": { "enable": false, "speed": 40, "size_min": 0.1, "sync": false } },
-                    "line_linked": { "enable": true, "distance": 150, "color": "#fff", "opacity": 0.4, "width": 1 },
-                    "move": { "enable": true, "speed": 6, "direction": "none", "random": true, "straight": false, "out_mode": "bounce", "bounce": false, "attract": { "enable": true, "rotateX": 600, "rotateY": 1200 } }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": { "enable": true, "mode": "grab" },
-                        "onclick": { "enable": true, "mode": "push" },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": { "distance": 400, "line_linked": { "opacity": 1 } },
-                        "push": { "particles_nb": 4 }
-                    }
-                },
-                "retina_detect": true
-            });
-        };
-        document.body.appendChild(script);
-    }
-
     // Load non-critical scripts
     function loadDeferredScripts() {
         const scripts = [
@@ -736,7 +425,6 @@ $p_nam = 'home';
         function loadScript(index) {
             if (index >= scripts.length) {
                 // All scripts loaded
-                loadParticles();
                 return;
             }
 
@@ -787,43 +475,144 @@ $p_nam = 'home';
 
 @section('page_content')
 
-<!--Main Slider Start-->
-<section class="main-slider clearfix" id="hero-slider-sect" style="position: relative; height: var(--slider-height, 100vh); min-height: var(--slider-height, 100vh); background-image: url('{{ asset('orionFrontAssets/assets/video/video-screen.png') }}'); background-size: cover; background-position: center;">
-    {{-- Hero video source file (orionFrontAssets/assets/video/11188(9).mp4) is currently missing from public/,
-         so the JS below always fails to load it and this background-image is the fallback that actually renders.
-         Drop a compressed replacement (ideally <8MB, h264 mp4) at that path to restore the video, or remove
-         the video-creation JS entirely if a static hero image is preferred going forward. --}}
-    <div id="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: var(--slider-height, 100vh); background-color: rgba(0,0,0,0.3); z-index: 1;"></div>
-    <div class="hero-heading" style="position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); z-index: 2; text-align: center; padding: 0 20px;">
-        <h1 style="color: #fff; font-weight: 800; font-size: clamp(28px, 5vw, 64px); line-height: 1.15; margin: 0 0 16px; text-shadow: 0 2px 12px rgba(0,0,0,0.5);">
-            Leading Construction &amp; Contracting Company in UAE &amp; Saudi Arabia
-        </h1>
-        <p style="color: #fff; font-size: clamp(16px, 2vw, 20px); margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">
-            You Dream We Build — 15+ Years of Excellence in Commercial, Industrial &amp; MEP Projects
-        </p>
+<!--Hero Start-->
+<section class="hero-crystal" id="hero-crystal">
+    <video class="hero-crystal__video" autoplay muted loop playsinline
+        poster="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}">
+        <source src="{{ setting('hero_video') ?: asset('orionFrontAssets/assets/video/hero-bg-loop.mp4') }}" type="video/mp4">
+    </video>
+    <div class="hero-crystal__video-overlay"></div>
+    <div class="hero-crystal__blueprint" aria-hidden="true"></div>
+
+    <div class="hero-crystal__facet hero-crystal__facet--1" data-speed="0.4"></div>
+    <div class="hero-crystal__facet hero-crystal__facet--2" data-speed="0.25"></div>
+    <div class="hero-crystal__facet hero-crystal__facet--3" data-speed="0.15"></div>
+
+    <div class="hero-crystal__corner hero-crystal__corner--tl" aria-hidden="true"></div>
+    <div class="hero-crystal__corner hero-crystal__corner--tr" aria-hidden="true"></div>
+    <div class="hero-crystal__corner hero-crystal__corner--bl" aria-hidden="true"></div>
+    <div class="hero-crystal__corner hero-crystal__corner--br" aria-hidden="true"></div>
+
+    <div class="hero-crystal__content">
+        <span class="hero-crystal__eyebrow">Since 2008 · UAE &amp; Saudi Arabia</span>
+        <h1 class="hero-crystal__title">{{ setting('hero_title', 'Precision-Built Structures Across the UAE & Saudi Arabia') }}</h1>
+        <p class="hero-crystal__subtitle">{{ setting('hero_subtitle', 'Commercial, industrial & MEP construction — trusted for quality, reliability, and on-schedule delivery.') }}</p>
+        <div class="hero-crystal__actions">
+            <a href="{{ route('projects.index') }}" class="hero-crystal__btn hero-crystal__btn--primary">
+                View Our Projects
+                <span class="hero-crystal__btn-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h11.5M8 1l4.5 4L8 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+            <a href="{{ route('contact') }}" class="hero-crystal__btn hero-crystal__btn--ghost">
+                Get In Touch
+                <span class="hero-crystal__btn-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h11.5M8 1l4.5 4L8 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </a>
+        </div>
+        <button type="button" class="hero-crystal__watch-btn" id="orion-story-trigger">
+            <span class="hero-crystal__watch-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M2 1.5v11l10-5.5-10-5.5z"/></svg>
+            </span>
+            Watch Our Story
+        </button>
     </div>
-    <div class="swiper-container thm-swiper__slider" data-swiper-options='{"slidesPerView": 1, "loop": true,
-                "effect": "fade",
-                "pagination": {
-                "el": "#main-slider-pagination",
-                "type": "bullets",
-                "clickable": true
-                },
-                "navigation": {
-                "nextEl": "#main-slider__swiper-button-next",
-                "prevEl": "#main-slider__swiper-button-prev"
-                },
-                "autoplay": {
-                "delay": 5000
-                }}'>
 
-
-
-    </div>
-
-    <div id="particles-js"></div>
+    <div class="hero-crystal__scroll-cue" aria-hidden="true"></div>
 </section>
-<!--Main Slider End-->
+
+<section class="stats-bar">
+    <div class="container">
+        <div class="stats-bar__inner">
+            <div class="stats-bar__item">
+                <div class="stats-bar__value">{{ $stats['years'] }}</div>
+                <div class="stats-bar__label">Years of Experience</div>
+            </div>
+            <div class="stats-bar__item">
+                <div class="stats-bar__value">{{ $stats['projects'] }}</div>
+                <div class="stats-bar__label">Projects Delivered</div>
+            </div>
+            <div class="stats-bar__item">
+                <div class="stats-bar__value">{{ $stats['sectors'] }}</div>
+                <div class="stats-bar__label">Sectors Served</div>
+            </div>
+            <div class="stats-bar__item">
+                <div class="stats-bar__value stats-bar__value--plain">UAE&nbsp;&amp;&nbsp;KSA</div>
+                <div class="stats-bar__label">Where We Build</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="orion-story-popup" class="mfp-hide hero-crystal__story-popup">
+    <video id="orion-story-video" controls playsinline
+        poster="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}">
+        <source src="{{ asset('orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
+    </video>
+</div>
+<!--Hero End-->
+
+<script>
+(function () {
+    var hero = document.getElementById('hero-crystal');
+    if (!hero) return;
+    var facets = hero.querySelectorAll('.hero-crystal__facet');
+    if (!facets.length) return;
+    if (window.matchMedia('(max-width: 768px)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var ticking = false;
+    function update() {
+        ticking = false;
+        var rect = hero.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        for (var i = 0; i < facets.length; i++) {
+            var speed = parseFloat(facets[i].getAttribute('data-speed')) || 0.2;
+            facets[i].style.transform = 'translate3d(0,' + (rect.top * -speed) + 'px,0)';
+        }
+    }
+    function onScroll() {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+        }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var trigger = document.getElementById('orion-story-trigger');
+    if (!trigger) return;
+
+    function bindStoryPopup() {
+        if (typeof jQuery === 'undefined' || typeof jQuery.fn.magnificPopup === 'undefined') {
+            return false;
+        }
+        jQuery(trigger).magnificPopup({
+            items: { src: '#orion-story-popup', type: 'inline' },
+            mainClass: 'mfp-fade',
+            removalDelay: 160,
+            fixedContentPos: true,
+            callbacks: {
+                open: function () {
+                    var video = document.getElementById('orion-story-video');
+                    if (video) video.play().catch(function () {});
+                },
+                close: function () {
+                    var video = document.getElementById('orion-story-video');
+                    if (video) { video.pause(); video.currentTime = 0; }
+                }
+            }
+        });
+        return true;
+    }
+
+    if (!bindStoryPopup()) {
+        var waitForMagnific = setInterval(function () {
+            if (bindStoryPopup()) clearInterval(waitForMagnific);
+        }, 100);
+    }
+});
+</script>
 
 <!--Feature One Start-->
 <section class="feature-one">
@@ -1030,7 +819,10 @@ $p_nam = 'home';
                     <div class="col-xl-6 col-lg-6">
                         <div class="section-title text-left">
                             <span class="section-title__tagline">Checkout Our Projects</span>
-                            <h2 class="section-title__title">Our Projects</h2>
+                            <h2 class="section-title__title">{{ setting('projects_title', 'Our Projects') }}</h2>
+                            @if (setting('projects_description'))
+                                <p class="section-title__text">{{ setting('projects_description') }}</p>
+                            @endif
                             <!-- <div class="hot-products__btn-box">
                                         <a href="all_projects.html" class="hot-products__btn thm-btn">All Projects</a>
                                     </div> -->
@@ -1436,15 +1228,19 @@ $p_nam = 'home';
                 <div class="about-one__right">
                     <div class="section-title text-left">
                         <span class="section-title__tagline">You Dream We Build</span>
-                        <h2 class="section-title__title">Orion Founders Message</h2>
+                        <h2 class="section-title__title">{{ setting('about_title', 'Orion Founders Message') }}</h2>
                     </div>
 
-                    <p class="about-one__text-1">Founded in 2008 by a team of young, Experts engineers, our
-                        company has grown by leveraging extensive knowledge in industrial and commercial
-                        construction within the region.</p>
-                    <p class="about-one__text-2">We have built our reputation on the foundation of innovative
-                        technologies and methods, combined with creative concepts, designs, and meticulous
-                        project execution.</p>
+                    @if (setting('about_description'))
+                        <p class="about-one__text-1">{{ setting('about_description') }}</p>
+                    @else
+                        <p class="about-one__text-1">Founded in 2008 by a team of young, Experts engineers, our
+                            company has grown by leveraging extensive knowledge in industrial and commercial
+                            construction within the region.</p>
+                        <p class="about-one__text-2">We have built our reputation on the foundation of innovative
+                            technologies and methods, combined with creative concepts, designs, and meticulous
+                            project execution.</p>
+                    @endif
                     <div class="about-one__bottom">
                         <div class="about-one__bottom-icon">
                             <img data-src="{{ asset('orionFrontAssets/assets/images/icon/014-labor.png') }}" alt="" class="lazy">
@@ -1538,6 +1334,9 @@ $p_nam = 'home';
 
 <!--Video One Start-->
 <section class="video-one">
+    <div class="crystal-grid-bg" aria-hidden="true"></div>
+    <div class="crystal-corner crystal-corner--tl" aria-hidden="true"></div>
+    <div class="crystal-corner crystal-corner--br" aria-hidden="true"></div>
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png') }})">
     </div>
@@ -1614,7 +1413,7 @@ $p_nam = 'home';
                         <div class="categories-one__single categories-one__single-{{ $loop->index + 1 }}">
                             <div class="categories-one__img-box">
                                 <div class="categories-one__img">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}"
+                                    <img data-src="{{ $sector->hasMedia('sectors') ? $sector->getFirstMediaUrl('sectors') : asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}"
                                         alt="" class="lazy">
                                 </div>
                             </div>
@@ -1649,6 +1448,9 @@ $p_nam = 'home';
 </section>
 <!--Cta One Start-->
 <section class="cta-one">
+    <div class="crystal-grid-bg" aria-hidden="true"></div>
+    <div class="crystal-corner crystal-corner--tl" aria-hidden="true"></div>
+    <div class="crystal-corner crystal-corner--br" aria-hidden="true"></div>
     <div class="cta-one__bg-img"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/shapes/OIU9I511-01-rotat-Copy.png') }});">
     </div>
@@ -1661,12 +1463,18 @@ $p_nam = 'home';
             <div class="cta-one__left">
                 <div class="cta-one__title-box">
                     <span class="cta-one__tagline">Need Orion Help?</span>
-                    <h2 class="cta-one__title">We're leader in Contracting of Constructions market</h2>
+                    <h2 class="cta-one__title">{{ setting('contact_title', "We're leader in Contracting of Constructions market") }}</h2>
+                    @if (setting('contact_description'))
+                        <p class="cta-one__text">{{ setting('contact_description') }}</p>
+                    @endif
                 </div>
             </div>
             <div class="cta-one__right">
                 <div class="cta-one__btn-box">
-                    <a href="about.html" class="cta-one__btn thm-btn">Contact Us</a>
+                    <a href="{{ route('contact') }}" class="cta-one__btn thm-btn">
+                        Contact Us
+                        <span class="thm-btn__arrow"><svg width="12" height="9" viewBox="0 0 14 10" fill="none"><path d="M1 5h11.5M8 1l4.5 4L8 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1709,7 +1517,7 @@ $p_nam = 'home';
             <div class="row">
                 @foreach ($clients as $client )
                     <div class="col clinet-logo-item">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/clinets/' . $client->logo) }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
+                        <img data-src="{{ $client->hasMedia('clients') ? $client->getFirstMediaUrl('clients') : asset('orionFrontAssets/assets/images/clinets/' . $client->logo) }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
                     </div>
                 @endforeach
 

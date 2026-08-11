@@ -141,7 +141,7 @@ $p_nam = 'contact';
                                 <div class="content">
                                     <p>Call Us</p>
                                     <h4>
-                                        <a href="tel:97172335531">+971 7 2335531</a>
+                                        <a href="tel:{{ str_replace([' ', '+'], '', setting('phone', '+971 7 2335531')) }}">{{ setting('phone', '+971 7 2335531') }}</a>
                                     </h4>
                                 </div>
                             </li>
@@ -174,7 +174,7 @@ $p_nam = 'contact';
                                 <div class="content">
                                     <p>Write email</p>
                                     <h4>
-                                        <a href="mailto:info@orioncc.com">info@orioncc.com</a>
+                                        <a href="mailto:{{ setting('email', 'info@orioncc.com') }}">{{ setting('email', 'info@orioncc.com') }}</a>
                                     </h4>
                                 </div>
                             </li>
@@ -184,19 +184,18 @@ $p_nam = 'contact';
                                 </div>
                                 <div class="content text-center">
                                     <p>Visit Us</p>
-                                    <h4>Al Hamrah Industrial Zone Al Jazirah Alhamra – Ras al Khaimah – United Arab
-                                        Emirates</h4>
+                                    <h4>{{ setting('address', 'Al Hamrah Industrial Zone Al Jazirah Alhamra – Ras al Khaimah – United Arab Emirates') }}</h4>
                                 </div>
                             </li>
                         </ul>
                         <div class="contact-details__social-box justify-content-center mt-5">
 
-                            <a href="https://www.facebook.com/orioncontractingcompany/"><i
+                            <a href="{{ setting('facebook', 'https://www.facebook.com/orioncontractingcompany/') }}"><i
                                     class="fab fa-facebook"></i></a>
-                            <a href="https://www.linkedin.com/company/orion-contracting-company-llc/"><i
+                            <a href="{{ setting('linkedin', 'https://www.linkedin.com/company/orion-contracting-company-llc/') }}"><i
                                     class="fab fa-linkedin"></i></a>
-                            <a href="https://www.instagram.com/orioncontracting/"><i class="fab fa-instagram"></i></a>
-                            <a href="https://www.youtube.com/@orioncontracting9881"><i class="fab fa-youtube"></i></a>
+                            <a href="{{ setting('instagram', 'https://www.instagram.com/orioncontracting/') }}"><i class="fab fa-instagram"></i></a>
+                            <a href="{{ setting('youtube', 'https://www.youtube.com/@orioncontracting9881') }}"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
 
@@ -217,8 +216,9 @@ $p_nam = 'contact';
                             </h2>
                         </div>
                         <div class="contact-page__content">
-                            <form action="https://layerdrops.com/ogenix/main-html/assets/inc/sendemail.php"
+                            <form action="{{ route('contact.submit') }}" method="POST"
                                 class="contact-page__form contact-form-validated" novalidate="novalidate">
+                                @csrf
                                 <div class="row">
                                     <div class="col-xl-6">
                                         <div class="contact-page__form-input-box">
@@ -232,7 +232,7 @@ $p_nam = 'contact';
                                     </div>
                                     <div class="col-xl-6">
                                         <div class="contact-page__form-input-box">
-                                            <input type="text" placeholder="Subject" name="Subject">
+                                            <input type="text" placeholder="Subject" name="subject">
                                         </div>
                                     </div>
                                     <div class="col-xl-6">

@@ -1,0 +1,1038 @@
+/* ==========================================================================
+   Orion Contracting — Crystal Dark Blue theme
+   Design system foundations: palette, type, and the hero section.
+   Loaded after style.css/custom-overrides.css so it can override.
+   ========================================================================== */
+
+/* ---- Base template variable remap ----
+   The Ogenix template's "--ogenix-black" (confusingly, it's actually blue
+   #1b3f94) and "--ogenix-gray" are used as the template's core dark/muted
+   colors in ~140 and ~80 places respectively (headings, logo background,
+   dropdowns, borders, the header top bar, etc.) - far more places than we
+   can reasonably chase down one selector at a time. Redefining the
+   variables themselves cascades the crystal palette to all of them at
+   once. This is also what caused two confirmed bugs already: the header
+   top bar staying the old blue, and the hero corner-bracket border
+   resolving to this gray via currentColor. */
+:root {
+    --ogenix-black: var(--crystal-base);
+    --ogenix-gray: var(--crystal-text-muted);
+}
+
+/* ---- Accessibility baseline ----
+   The base template suppresses the browser's default focus outline in
+   several places (outline: none / !important) with nothing put back in
+   its place, which fails WCAG 2.4.7 for keyboard users. Restore a visible,
+   on-brand focus indicator on every interactive element site-wide. */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.thm-btn:focus-visible,
+.hero-crystal__btn:focus-visible,
+.hero-crystal__watch-btn:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--crystal-accent) !important;
+    outline-offset: 3px !important;
+}
+
+/* Hover-lift transforms (buttons) aren't purely decorative parallax, but
+   still respect reduced-motion for users sensitive to any movement. */
+@media (prefers-reduced-motion: reduce) {
+    .thm-btn,
+    .hero-crystal__btn,
+    .hero-crystal__watch-btn,
+    .hero-crystal__watch-icon,
+    .cta-one,
+    .thm-btn__arrow,
+    .hero-crystal__btn-arrow {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+    .thm-btn:hover,
+    .hero-crystal__btn:hover,
+    .hero-crystal__watch-btn:hover {
+        transform: none !important;
+    }
+    .hero-crystal__video,
+    .site-intro__video {
+        display: none !important;
+    }
+}
+
+/* ---- Site intro (video splash, homepage only, once per session) ---- */
+
+.site-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.site-intro--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.site-intro__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.site-intro__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.35) 0%, rgba(10, 22, 40, 0.6) 100%);
+}
+
+.site-intro__logo {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    z-index: 2;
+    width: 130px;
+}
+
+.site-intro__logo img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.site-intro__skip {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(244, 248, 251, 0.08);
+    border: 1px solid rgba(244, 248, 251, 0.3);
+    color: var(--crystal-light);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 18px;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.site-intro__skip:hover {
+    background: var(--crystal-accent);
+    border-color: var(--crystal-accent);
+    color: var(--crystal-base);
+}
+
+.site-intro__progress {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(244, 248, 251, 0.15);
+    z-index: 2;
+}
+
+.site-intro__progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--crystal-accent);
+    transition: width 0.1s linear;
+}
+
+@media (max-width: 600px) {
+    .site-intro__logo { width: 100px; top: 20px; left: 20px; }
+    .site-intro__skip { top: 20px; right: 20px; padding: 9px 14px; font-size: 12px; }
+}
+
+:root {
+    --crystal-base: #0A1628;
+    --crystal-surface: #0F2138;
+    --crystal-surface-2: #16273F;
+    --crystal-accent: #7FE7FF;
+    --crystal-accent-dim: #4FB8CF;
+    --crystal-text-muted: #9FB4C8;
+    --crystal-light: #F4F8FB;
+
+    --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+    --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+/* ---- Hero ---- */
+
+.hero-crystal {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--crystal-base) 0%, var(--crystal-surface) 100%);
+    isolation: isolate;
+}
+
+.hero-crystal__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.hero-crystal__video-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.55) 0%, rgba(10, 22, 40, 0.75) 100%);
+}
+
+/* Blueprint/technical grid — reads as engineering drawing, not decoration */
+.hero-crystal__blueprint {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(127, 231, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(127, 231, 255, 0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 85%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 85%);
+}
+
+.hero-crystal__corner {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    z-index: 3;
+    opacity: 0.55;
+}
+
+.hero-crystal__corner--tl { top: 28px; left: 28px; border-top: 2px solid var(--crystal-accent); border-left: 2px solid var(--crystal-accent); }
+.hero-crystal__corner--tr { top: 28px; right: 28px; border-top: 2px solid var(--crystal-accent); border-right: 2px solid var(--crystal-accent); }
+.hero-crystal__corner--bl { bottom: 28px; left: 28px; border-bottom: 2px solid var(--crystal-accent); border-left: 2px solid var(--crystal-accent); }
+.hero-crystal__corner--br { bottom: 28px; right: 28px; border-bottom: 2px solid var(--crystal-accent); border-right: 2px solid var(--crystal-accent); }
+
+@media (max-width: 768px) {
+    .hero-crystal__corner { display: none; }
+}
+
+@media (max-width: 768px) {
+    .hero-crystal__video {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-crystal__video {
+        display: none;
+    }
+}
+
+.hero-crystal__facet {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.hero-crystal__watch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(244, 248, 251, 0.06);
+    border: 1px solid rgba(244, 248, 251, 0.22);
+    border-radius: 999px;
+    color: var(--crystal-light);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 24px 8px 8px;
+    margin-top: 30px;
+    transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.hero-crystal__watch-btn:hover {
+    background: rgba(127, 231, 255, 0.1);
+    border-color: var(--crystal-accent);
+    transform: translateY(-2px);
+}
+
+.hero-crystal__watch-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--crystal-accent);
+    color: var(--crystal-base);
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+}
+
+.hero-crystal__watch-btn:hover .hero-crystal__watch-icon {
+    transform: scale(1.08);
+}
+
+.hero-crystal__story-popup {
+    max-width: 900px;
+    width: 92%;
+    margin: 40px auto;
+    background: #000;
+    line-height: 0;
+}
+
+.hero-crystal__story-popup video {
+    width: 100%;
+    display: block;
+}
+
+.hero-crystal__facet--1 {
+    top: -12%;
+    right: -8%;
+    width: 55vw;
+    max-width: 640px;
+    height: 60vw;
+    max-height: 640px;
+    background: linear-gradient(135deg, rgba(127, 231, 255, 0.14), rgba(127, 231, 255, 0.02));
+    clip-path: polygon(30% 0%, 100% 20%, 100% 100%, 0% 70%);
+}
+
+.hero-crystal__facet--2 {
+    top: 8%;
+    right: 12%;
+    width: 26vw;
+    max-width: 320px;
+    height: 34vw;
+    max-height: 400px;
+    background: linear-gradient(135deg, rgba(127, 231, 255, 0.22), transparent);
+    clip-path: polygon(0% 0%, 100% 30%, 80% 100%, 0% 80%);
+}
+
+.hero-crystal__facet--3 {
+    bottom: -10%;
+    left: -6%;
+    width: 32vw;
+    max-width: 380px;
+    height: 32vw;
+    max-height: 380px;
+    background: linear-gradient(45deg, rgba(159, 180, 200, 0.10), transparent);
+    clip-path: polygon(0% 30%, 60% 0%, 100% 60%, 40% 100%);
+}
+
+.hero-crystal__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 120px 24px 90px;
+    text-align: center;
+}
+
+.hero-crystal__eyebrow {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--crystal-accent);
+    margin-bottom: 20px;
+}
+
+.hero-crystal__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 5.5vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -0.5px;
+    color: var(--crystal-light);
+    margin: 0 0 20px;
+}
+
+.hero-crystal__subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.6;
+    color: var(--crystal-text-muted);
+    max-width: 520px;
+    margin: 0 auto 34px;
+}
+
+.hero-crystal__actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-crystal__btn {
+    position: relative;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 15px 26px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+.hero-crystal__btn-arrow {
+    display: inline-flex;
+    transition: transform 0.25s ease;
+}
+
+.hero-crystal__btn:hover .hero-crystal__btn-arrow {
+    transform: translateX(4px);
+}
+
+.hero-crystal__btn--primary {
+    background: var(--crystal-accent);
+    color: var(--crystal-base);
+}
+
+.hero-crystal__btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(127, 231, 255, 0.28);
+    background: var(--crystal-light);
+    color: var(--crystal-base);
+}
+
+.hero-crystal__btn--ghost {
+    /* Solid fill instead of a border: clip-path clips the border too and
+       leaves the diagonal-cut edge unstroked, which looks broken. */
+    background: var(--crystal-surface-2);
+    color: var(--crystal-light);
+}
+
+.hero-crystal__btn--ghost:hover {
+    transform: translateY(-2px);
+    background: var(--crystal-accent);
+    color: var(--crystal-base);
+    box-shadow: 0 14px 28px rgba(127, 231, 255, 0.2);
+}
+
+.hero-crystal__scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 34px;
+    border: 1.5px solid rgba(244, 248, 251, 0.35);
+    border-radius: 12px;
+    z-index: 3;
+}
+
+.hero-crystal__scroll-cue::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 3px;
+    height: 8px;
+    background: var(--crystal-accent);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    animation: hero-crystal-scroll 1.8s ease-in-out infinite;
+}
+
+@keyframes hero-crystal-scroll {
+    0% { opacity: 1; transform: translate(-50%, 0); }
+    60% { opacity: 0; transform: translate(-50%, 14px); }
+    100% { opacity: 0; transform: translate(-50%, 14px); }
+}
+
+@media (max-width: 768px) {
+    .hero-crystal {
+        min-height: 72vh;
+    }
+    .hero-crystal__content {
+        padding: 90px 20px 60px;
+    }
+    /* Parallax facets simplified to static, reduced-opacity accents for performance */
+    .hero-crystal__facet {
+        transform: none !important;
+    }
+    .hero-crystal__facet--2 {
+        display: none;
+    }
+    .hero-crystal__scroll-cue {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-crystal__facet {
+        transform: none !important;
+    }
+    .hero-crystal__scroll-cue::before {
+        animation: none;
+    }
+}
+
+/* ---- Stats bar (technical spec-sheet style, sits under the hero) ---- */
+
+.stats-bar {
+    background: var(--crystal-surface);
+    border-bottom: 1px solid rgba(127, 231, 255, 0.12);
+}
+
+.stats-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stats-bar__item {
+    flex: 1 1 160px;
+    max-width: 220px;
+    text-align: center;
+    padding: 28px 16px;
+    border-left: 1px solid rgba(127, 231, 255, 0.12);
+}
+
+.stats-bar__item:first-child {
+    border-left: none;
+}
+
+.stats-bar__value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 3vw, 38px);
+    color: var(--crystal-accent);
+    line-height: 1;
+}
+
+.stats-bar__value::after {
+    content: "+";
+}
+
+.stats-bar__value--plain::after {
+    content: "";
+}
+
+.stats-bar__label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--crystal-text-muted);
+    margin-top: 8px;
+}
+
+@media (max-width: 576px) {
+    .stats-bar__item {
+        flex: 1 1 45%;
+        border-left: none;
+        border-top: 1px solid rgba(127, 231, 255, 0.12);
+    }
+}
+
+/* ==========================================================================
+   Site-wide component reskin
+   Retargets existing template classes so every section picks up the
+   Crystal Dark Blue system without changing markup/behavior.
+   ========================================================================== */
+
+/* ---- Global typography ---- */
+
+.section-title__tagline {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase;
+    color: var(--crystal-accent-dim) !important;
+}
+
+.section-title__title {
+    font-family: var(--font-display) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+    color: var(--crystal-base) !important;
+}
+
+/* Two leftover hover effects from the old template clash with the new
+   design and were never disabled - this is the "hover looks broken" bug:
+   - .thm-btn::before: a color-sweep wedge in the old teal, rounded corners
+   - .global-hover-btn: an old teal background-image + a white shine sweep
+   Kill both, keep only the new crystal hover treatment below. */
+.thm-btn::before,
+.thm-btn.global-hover-btn::after {
+    content: none !important;
+    display: none !important;
+}
+
+.thm-btn {
+    font-family: var(--font-body) !important;
+    font-weight: 600 !important;
+    background: var(--crystal-base) !important;
+    background-image: none !important;
+    color: var(--crystal-light) !important;
+    border-radius: 0 !important;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+.thm-btn:hover {
+    background: var(--crystal-surface-2) !important;
+    color: var(--crystal-light) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(10, 22, 40, 0.28);
+}
+
+.cta-one__btn.thm-btn,
+.main-menu__btn.thm-btn {
+    color: var(--crystal-base) !important;
+}
+
+.cta-one__btn.thm-btn:hover,
+.main-menu__btn.thm-btn:hover {
+    background: var(--crystal-light) !important;
+    color: var(--crystal-base) !important;
+    box-shadow: 0 14px 28px rgba(127, 231, 255, 0.3);
+}
+
+.thm-btn__arrow {
+    display: inline-flex;
+    transition: transform 0.25s ease;
+}
+
+.thm-btn:hover .thm-btn__arrow {
+    transform: translateX(4px);
+}
+
+/* ---- Header / navigation ---- */
+
+.main-header,
+.stricky-header.stricked-menu.main-menu.stricky-fixed,
+.stricky-header.main-menu {
+    background: var(--crystal-base) !important;
+}
+
+/* The actual visible nav row - .main-header only sets the outer
+   container's background, but this inner wrapper has its own hardcoded
+   white background in the base template that was covering it,
+   which is why the nav links were unreadable (light text on white). */
+.main-menu__wrapper-inner {
+    background-color: var(--crystal-base) !important;
+    box-shadow: none !important;
+}
+
+.main-menu__list > li > a {
+    color: var(--crystal-light) !important;
+    font-family: var(--font-body) !important;
+}
+
+.main-menu__list > li.current > a,
+.main-menu__list > li:hover > a {
+    color: var(--crystal-accent) !important;
+}
+
+.main-header__btn-box .thm-btn,
+.main-menu__btn {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+/* ---- Swiper navigation (certificates / sectors sliders) ---- */
+
+.certificates-slider .swiper-button-next,
+.certificates-slider .swiper-button-prev,
+.sectors-slider .swiper-button-next,
+.sectors-slider .swiper-button-prev {
+    color: var(--crystal-base) !important;
+    background-color: rgba(127, 231, 255, 0.16) !important;
+}
+
+/* ---- Page header banner (every inner page: about, projects, sectors,
+   certificates, news, contact, team, clients all share this one component) ---- */
+
+.page-header {
+    position: relative;
+    overflow: hidden;
+    background: var(--crystal-base);
+}
+
+.page-header-bg::before {
+    background-color: rgba(10, 22, 40, 0.72) !important;
+    background-image: linear-gradient(180deg, rgba(10, 22, 40, 0.55) 0%, rgba(10, 22, 40, 0.82) 100%);
+}
+
+.page-header__inner h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--crystal-light) !important;
+}
+
+.thm-breadcrumb li a,
+.thm-breadcrumb li {
+    color: var(--crystal-text-muted) !important;
+    font-family: var(--font-body);
+}
+
+.thm-breadcrumb li a:hover {
+    color: var(--crystal-accent) !important;
+}
+
+.certificates-slider .swiper-pagination-bullet,
+.sectors-slider .swiper-pagination-bullet {
+    background: var(--crystal-accent-dim) !important;
+}
+
+.certificates-slider .swiper-pagination-bullet-active,
+.sectors-slider .swiper-pagination-bullet-active {
+    background: var(--crystal-accent) !important;
+}
+
+/* ---- Projects section ---- */
+
+.hot-products__title a {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+.hot-products__price {
+    color: var(--crystal-accent-dim);
+    font-weight: 600;
+}
+
+/* ---- Video / "Best of the Best Managers" CTA ---- */
+
+.video-one {
+    background: var(--crystal-base);
+}
+
+.video-one__video-icon {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+.video-one__video-title {
+    font-family: var(--font-display);
+}
+
+/* ---- Sectors cards ---- */
+
+.categories-one__title a {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+.categories-one__arrow {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+/* ---- CTA band ("Need Orion Help?") — bold dark treatment for rhythm ---- */
+
+.cta-one {
+    background: linear-gradient(120deg, var(--crystal-base) 0%, var(--crystal-surface-2) 100%) !important;
+}
+
+.cta-one__tagline {
+    color: var(--crystal-accent) !important;
+}
+
+.cta-one__title {
+    font-family: var(--font-display);
+    color: var(--crystal-light) !important;
+}
+
+.cta-one__btn {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+/* ---- About page mission/vision (why-choose-one) ----
+   Dark photo background - the template's own .why-choose-one__title is
+   already explicitly white, but the global .section-title__title override
+   was forcing dark navy here too (same class of bug as the clients
+   section below: dark text on a dark/unknown photo background). */
+
+.why-choose-one .section-title__title,
+.why-choose-one .section-title__tagline {
+    color: var(--crystal-light) !important;
+}
+
+/* ---- Clients section ----
+   Text color here can't be safely computed against the underlying photo
+   background, so force a dark overlay + light text rather than risk
+   dark-on-dark like the nav bar bug. */
+
+.testimonial-two {
+    position: relative;
+}
+
+.testimonial-two::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.82) 0%, rgba(10, 22, 40, 0.9) 100%);
+}
+
+.testimonial-two > * {
+    position: relative;
+    z-index: 1;
+}
+
+.testimonial-two .section-title__title,
+.testimonial-two__text-1 {
+    color: var(--crystal-light) !important;
+}
+
+.testimonial-two__text-1 {
+    font-family: var(--font-body);
+}
+
+/* ---- Footer ---- */
+
+.site-footer {
+    background: var(--crystal-base) !important;
+}
+
+.footer-widget__title {
+    font-family: var(--font-display);
+    color: var(--crystal-light) !important;
+}
+
+.footer-widget__explore-list-box a:hover,
+.footer-widget__contact-text a:hover {
+    color: var(--crystal-accent) !important;
+}
+
+.footer-widget__social-box a:hover {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+.site-footer__bottom {
+    border-top-color: rgba(127, 231, 255, 0.12) !important;
+}
+
+/* ==========================================================================
+   Technical/engineering motifs — reusable pieces from the hero, applied
+   across the rest of the homepage for a consistent identity.
+   ========================================================================== */
+
+/* ---- Reusable blueprint grid overlay (drop into any dark section) ---- */
+
+.crystal-grid-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(127, 231, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(127, 231, 255, 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 35%, transparent 85%);
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 35%, transparent 85%);
+}
+
+/* ---- Reusable corner brackets (drop 4 into any section corner) ---- */
+
+.crystal-corner {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    z-index: 1;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.crystal-corner--tl { top: 20px; left: 20px; border-top: 2px solid var(--crystal-accent); border-left: 2px solid var(--crystal-accent); }
+.crystal-corner--tr { top: 20px; right: 20px; border-top: 2px solid var(--crystal-accent); border-right: 2px solid var(--crystal-accent); }
+.crystal-corner--bl { bottom: 20px; left: 20px; border-bottom: 2px solid var(--crystal-accent); border-left: 2px solid var(--crystal-accent); }
+.crystal-corner--br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--crystal-accent); border-right: 2px solid var(--crystal-accent); }
+
+@media (max-width: 768px) {
+    .crystal-corner { display: none; }
+}
+
+/* ---- Feature icons: technical instrument frame instead of a plain circle ---- */
+
+.feature-one__icon {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--crystal-surface) !important;
+    border: 1px solid rgba(127, 231, 255, 0.25);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    margin: 0 auto 20px;
+}
+
+.feature-one__icon img {
+    width: 34px;
+    height: 34px;
+    -webkit-filter: brightness(0) saturate(100%) invert(88%) sepia(28%) saturate(638%) hue-rotate(146deg) brightness(103%) contrast(101%);
+    filter: brightness(0) saturate(100%) invert(88%) sepia(28%) saturate(638%) hue-rotate(146deg) brightness(103%) contrast(101%);
+}
+
+.feature-one__title {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+/* ---- CTA band: blueprint grid + corner brackets, same language as the hero ---- */
+
+.cta-one {
+    position: relative;
+    overflow: hidden;
+}
+
+/* ---- Video CTA: same dark treatment ---- */
+
+.video-one {
+    position: relative;
+    overflow: hidden;
+}
+
+/* ---- Faceted card corners: projects, certificates, sectors ---- */
+
+.hot-products__img-box,
+.banner-one__img-2,
+.categories-one__img-box {
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+}
+
+.hot-products__single {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hot-products__single:hover {
+    box-shadow: 0 20px 40px rgba(10, 22, 40, 0.15);
+}
+
+/* ==========================================================================
+   Inner pages: projects grid/list, project details, sectors, certificates,
+   news. Page-header/section-title/thm-btn are already covered globally
+   above - this fills in the page-specific card/badge components.
+   ========================================================================== */
+
+/* ---- Status badges (old teal/navy/lime clashed with the new palette) ---- */
+
+.bg-lbn { background-color: var(--crystal-surface-2) !important; }
+.bg-blu { background-color: var(--crystal-base) !important; }
+.bg-lim { background-color: var(--crystal-accent) !important; color: var(--crystal-base) !important; }
+
+/* ---- Projects grid (/projects) ---- */
+
+.product__all-img {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+
+.product__all-title a {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+.product__all-single {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product__all-single:hover {
+    box-shadow: 0 20px 40px rgba(10, 22, 40, 0.15);
+}
+
+/* ---- Projects list view (/projects-list) ---- */
+
+.product-list__img-box {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+
+.product-list__content .product-list__price a,
+.product-list__content h3 a {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+/* ---- Project details gallery ---- */
+
+.gallery-one__img-box {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+
+.gallery-one__title {
+    font-family: var(--font-display);
+}
+
+.gallery-one__arrow {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+/* ---- News listing (/news) ---- */
+
+.news-sidebar__img,
+.news-one__img {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+
+.news-sidebar__title a,
+.news-sidebar__title,
+.news-one__title a {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+.news-sidebar__date {
+    background: var(--crystal-base) !important;
+    color: var(--crystal-light) !important;
+}
+
+.news-sidebar__read-more,
+.news-one__read-more a {
+    color: var(--crystal-accent-dim) !important;
+}
+
+/* ---- News details page ---- */
+
+.news-details__title {
+    font-family: var(--font-display);
+    color: var(--crystal-base);
+}
+
+.news-details__img {
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 0 100%);
+}
+
+.news-details__tags a:hover {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+.news-details__social-list a:hover {
+    background: var(--crystal-accent) !important;
+    color: var(--crystal-base) !important;
+}
+
+/* ---- Sectors experience badge ---- */
+
+.about-three__experience-year h3 {
+    font-family: var(--font-display);
+    color: var(--crystal-accent);
+}

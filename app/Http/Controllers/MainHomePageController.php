@@ -15,8 +15,14 @@ class MainHomePageController extends Controller
         $events = Event::all();
         $main_event = Event::latest()->take(1)->first();
         $projects = Project::orderBy('priority')->take(9)->get();
-        $clients = Client::whereNotNull('logo')->get();
+        $clients = Client::whereNotNull('logo')->orWhereHas('media')->get();
+        $stats = [
+            'years' => now()->year - 2008,
+            'projects' => Project::count(),
+            'sectors' => Sector::count(),
+            'clients' => $clients->count(),
+        ];
         // dd($events , $main_event);
-        return view('orionccFront.index', compact('sectors','events' , 'main_event','projects' , 'clients'));
+        return view('orionccFront.index', compact('sectors','events' , 'main_event','projects' , 'clients', 'stats'));
     }
 }

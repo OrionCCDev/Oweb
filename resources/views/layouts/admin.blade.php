@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }} - Admin Dashboard</title>
+    <title>{{ config('app.name', 'Orion Contracting Company') }} - Admin Dashboard</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -64,6 +64,26 @@
                     Clients
                 </a>
 
+                <a href="{{ route('admin.certificates.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.certificates.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Certificates
+                </a>
+
+                <a href="{{ route('admin.contact-submissions.index') }}" class="flex items-center justify-between px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.contact-submissions.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <span class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Contact Submissions
+                    </span>
+                    @php($unreadContactCount = \App\Models\ContactSubmission::whereNull('read_at')->count())
+                    @if ($unreadContactCount > 0)
+                        <span class="bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{{ $unreadContactCount }}</span>
+                    @endif
+                </a>
+
                 <div class="border-t border-gray-700 my-4"></div>
 
                 <a href="{{ route('admin.settings.homepage') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.homepage') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
@@ -71,6 +91,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
                     Homepage Settings
+                </a>
+
+                <a href="{{ route('admin.settings.about') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.about') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    About Page Settings
                 </a>
 
                 <a href="{{ route('admin.settings.contact') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.contact') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">

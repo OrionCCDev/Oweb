@@ -52,6 +52,31 @@ class SettingController extends Controller
             ->with('success', 'Homepage settings updated successfully.');
     }
 
+    public function about()
+    {
+        $settings = Setting::where('group', 'about')->get()->keyBy('key');
+        return view('admin.settings.about', compact('settings'));
+    }
+
+    public function updateAbout(Request $request)
+    {
+        $fields = [
+            'about_intro_title' => 'nullable|string',
+            'about_intro_text' => 'nullable|string',
+            'about_mission' => 'nullable|string',
+            'about_vision' => 'nullable|string',
+        ];
+
+        $request->validate($fields);
+
+        foreach ($fields as $field => $rule) {
+            Setting::set($field, $request->$field, 'text', 'about');
+        }
+
+        return redirect()->route('admin.settings.about')
+            ->with('success', 'About page settings updated successfully.');
+    }
+
     public function contact()
     {
         $settings = Setting::where('group', 'contact')->get()->keyBy('key');

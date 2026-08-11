@@ -107,7 +107,7 @@ $p_nam = 'news';
                         <!--News Sidebar Single Start-->
                         <div class="news-sidebar__single">
                             <div class="news-sidebar__img">
-                                <img src="{{ asset('orionFrontAssets/assets/images/blog/' . $event->main_image) }}"
+                                <img src="{{ $event->hasMedia('events') ? $event->getFirstMediaUrl('events') : asset('orionFrontAssets/assets/images/blog/' . $event->main_image) }}"
                                     alt="">
                                 <div class="news-sidebar__date">
                                     <p>{{ $event->created_at->format('d M') }}</p>

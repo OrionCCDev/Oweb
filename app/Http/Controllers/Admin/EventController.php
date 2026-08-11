@@ -31,7 +31,7 @@ class EventController extends Controller
             'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $event = Event::create($validated);
+        $event = Event::create(collect($validated)->except('main_image')->toArray());
 
         if ($request->hasFile('main_image')) {
             $event->addMedia($request->file('main_image'))->toMediaCollection('events');
@@ -58,7 +58,7 @@ class EventController extends Controller
             'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $event->update($validated);
+        $event->update(collect($validated)->except('main_image')->toArray());
 
         if ($request->hasFile('main_image')) {
             $event->clearMediaCollection('events');

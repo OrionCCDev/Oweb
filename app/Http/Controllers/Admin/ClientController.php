@@ -27,7 +27,7 @@ class ClientController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $client = Client::create($validated);
+        $client = Client::create(collect($validated)->except('logo')->toArray());
 
         if ($request->hasFile('logo')) {
             $client->addMedia($request->file('logo'))->toMediaCollection('clients');
@@ -50,7 +50,7 @@ class ClientController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $client->update($validated);
+        $client->update(collect($validated)->except('logo')->toArray());
 
         if ($request->hasFile('logo')) {
             $client->clearMediaCollection('clients');

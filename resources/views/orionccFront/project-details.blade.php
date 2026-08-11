@@ -1,7 +1,7 @@
 @extends('layouts.front.app')
 @php
 $p_nam = 'projects';
-$projectImage = $project->hasMedia('images') ? $project->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
+$projectImage = $project->hasMedia('flipster') ? $project->getFirstMediaUrl('flipster') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
 $projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$project->Sector->name} project by Orion Contracting Company. Completed in " . \Carbon\Carbon::parse($project->end)->format('Y') . " with expertise in commercial and industrial construction.";
 // Backward-compatible image resolver for gallery images
 // Ensures old flat structure `project/{slug}/` and new `project/{slug}/gallery/` both work

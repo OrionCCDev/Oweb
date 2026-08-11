@@ -118,7 +118,7 @@ $p_nam = 'sectors';
                         <h2 class="section-title__title">{{ $sector->name }}</h2>
                     </div>
                     <p class="about-three__text-1">{{ $sector->title }}</p>
-                    <p class="about-three__text-2">{{ $sector->desc }}</p>
+                    <p class="about-three__text-2">{{ $sector->description }}</p>
 
                 </div>
             </div>
@@ -131,7 +131,7 @@ $p_nam = 'sectors';
                                 alt="">
                         </div>
                         <div class="about-three__img">
-                            <img src="{{ asset('orionFrontAssets/assets/images/sectors/' . $sector->photo)}}" alt="">
+                            <img src="{{ $sector->hasMedia('sectors') ? $sector->getFirstMediaUrl('sectors') : asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}" alt="">
                         </div>
                         <div class="about-three__experience">
                             <div class="about-three__experience-shape-1">
@@ -226,7 +226,7 @@ $p_nam = 'sectors';
                                 alt="">
                         </div>
                         <div class="about-three__img">
-                            <img src="{{ asset('orionFrontAssets/assets/images/sectors/' . $sector->photo)}}" alt="">
+                            <img src="{{ $sector->hasMedia('sectors') ? $sector->getFirstMediaUrl('sectors') : asset('orionFrontAssets/assets/images/sectors/' . $sector->photo) }}" alt="">
                         </div>
                         <div class="about-three__experience">
                             <div class="about-three__experience-shape-1">
@@ -259,7 +259,7 @@ $p_nam = 'sectors';
                         <h2 class="section-title__title">{{ $sector->name }}</h2>
                     </div>
                     <p class="about-three__text-1">{{ $sector->title }}</p>
-                    <p class="about-three__text-2">{{ $sector->desc }}</p>
+                    <p class="about-three__text-2">{{ $sector->description }}</p>
 
                 </div>
             </div>

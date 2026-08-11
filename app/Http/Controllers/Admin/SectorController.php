@@ -28,7 +28,7 @@ class SectorController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $sector = Sector::create($validated);
+        $sector = Sector::create(collect($validated)->except('photo')->toArray());
 
         if ($request->hasFile('photo')) {
             $sector->addMedia($request->file('photo'))->toMediaCollection('sectors');
@@ -52,7 +52,7 @@ class SectorController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
-        $sector->update($validated);
+        $sector->update(collect($validated)->except('photo')->toArray());
 
         if ($request->hasFile('photo')) {
             $sector->clearMediaCollection('sectors');

@@ -6,13 +6,17 @@ use App\Http\Controllers\MainHomePageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SectorController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\SectorController as AdminSectorController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
+use App\Http\Controllers\Admin\CertificateController as AdminCertificateController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\ContactSubmissionController;
+use App\Http\Controllers\Admin\ContactSubmissionController as AdminContactSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainHomePageController::class , 'index'])->name('home');
@@ -24,6 +28,9 @@ Route::get('/projects-list', [ProjectController::class , 'indexOfList'])->name('
 Route::get('/contact', function(){
     return view('orionccFront.contact-us');
 })->name('contact');
+Route::post('/contact', [ContactSubmissionController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('contact.submit');
 
 // Route::get('/our-projects', function () {
 //     return view('orionccFront.projects');
@@ -33,13 +40,7 @@ Route::get('/contact', function(){
 //     return view('orionccFront.sectors');
 // })->name('sectors');
 
-Route::get('/our-clients', function () {
-    return view('orionccFront.clients');
-})->name('clients');
-
-Route::get('/our-team', function () {
-    return view('orionccFront.team');
-})->name('team');
+Route::get('/our-clients', [ClientController::class, 'index'])->name('clients');
 
 Route::get('/about-us', function () {
     return view('orionccFront.about');
@@ -73,10 +74,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Clients Management
         Route::resource('clients', AdminClientController::class);
 
+        // Certificates Management
+        Route::resource('certificates', AdminCertificateController::class);
+
+        // Contact Form Submissions
+        Route::resource('contact-submissions', AdminContactSubmissionController::class)
+            ->only(['index', 'show', 'destroy']);
+
         // Settings Management
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::get('settings/homepage', [SettingController::class, 'homepage'])->name('settings.homepage');
         Route::post('settings/homepage', [SettingController::class, 'updateHomepage'])->name('settings.homepage.update');
+        Route::get('settings/about', [SettingController::class, 'about'])->name('settings.about');
+        Route::post('settings/about', [SettingController::class, 'updateAbout'])->name('settings.about.update');
         Route::get('settings/contact', [SettingController::class, 'contact'])->name('settings.contact');
         Route::post('settings/contact', [SettingController::class, 'updateContact'])->name('settings.contact.update');
         Route::get('settings/create', [SettingController::class, 'create'])->name('settings.create');

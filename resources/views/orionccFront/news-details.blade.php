@@ -1,7 +1,7 @@
 @extends('layouts.front.app')
 @php
 $p_nam = 'news';
-$eventImage = $event->hasMedia('images') ? $event->getFirstMediaUrl('images') : asset('orionFrontAssets/assets/images/blog/' . $event->main_image);
+$eventImage = $event->hasMedia('events') ? $event->getFirstMediaUrl('events') : asset('orionFrontAssets/assets/images/blog/' . $event->main_image);
 $eventDescription = $event->mini_description ?: strip_tags($event->description);
 $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 @endphp
@@ -217,7 +217,7 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
                 {{-- @dd($event) --}}
                 <div class="news-details__left">
                     <div class="news-details__img">
-                        <img src="{{ asset('orionFrontAssets/assets/images/blog/'.$event->main_image) }}" alt="{{ $event->title }}" loading="lazy">
+                        <img src="{{ $eventImage }}" alt="{{ $event->title }}" loading="lazy">
                         <div class="news-details__date">
                             <p>{{ $event->created_at}}</p>
                         </div>
@@ -259,7 +259,7 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 
                             <li>
                                 <div class="sidebar__post-image">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/blogs/' . $eventt->main_image) }}"
+                                    <img src="{{ $eventt->hasMedia('events') ? $eventt->getFirstMediaUrl('events') : asset('orionFrontAssets/assets/images/blog/' . $eventt->main_image) }}"
                                         alt="{{ $eventt->title }}" loading="lazy">
                                 </div>
                                 <div class="sidebar__post-content">
@@ -314,7 +314,7 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 <!--Video One Start-->
 <section class="video-one">
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
-        style="background-image: url({{ asset('orionFrontAssets/assets/images/blog/' . $event->main_image) }})">
+        style="background-image: url({{ $eventImage }})">
     </div>
     <div class="video-one-border"></div>
     <div class="video-one-border video-one-border-two"></div>

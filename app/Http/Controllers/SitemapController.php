@@ -22,7 +22,6 @@ class SitemapController extends Controller
         $sitemap .= $this->addUrl(route('about'), '0.8', 'monthly', now()->toAtomString());
         $sitemap .= $this->addUrl(route('contact'), '0.8', 'monthly', now()->toAtomString());
         $sitemap .= $this->addUrl(route('clients'), '0.7', 'monthly', now()->toAtomString());
-        $sitemap .= $this->addUrl(route('team'), '0.7', 'monthly', now()->toAtomString());
 
         // Projects listing
         $sitemap .= $this->addUrl(route('projects.index'), '0.9', 'weekly', now()->toAtomString());
@@ -32,14 +31,14 @@ class SitemapController extends Controller
         $projects = Project::all();
         foreach ($projects as $project) {
             $imageUrl = null;
-            if ($project->hasMedia('images')) {
-                $imageUrl = $project->getFirstMediaUrl('images');
+            if ($project->hasMedia('flipster')) {
+                $imageUrl = $project->getFirstMediaUrl('flipster');
             }
             $sitemap .= $this->addUrl(
                 route('projects.show', $project->id),
                 '0.8',
                 'monthly',
-                $project->updated_at->toAtomString(),
+                optional($project->updated_at)->toAtomString() ?? now()->toAtomString(),
                 $imageUrl,
                 $project->name
             );
@@ -52,14 +51,14 @@ class SitemapController extends Controller
         $sectors = Sector::all();
         foreach ($sectors as $sector) {
             $imageUrl = null;
-            if ($sector->hasMedia('images')) {
-                $imageUrl = $sector->getFirstMediaUrl('images');
+            if ($sector->hasMedia('sectors')) {
+                $imageUrl = $sector->getFirstMediaUrl('sectors');
             }
             $sitemap .= $this->addUrl(
                 route('sectors.show', $sector->id),
                 '0.8',
                 'monthly',
-                $sector->updated_at->toAtomString(),
+                optional($sector->updated_at)->toAtomString() ?? now()->toAtomString(),
                 $imageUrl,
                 $sector->name
             );
@@ -72,14 +71,14 @@ class SitemapController extends Controller
         $events = Event::all();
         foreach ($events as $event) {
             $imageUrl = null;
-            if ($event->hasMedia('images')) {
-                $imageUrl = $event->getFirstMediaUrl('images');
+            if ($event->hasMedia('events')) {
+                $imageUrl = $event->getFirstMediaUrl('events');
             }
             $sitemap .= $this->addUrl(
                 route('news.show', $event->id),
                 '0.7',
                 'monthly',
-                $event->updated_at->toAtomString(),
+                optional($event->updated_at)->toAtomString() ?? now()->toAtomString(),
                 $imageUrl,
                 $event->name
             );

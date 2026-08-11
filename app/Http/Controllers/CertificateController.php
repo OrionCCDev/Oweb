@@ -12,7 +12,8 @@ class CertificateController extends Controller
      */
     public function index()
     {
-        return view('orionccFront.certificate');
+        $certificates = Certificate::orderBy('sort_order')->orderBy('id')->get();
+        return view('orionccFront.certificate', compact('certificates'));
     }
 
     /**

@@ -4,50 +4,76 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUsersSeeder extends Seeder
 {
     /**
-     * Seeds additional dashboard accounts beyond the primary super admin
-     * (which AdminUserSeeder handles). Edit the list below with real team
-     * members before running — no passwords are stored here; each account
-     * gets a random password generated on creation and printed once to the
-     * console. Existing accounts (matched by email) are left untouched,
-     * including their password, so this is safe to re-run after adding
-     * a new entry to the list.
+     * Interactively add additional dashboard accounts beyond the primary
+     * super admin (which AdminUserSeeder handles). Prompts for each
+     * account's details one at a time — nothing is hardcoded, nothing
+     * ends up in a file. Skip entirely by answering "no" to the first
+     * prompt, e.g. when running this non-interactively.
      */
-    private const ADMINS = [
-        // ['name' => 'Jane Doe', 'email' => 'jane@orioncc.com', 'role' => 'admin'],
-    ];
-
     public function run(): void
     {
-        if (empty(self::ADMINS)) {
-            if ($this->command) {
-                $this->command->info('AdminUsersSeeder: no additional admins configured — edit database/seeders/AdminUsersSeeder.php to add some.');
-            }
+        if (! $this->command) {
             return;
         }
 
-        foreach (self::ADMINS as $admin) {
-            if (User::where('email', $admin['email'])->exists()) {
+        if (! $this->command->confirm('Add an additional admin user now?', false)) {
+            return;
+        }
+
+        do {
+            $name = $this->command->ask('Name');
+            $email = $this->command->ask('Email');
+
+            if (! $name || ! $email) {
+                $this->command->error('Name and email are required — skipping this entry.');
                 continue;
             }
 
-            $password = Str::password(16);
+            $role = $this->command->choice('Role', ['admin', 'super_admin'], 0);
+
+            $existing = User::where('email', $email)->first();
+
+            if ($existing) {
+                $existing->name = $name;
+                $existing->role = $role;
+
+                if ($this->command->confirm('This email already exists — also change its password?', false)) {
+                    $password = $this->command->secret('New password (hidden)');
+                    $confirm = $this->command->secret('Confirm password');
+
+                    if (empty($password) || $password !== $confirm) {
+                        $this->command->error('Passwords were empty or did not match — password left unchanged.');
+                    } else {
+                        $existing->password = Hash::make($password);
+                    }
+                }
+
+                $existing->save();
+                $this->command->info("Updated {$email} ({$role}).");
+                continue;
+            }
+
+            $password = $this->command->secret('Password (hidden)');
+            $confirm = $this->command->secret('Confirm password');
+
+            if (empty($password) || $password !== $confirm) {
+                $this->command->error('Passwords were empty or did not match — this account was not created.');
+                continue;
+            }
 
             User::create([
-                'name' => $admin['name'],
-                'email' => $admin['email'],
+                'name' => $name,
+                'email' => $email,
                 'password' => $password,
-                'role' => $admin['role'] ?? 'admin',
+                'role' => $role,
             ]);
 
-            if ($this->command) {
-                $this->command->warn("Created {$admin['email']} ({$admin['role']}) — password: {$password}");
-                $this->command->warn('Save this now — it will not be shown again.');
-            }
-        }
+            $this->command->info("Created {$email} ({$role}).");
+        } while ($this->command->confirm('Add another admin?', false));
     }
 }

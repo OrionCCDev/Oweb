@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Orion Admin — modern dark dashboard theme
+   Scoped to .admin-shell (the <body> of layouts/admin.blade.php), so it
+   never touches the public front-end styles.
+   ========================================================================== */
+
+.admin-shell {
+    --db-bg: #0B0F14;
+    --db-bg-elevated: #0E141C;
+    --db-surface: #131A22;
+    --db-surface-2: #1A222C;
+    --db-surface-3: #212B36;
+    --db-border: #29333F;
+    --db-border-soft: #1E2731;
+    --db-ink: #EBEFF3;
+    --db-ink-dim: #C3CBD4;
+    --db-muted: #8A95A3;
+    --db-muted-2: #616C79;
+
+    --db-accent: #17B8A6;
+    --db-accent-hover: #12A190;
+    --db-accent-ink: #04211D;
+    --db-accent-soft: rgba(23, 184, 166, .14);
+
+    --db-danger: #F0554C;
+    --db-danger-soft: rgba(239, 68, 68, .16);
+    --db-red-text: #F87171;
+    --db-green: #4ADE80;
+    --db-green-soft: rgba(34, 197, 94, .16);
+    --db-blue: #60A5FA;
+    --db-blue-soft: rgba(59, 130, 246, .16);
+    --db-amber: #FBBF24;
+    --db-amber-soft: rgba(245, 158, 11, .16);
+    --db-purple: #C084FC;
+    --db-purple-soft: rgba(168, 85, 247, .16);
+
+    background: var(--db-bg);
+    color: var(--db-ink-dim);
+    min-height: 100vh;
+}
+
+.admin-shell ::selection { background: var(--db-accent-soft); color: var(--db-ink); }
+
+/* Scrollbars */
+.admin-shell ::-webkit-scrollbar { width: 10px; height: 10px; }
+.admin-shell ::-webkit-scrollbar-track { background: transparent; }
+.admin-shell ::-webkit-scrollbar-thumb { background: var(--db-surface-3); border-radius: 8px; border: 2px solid var(--db-bg); }
+.admin-shell ::-webkit-scrollbar-thumb:hover { background: var(--db-muted-2); }
+
+/* ---------------------------------------------------------------------- */
+/* Sidebar                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.admin-sidebar {
+    background: linear-gradient(180deg, var(--db-surface) 0%, var(--db-bg-elevated) 100%);
+    border-right: 1px solid var(--db-border-soft);
+}
+
+.admin-sidebar__brand {
+    border-bottom: 1px solid var(--db-border-soft);
+}
+
+.admin-sidebar__logo {
+    height: 2.1rem;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .4));
+}
+
+.admin-sidebar__close {
+    color: var(--db-muted);
+}
+.admin-sidebar__close:hover { color: var(--db-ink); }
+
+.admin-nav__group-label {
+    color: var(--db-muted-2);
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.admin-nav__link {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .6rem .8rem;
+    border-radius: .6rem;
+    color: var(--db-muted);
+    font-size: .875rem;
+    font-weight: 500;
+    position: relative;
+    transition: background-color .15s ease, color .15s ease;
+}
+.admin-nav__link svg { flex: none; color: var(--db-muted-2); transition: color .15s ease; }
+.admin-nav__link:hover { background: var(--db-surface-2); color: var(--db-ink); }
+.admin-nav__link:hover svg { color: var(--db-ink-dim); }
+
+.admin-nav__link.is-active {
+    background: var(--db-accent-soft);
+    color: var(--db-accent);
+}
+.admin-nav__link.is-active svg { color: var(--db-accent); }
+.admin-nav__link.is-active::before {
+    content: '';
+    position: absolute;
+    left: -.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 1.3rem;
+    border-radius: 0 3px 3px 0;
+    background: var(--db-accent);
+}
+
+.admin-nav__badge {
+    background: var(--db-accent);
+    color: var(--db-accent-ink);
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .1rem .45rem;
+    border-radius: 999px;
+}
+
+.admin-sidebar__divider { border-top: 1px solid var(--db-border-soft); }
+
+/* ---------------------------------------------------------------------- */
+/* Topbar                                                                  */
+/* ---------------------------------------------------------------------- */
+
+.admin-topbar {
+    background: rgba(11, 15, 20, .82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--db-border-soft);
+}
+
+.admin-topbar__title { color: var(--db-ink); }
+.admin-topbar__menu-btn { color: var(--db-muted); }
+.admin-topbar__menu-btn:hover { color: var(--db-ink); }
+
+.admin-user-chip {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+.admin-user-chip__avatar {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    background: var(--db-accent-soft);
+    color: var(--db-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: .85rem;
+    flex: none;
+}
+.admin-user-chip__name { color: var(--db-ink); font-size: .85rem; font-weight: 600; line-height: 1.2; }
+.admin-user-chip__role { color: var(--db-muted); font-size: .72rem; line-height: 1.2; }
+
+.admin-logout-btn {
+    color: var(--db-muted);
+    background: var(--db-surface-2);
+    border: 1px solid var(--db-border);
+    border-radius: .6rem;
+    padding: .5rem;
+    transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.admin-logout-btn:hover {
+    color: var(--db-red-text);
+    background: var(--db-danger-soft);
+    border-color: rgba(239, 68, 68, .35);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Generic content overrides — every admin/*.blade.php view is built from  */
+/* raw Tailwind utility classes, so remap the exact classes in use rather  */
+/* than rewrite every view.                                                */
+/* ---------------------------------------------------------------------- */
+
+/* Cards / surfaces */
+.admin-shell .bg-white { background-color: var(--db-surface); }
+.admin-shell .bg-gray-50 { background-color: var(--db-surface-2); }
+.admin-shell .bg-gray-100 { background-color: var(--db-surface-2); }
+.admin-shell .bg-gray-200 { background-color: var(--db-surface-3); }
+.admin-shell .bg-gray-300 { background-color: var(--db-surface-3); }
+
+.admin-shell .shadow,
+.admin-shell .shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 0 0 1px var(--db-border-soft);
+}
+
+/* Text */
+.admin-shell .text-gray-900 { color: var(--db-ink); }
+.admin-shell .text-gray-800 { color: var(--db-ink); }
+.admin-shell .text-gray-700 { color: var(--db-ink-dim); }
+.admin-shell .text-gray-600 { color: var(--db-muted); }
+.admin-shell .text-gray-500 { color: var(--db-muted); }
+.admin-shell .text-gray-400 { color: var(--db-muted-2); }
+
+/* Borders / dividers */
+.admin-shell .border-gray-100,
+.admin-shell .border-gray-200,
+.admin-shell .border-gray-300,
+.admin-shell .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: var(--db-border); }
+
+/* Tables */
+.admin-shell table thead { position: relative; }
+.admin-shell table tbody tr:hover { background-color: var(--db-surface-2); }
+
+/* Form controls — blanket element-level override so every input/select/
+   textarea gets the dark treatment regardless of which color utilities
+   (or none) are on the tag. */
+.admin-shell input:not([type="checkbox"]):not([type="radio"]),
+.admin-shell select,
+.admin-shell textarea {
+    background-color: var(--db-surface-3);
+    border-color: var(--db-border);
+    color: var(--db-ink);
+}
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder { color: var(--db-muted-2); }
+.admin-shell input:focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+    border-color: var(--db-accent);
+    box-shadow: 0 0 0 3px var(--db-accent-soft);
+    outline: none;
+}
+.admin-shell .focus\:ring-blue-500:focus,
+.admin-shell .focus\:border-blue-500:focus,
+.admin-shell .focus\:border-blue-300:focus { border-color: var(--db-accent); box-shadow: 0 0 0 3px var(--db-accent-soft); }
+.admin-shell select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238A95A3' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right .6rem center;
+}
+.admin-shell input[type="file"] { color: var(--db-muted); }
+
+/* Primary buttons/links (blue -> brand teal accent) */
+.admin-shell .bg-blue-600 { background-color: var(--db-accent); color: var(--db-accent-ink); }
+.admin-shell .bg-blue-600:hover,
+.admin-shell .hover\:bg-blue-700:hover { background-color: var(--db-accent-hover); }
+.admin-shell .bg-blue-700 { background-color: var(--db-accent-hover); }
+.admin-shell .text-blue-600 { color: var(--db-accent); }
+.admin-shell .text-blue-800,
+.admin-shell .text-blue-900 { color: var(--db-accent); }
+.admin-shell .hover\:text-blue-800:hover,
+.admin-shell .hover\:text-blue-900:hover { color: var(--db-accent-hover); }
+.admin-shell .bg-blue-50,
+.admin-shell .bg-blue-100 { background-color: var(--db-accent-soft); }
+.admin-shell .ring-blue-500 { --tw-ring-color: var(--db-accent); }
+
+/* Danger (delete/logout) actions stay red but tuned for dark backgrounds */
+.admin-shell .text-red-600 { color: var(--db-red-text); }
+.admin-shell .text-red-700 { color: var(--db-red-text); }
+.admin-shell .text-red-800 { color: var(--db-red-text); }
+.admin-shell .text-red-900 { color: var(--db-red-text); }
+.admin-shell .hover\:text-red-900:hover { color: #FCA5A5; }
+.admin-shell .bg-red-50,
+.admin-shell .bg-red-100 { background-color: var(--db-danger-soft); }
+.admin-shell .border-red-400 { border-color: rgba(239, 68, 68, .4); }
+.admin-shell .bg-red-600 { background-color: #DC2626; }
+.admin-shell .bg-red-600:hover,
+.admin-shell .bg-red-700 { background-color: #B91C1C; }
+
+/* Status badges — green / yellow / purple */
+.admin-shell .bg-green-50,
+.admin-shell .bg-green-100 { background-color: var(--db-green-soft); }
+.admin-shell .text-green-600,
+.admin-shell .text-green-700,
+.admin-shell .text-green-800 { color: var(--db-green); }
+.admin-shell .border-green-400 { border-color: rgba(34, 197, 94, .4); }
+
+.admin-shell .bg-yellow-50,
+.admin-shell .bg-yellow-100 { background-color: var(--db-amber-soft); }
+.admin-shell .text-yellow-600,
+.admin-shell .text-yellow-800 { color: var(--db-amber); }
+
+.admin-shell .bg-purple-50,
+.admin-shell .bg-purple-100 { background-color: var(--db-purple-soft); }
+.admin-shell .text-purple-600,
+.admin-shell .text-purple-800 { color: var(--db-purple); }
+
+.admin-shell .hover\:bg-blue-100:hover { background-color: var(--db-accent-soft); }
+.admin-shell .hover\:bg-green-100:hover { background-color: var(--db-green-soft); }
+.admin-shell .hover\:bg-yellow-100:hover { background-color: var(--db-amber-soft); }
+.admin-shell .hover\:bg-purple-100:hover { background-color: var(--db-purple-soft); }
+.admin-shell .hover\:bg-gray-50:hover,
+.admin-shell .hover\:bg-gray-300:hover { background-color: var(--db-surface-3); }
+.admin-shell .hover\:text-gray-900:hover { color: var(--db-ink); }
+
+/* Session / validation alerts */
+.admin-shell .bg-green-100.border-green-400 { border-color: rgba(34, 197, 94, .4); }
+.admin-shell .bg-red-100.border-red-400 { border-color: rgba(239, 68, 68, .4); }
+
+/* Laravel's default Tailwind pagination view ships its own literal classes */
+.admin-shell nav[role="navigation"] a,
+.admin-shell nav[role="navigation"] span {
+    background-color: var(--db-surface) !important;
+    border-color: var(--db-border) !important;
+    color: var(--db-muted) !important;
+}
+.admin-shell nav[role="navigation"] a:hover { color: var(--db-ink) !important; background-color: var(--db-surface-2) !important; }
+.admin-shell nav[role="navigation"] span[aria-current="page"] span { color: var(--db-accent-ink) !important; background-color: var(--db-accent) !important; }
+.admin-shell nav[role="navigation"] .ring-gray-300 { --tw-ring-color: var(--db-border); }
+.admin-shell nav[role="navigation"] .focus\:border-blue-300:focus { border-color: var(--db-accent) !important; }
+
+/* Modal / overlay backdrops stay as-is (already dark-friendly) */

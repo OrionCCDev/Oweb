@@ -14,12 +14,16 @@ use App\Http\Controllers\Admin\SectorController as AdminSectorController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\CertificateController as AdminCertificateController;
+use App\Http\Controllers\Admin\HomeFeatureController as AdminHomeFeatureController;
+use App\Http\Controllers\Admin\GalleryImageController as AdminGalleryImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ContentSettingController;
 use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\Admin\ContactSubmissionController as AdminContactSubmissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainHomePageController::class , 'index'])->name('home');
+Route::get('/home-modeled', [MainHomePageController::class , 'modeled'])->name('home.modeled');
 Route::resource('projects' , ProjectController::class);
 Route::resource('certificate' , CertificateController::class );
 Route::resource('sectors' , SectorController::class);
@@ -77,6 +81,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Certificates Management
         Route::resource('certificates', AdminCertificateController::class);
 
+        // Homepage Features Management
+        Route::resource('home-features', AdminHomeFeatureController::class);
+
+        // Homepage Gallery Management
+        Route::resource('gallery-images', AdminGalleryImageController::class);
+
         // Contact Form Submissions
         Route::resource('contact-submissions', AdminContactSubmissionController::class)
             ->only(['index', 'show', 'destroy']);
@@ -94,6 +104,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::patch('settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
         Route::delete('settings/{setting}', [SettingController::class, 'destroy'])->name('settings.destroy');
+
+        // Generic, config-driven content sections (config/site_content.php)
+        Route::get('content', [ContentSettingController::class, 'index'])->name('content.index');
+        Route::get('content/{group}', [ContentSettingController::class, 'edit'])->name('content.edit');
+        Route::post('content/{group}', [ContentSettingController::class, 'update'])->name('content.update');
     });
 });
 

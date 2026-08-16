@@ -93,8 +93,8 @@ $p_nam = 'clients';
 <section class="portfolio-details">
     <div class="container">
         <div class="section-title text-center">
-            <span class="section-title__tagline">Trusted Partnerships</span>
-            <h2 class="section-title__title">Organizations We've Built For</h2>
+            <span class="section-title__tagline">{{ setting('clients_page.tagline', 'Trusted Partnerships') }}</span>
+            <h2 class="section-title__title">{{ setting('clients_page.title', "Organizations We've Built For") }}</h2>
         </div>
 
         @if ($clients->isEmpty())

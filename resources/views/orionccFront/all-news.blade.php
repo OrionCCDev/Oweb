@@ -90,7 +90,7 @@ $p_nam = 'news';
                 <li><span>/</span></li>
                 <li>NEWS & EVENTS</li>
             </ul>
-            <h2 class="fnt-clr-g">News & Events</h2>
+            <h2 class="fnt-clr-g">{{ setting('news_page.title', 'News & Events') }}</h2>
         </div>
     </div>
 </section>

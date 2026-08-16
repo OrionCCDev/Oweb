@@ -100,10 +100,8 @@ $p_nam = 'sectors';
 <section class="about-three">
     <div class="container">
         <div class="section-title text-center">
-            <span class="section-title__tagline">Checkout Our Sectors</span>
-            <h2 class="section-title__title">Welcome to
-                <br> Orion Sectors
-            </h2>
+            <span class="section-title__tagline">{{ setting('sectors_page.tagline', 'Checkout Our Sectors') }}</span>
+            <h2 class="section-title__title">{!! nl2br(e(setting('sectors_page.title', "Welcome to\nOrion Sectors"))) !!}</h2>
         </div>
         @foreach ($allData as $sector )
         @if ($loop->odd)

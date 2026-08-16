@@ -10,16 +10,16 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                    <input type="text" name="phone" value="{{ $settings['phone'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="phone" value="{{ $settings['phone']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" name="email" value="{{ $settings['email'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="email" name="email" value="{{ $settings['email']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
             </div>
             <div class="mt-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                <textarea name="address" rows="2" class="w-full px-4 py-2 border rounded-lg">{{ $settings['address'] ?? '' }}</textarea>
+                <textarea name="address" rows="2" class="w-full px-4 py-2 border rounded-lg">{{ $settings['address']->value ?? '' }}</textarea>
             </div>
         </div>
         
@@ -28,23 +28,23 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Facebook</label>
-                    <input type="url" name="facebook" value="{{ $settings['facebook'] ?? '' }}" placeholder="https://facebook.com/..." class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="facebook" value="{{ $settings['facebook']->value ?? '' }}" placeholder="https://facebook.com/..." class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Twitter</label>
-                    <input type="url" name="twitter" value="{{ $settings['twitter'] ?? '' }}" placeholder="https://twitter.com/..." class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="twitter" value="{{ $settings['twitter']->value ?? '' }}" placeholder="https://twitter.com/..." class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn</label>
-                    <input type="url" name="linkedin" value="{{ $settings['linkedin'] ?? '' }}" placeholder="https://linkedin.com/..." class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="linkedin" value="{{ $settings['linkedin']->value ?? '' }}" placeholder="https://linkedin.com/..." class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Instagram</label>
-                    <input type="url" name="instagram" value="{{ $settings['instagram'] ?? '' }}" placeholder="https://instagram.com/..." class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="instagram" value="{{ $settings['instagram']->value ?? '' }}" placeholder="https://instagram.com/..." class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">YouTube</label>
-                    <input type="url" name="youtube" value="{{ $settings['youtube'] ?? '' }}" placeholder="https://youtube.com/..." class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="youtube" value="{{ $settings['youtube']->value ?? '' }}" placeholder="https://youtube.com/..." class="w-full px-4 py-2 border rounded-lg">
                 </div>
             </div>
         </div>

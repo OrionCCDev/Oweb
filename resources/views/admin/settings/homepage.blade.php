@@ -10,15 +10,15 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
-                    <input type="text" name="hero_title" value="{{ $settings['hero_title'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="hero_title" value="{{ $settings['hero_title']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Hero Subtitle</label>
-                    <input type="text" name="hero_subtitle" value="{{ $settings['hero_subtitle'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="hero_subtitle" value="{{ $settings['hero_subtitle']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Hero Video URL</label>
-                    <input type="url" name="hero_video" value="{{ $settings['hero_video'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="url" name="hero_video" value="{{ $settings['hero_video']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
             </div>
         </div>
@@ -27,12 +27,20 @@
             <h3 class="text-lg font-semibold mb-4">About Section</h3>
             <div class="space-y-4">
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">About Tagline</label>
+                    <input type="text" name="about_tagline" value="{{ $settings['about_tagline']->value ?? '' }}" placeholder="You Dream We Build" class="w-full px-4 py-2 border rounded-lg">
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">About Title</label>
-                    <input type="text" name="about_title" value="{{ $settings['about_title'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="about_title" value="{{ $settings['about_title']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">About Description</label>
-                    <textarea name="about_description" rows="4" class="w-full px-4 py-2 border rounded-lg">{{ $settings['about_description'] ?? '' }}</textarea>
+                    <textarea name="about_description" rows="4" class="w-full px-4 py-2 border rounded-lg">{{ $settings['about_description']->value ?? '' }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Commitment Statement</label>
+                    <input type="text" name="about_commitment_text" value="{{ $settings['about_commitment_text']->value ?? '' }}" placeholder="Our unwavering commitment is to achieve the ultimate satisfaction of our clients" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">About Image</label>
@@ -46,11 +54,11 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Services Title</label>
-                    <input type="text" name="services_title" value="{{ $settings['services_title'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="services_title" value="{{ $settings['services_title']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Services Description</label>
-                    <textarea name="services_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['services_description'] ?? '' }}</textarea>
+                    <textarea name="services_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['services_description']->value ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -60,11 +68,11 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Projects Title</label>
-                    <input type="text" name="projects_title" value="{{ $settings['projects_title'] ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="projects_title" value="{{ $settings['projects_title']->value ?? '' }}" class="w-full px-4 py-2 border rounded-lg">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Projects Description</label>
-                    <textarea name="projects_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['projects_description'] ?? '' }}</textarea>
+                    <textarea name="projects_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['projects_description']->value ?? '' }}</textarea>
                 </div>
             </div>
         </div>

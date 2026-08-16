@@ -40,7 +40,7 @@ $p_nam = 'projects';
                 <li><span>/</span></li>
                 <li>All Projects</li>
             </ul>
-            <h2>Projects</h2>
+            <h2>{{ setting('projects_page.title', 'Projects') }}</h2>
         </div>
     </div>
 </section>

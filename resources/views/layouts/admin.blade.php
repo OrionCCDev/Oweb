@@ -29,12 +29,14 @@
             </div>
 
             <nav class="px-4 py-6 overflow-y-auto h-[calc(100vh-4rem)]">
-                <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 mb-4 rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
                     Dashboard
                 </a>
+
+                <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Catalog</p>
 
                 <a href="{{ route('admin.projects.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.projects.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,6 +73,42 @@
                     Certificates
                 </a>
 
+                <div class="border-t border-gray-700 my-4"></div>
+
+                <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Homepage</p>
+
+                <a href="{{ route('admin.settings.homepage') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.homepage') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Hero, About &amp; CTA
+                </a>
+
+                <a href="{{ route('admin.home-features.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.home-features.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Feature Cards
+                </a>
+
+                <a href="{{ route('admin.gallery-images.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.gallery-images.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M4 6h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path>
+                    </svg>
+                    Gallery Images
+                </a>
+
+                <a href="{{ route('admin.content.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.content.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+                    </svg>
+                    Page Content (Sections)
+                </a>
+
+                <div class="border-t border-gray-700 my-4"></div>
+
+                <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Inbox</p>
+
                 <a href="{{ route('admin.contact-submissions.index') }}" class="flex items-center justify-between px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.contact-submissions.*') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
                     <span class="flex items-center">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,25 +124,20 @@
 
                 <div class="border-t border-gray-700 my-4"></div>
 
-                <a href="{{ route('admin.settings.homepage') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.homepage') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    Homepage Settings
-                </a>
+                <p class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Settings</p>
 
                 <a href="{{ route('admin.settings.about') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.about') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    About Page Settings
+                    About Page
                 </a>
 
                 <a href="{{ route('admin.settings.contact') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.contact') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                     </svg>
-                    Contact Settings
+                    Contact Info &amp; Social
                 </a>
 
                 <a href="{{ route('admin.settings.index') }}" class="flex items-center px-4 py-3 mb-2 rounded-lg {{ request()->routeIs('admin.settings.index') ? 'bg-gray-800' : 'hover:bg-gray-800' }}">
@@ -112,7 +145,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
-                    All Settings
+                    All Settings (Advanced)
                 </a>
 
                 <div class="border-t border-gray-700 my-4"></div>

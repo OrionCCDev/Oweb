@@ -619,6 +619,29 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="container">
         <div class="feature-one__inner">
             <ul class="feature-one__list list-unstyled">
+                @forelse ($homeFeatures as $feature)
+                <!--feature One Single Start-->
+                <li>
+                    <div class="feature-one__single">
+                        <div class="feature-one__icon">
+                            <span class="">
+                                @if ($feature->hasMedia('icon'))
+                                <img width="64" height="64" loading="lazy"
+                                    data-src="{{ $feature->getFirstMediaUrl('icon') }}"
+                                    alt="{{ $feature->title }} icon" class="lazy">
+                                @endif
+                            </span>
+                        </div>
+                        <div class="feature-one__content">
+                            <h3 class="feature-one__title">{{ $feature->title }}</h3>
+                            @if ($feature->subtitle)
+                            <p class="feature-one__subtitle">{{ $feature->subtitle }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </li>
+                <!--feature One Single End-->
+                @empty
                 <!--feature One Single Start-->
                 <li>
                     <div class="feature-one__single">
@@ -682,6 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </li>
                 <!--feature One Single End-->
+                @endforelse
             </ul>
         </div>
     </div>
@@ -981,11 +1005,10 @@ document.addEventListener('DOMContentLoaded', function () {
 <section class="banner-one my-5">
     <div class="container">
         <div class="section-title text-center">
-            <span class="section-title__tagline">Our Certificate</span>
-            <h2 class="section-title__title">Orion
-                <br> Your Trusted Partener
-            </h2>
+            <span class="section-title__tagline">{{ setting('home_certificates.tagline', 'Our Certificate') }}</span>
+            <h2 class="section-title__title">{!! nl2br(e(setting('home_certificates.title', "Orion\nYour Trusted Partner"))) !!}</h2>
         </div>
+        @if ($certificates->isNotEmpty())
         <div class="row">
             <div class="thm-swiper__slider swiper-container certificates-slider" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
                 "0": {
@@ -1014,14 +1037,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }}'>
                 <div class="swiper-wrapper">
-                    <!-- First slide -->
+                    @foreach ($certificates as $certificate)
                     <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
                         <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
                             style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
-                            <div class="banner-one__inner ">
+                            <div class="banner-one__inner {{ $loop->even ? 'banner-one__inner-2' : '' }}">
                                 <div class="banner-one__img-2">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة3.png') }}"
-                                        alt="" class="lazy">
+                                    @if ($certificate->hasMedia('certificates'))
+                                    <img data-src="{{ $certificate->getFirstMediaUrl('certificates') }}"
+                                        alt="{{ $certificate->title }}" class="lazy">
+                                    @endif
                                 </div>
                                 <div class="banner-one__shape-1">
                                     <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
@@ -1033,126 +1058,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
 
                                 <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">ISO 45001:2018
-                                    <br> WRG
-                                </h3>
+                                <h3 class="banner-one__title">{{ $certificate->title }}</h3>
+                                @if ($certificate->subtitle)
                                 <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">Health & Safety <br> Management system</p>
+                                    <p class="banner-one__tagline">{{ $certificate->subtitle }}</p>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </div>
-                    <!-- Second slide -->
-                    <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
-                        <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
-                            style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
-                            <div class="banner-one__inner banner-one__inner-2">
-                                <div class="banner-one__img-2">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة2.jpg') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-5">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-
-                                <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">Suadi Arabia
-                                    <br> Branch Certificate
-                                </h3>
-                                <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">We offer professionalism <br>and workmanship</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Third slide -->
-                    <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
-                        <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
-                            style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
-                            <div class="banner-one__inner">
-                                <div class="banner-one__img-2">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-5">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-
-                                <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">ISO 14001:2015
-                                    <br> WRG
-                                </h3>
-                                <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">Environment <br> management</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Fourth slide -->
-                    <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
-                        <div class="banner-one__left wow" data-wow-delay="100ms" data-wow-duration="2500ms"
-                            style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInLeft;">
-                            <div class="banner-one__inner banner-one__inner-2">
-                                <div class="banner-one__img-2">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة1.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-5">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">Commercial
-                                    <br> Licence
-                                </h3>
-                                <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">We offer professionalism <br>and workmanship</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Fifth slide -->
-                    <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
-                        <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
-                            style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
-                            <div class="banner-one__inner ">
-                                <div class="banner-one__img-2">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/certificate/صورة5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-5">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-
-                                <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">ISO 9001:2015
-                                    <br> WRG
-                                </h3>
-                                <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">Quality <br>management </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
                 <!-- Add Pagination -->
                 <div class="swiper-pagination"></div>
@@ -1166,6 +1081,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     Certifications</a>
             </div>
         </div>
+        @endif
     </div>
 </section>
 <section class="about-one">
@@ -1227,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="col-xl-12">
                 <div class="about-one__right">
                     <div class="section-title text-left">
-                        <span class="section-title__tagline">You Dream We Build</span>
+                        <span class="section-title__tagline">{{ setting('about_tagline', 'You Dream We Build') }}</span>
                         <h2 class="section-title__title">{{ setting('about_title', 'Orion Founders Message') }}</h2>
                     </div>
 
@@ -1246,12 +1162,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <img data-src="{{ asset('orionFrontAssets/assets/images/icon/014-labor.png') }}" alt="" class="lazy">
                         </div>
                         <div class="text">
-                            <h3>Our unwavering commitment is to achieve <br> the ultimate satisfaction of our
-                                clients </h3>
+                            <h3>{{ setting('about_commitment_text', 'Our unwavering commitment is to achieve the ultimate satisfaction of our clients') }}</h3>
                         </div>
                     </div>
                     <div class="about-one__btn-box">
-                        <a href="about.html" class="about-one__btn thm-btn">About Us</a>
+                        <a href="{{ route('about') }}" class="about-one__btn thm-btn">About Us</a>
                     </div>
                 </div>
             </div>
@@ -1338,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="crystal-corner crystal-corner--tl" aria-hidden="true"></div>
     <div class="crystal-corner crystal-corner--br" aria-hidden="true"></div>
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
-        style="background-image: url({{ asset('orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png') }})">
+        style="background-image: url({{ setting_image('home_video.video_background_image', 'orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png') }})">
     </div>
     <div class="video-one-border"></div>
     <div class="video-one-border video-one-border-two"></div>
@@ -1350,8 +1265,12 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="row">
             <div class="col-xl-12">
                 <div class="video-one__inner">
+                    @php
+                        $videoUrlSetting = setting('home_video.video_url', 'https://www.youtube.com/watch?v=3VSpvjEEdIQ');
+                        $videoPopupUrl = $videoUrlSetting . (str_contains($videoUrlSetting, '?') ? '&' : '?') . 'autoplay=1&mute=1';
+                    @endphp
                     <div class="video-one__video-link">
-                        <a href="https://www.youtube.com/watch?v=3VSpvjEEdIQ&autoplay=1&mute=1" class="video-popup">
+                        <a href="{{ $videoPopupUrl }}" class="video-popup">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play" style="font-size:24px;position: absolute;top: 50%;left: 50%;transform: translate(-50% , -50%);"></span>
                                 <i class="ripple"></i>
@@ -1361,9 +1280,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="video-one__shape">
                         <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/team-two-shape-3.png') }}" alt="" class="lazy">
                     </div>
-                    <h2 class="video-one__video-title">Best Of The Best Managers
-                        <br> Only To Make Your Dreams Come True
-                    </h2>
+                    <h2 class="video-one__video-title">{!! nl2br(e(setting('home_video.video_title', "Best Of The Best Managers\nOnly To Make Your Dreams Come True"))) !!}</h2>
                 </div>
             </div>
         </div>
@@ -1374,10 +1291,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <section class="categories-one" style="padding-top: 75px;">
     <div class="container">
         <div class="section-title text-center">
-            <span class="section-title__tagline">Our Sectors</span>
-            <h2 class="section-title__title">Sectors We
-                <br> Serve
-            </h2>
+            <span class="section-title__tagline">{{ setting('home_sectors.tagline', 'Our Sectors') }}</span>
+            <h2 class="section-title__title">{!! nl2br(e(setting('home_sectors.title', "Sectors We\nServe"))) !!}</h2>
         </div>
         <div class="row">
             <div class="thm-swiper__slider swiper-container sectors-slider" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
@@ -1498,15 +1413,10 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="col-12">
                 <div class="testimonial-two__center">
                     <div class="section-title text-center">
-                        <span class="section-title__tagline">Our Clients</span>
-                        <h2 class="section-title__title">Building Success Together</h2>
+                        <span class="section-title__tagline">{{ setting('home_clients.tagline', 'Our Clients') }}</span>
+                        <h2 class="section-title__title">{{ setting('home_clients.title', 'Building Success Together') }}</h2>
                     </div>
-                    <p class="testimonial-two__text-1 text-center">"At the heart of our success are the strong
-                        partnerships
-                        we've built with our clients. We believe in a collaborative approach, working
-                        hand-in-hand to achieve shared goals. Our clients are more than just business partners;
-                        they are integral to our journey, inspiring us to innovate and excel. Together, we build
-                        a foundation of trust, mutual respect, and lasting success."</p>
+                    <p class="testimonial-two__text-1 text-center">"{{ setting('home_clients.intro_text', "At the heart of our success are the strong partnerships we've built with our clients. We believe in a collaborative approach, working hand-in-hand to achieve shared goals. Our clients are more than just business partners; they are integral to our journey, inspiring us to innovate and excel. Together, we build a foundation of trust, mutual respect, and lasting success.") }}"</p>
                 </div>
             </div>
         </div>
@@ -1562,97 +1472,31 @@ document.addEventListener('DOMContentLoaded', function () {
                         }'>
 
 
+            @forelse ($galleryImages as $galleryImage)
             <!--Gallery Three Single Start-->
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <a href="http://">
-                            <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture1.jpg') }}" alt="" class="lazy">
-                        </a>
+                        @if ($galleryImage->hasMedia('image'))
+                        <img data-src="{{ $galleryImage->getFirstMediaUrl('image') }}" alt="{{ $galleryImage->caption }}" class="lazy">
+                        @endif
                     </div>
                 </div>
             </div>
             <!--Gallery Three Single End-->
+            @empty
+            @foreach (['Picture1.jpg', 'Picture10.png', 'Picture12.png', 'Picture212.jpg', 'Picture3.jpg', 'Picture32.jpg', 'Picture6.jpg', 'Picture8.png', 'Picture5.jpg'] as $staticImage)
             <!--Gallery Three Single Start-->
             <div class="item">
                 <div class="gallery-three__single">
                     <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture10.png') }}" alt="" class="lazy">
-
+                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/' . $staticImage) }}" alt="" class="lazy">
                     </div>
                 </div>
             </div>
             <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture12.png') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture212.jpg') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture3.jpg') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture32.jpg') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture6.jpg') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture8.png') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
-            <!--Gallery Three Single Start-->
-            <div class="item">
-                <div class="gallery-three__single">
-                    <div class="gallery-three__img">
-                        <img data-src="{{ asset('orionFrontAssets/assets/images/project/Picture5.jpg') }}" alt="" class="lazy">
-
-                    </div>
-                </div>
-            </div>
-            <!--Gallery Three Single End-->
+            @endforeach
+            @endforelse
         </div>
     </div>
 </section>

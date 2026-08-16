@@ -107,10 +107,8 @@ $p_nam = 'contact';
             <div class="row">
                 <div class="col-xl-12">
                     <div class="section-title text-center">
-                        <span class="section-title__tagline">Happy To Contact Us</span>
-                        <h2 class="section-title__title">Orion Contracting
-                            <br> Company
-                        </h2>
+                        <span class="section-title__tagline">{{ setting('contact_page.eyebrow_tagline', 'Happy To Contact Us') }}</span>
+                        <h2 class="section-title__title">{!! nl2br(e(setting('contact_page.eyebrow_title', "Orion Contracting\nCompany"))) !!}</h2>
                     </div>
                 </div>
             </div>
@@ -210,10 +208,8 @@ $p_nam = 'contact';
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="section-title text-center">
-                            <span class="section-title__tagline">Write a Message</span>
-                            <h2 class="section-title__title">We’re always here to
-                                <br> help you
-                            </h2>
+                            <span class="section-title__tagline">{{ setting('contact_page.form_tagline', 'Write a Message') }}</span>
+                            <h2 class="section-title__title">{!! nl2br(e(setting('contact_page.form_title', "We're always here to\nhelp you"))) !!}</h2>
                         </div>
                         <div class="contact-page__content">
                             <form action="{{ route('contact.submit') }}" method="POST"

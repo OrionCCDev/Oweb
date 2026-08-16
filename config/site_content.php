@@ -90,4 +90,41 @@ return [
         ],
     ],
 
+    'contact_page' => [
+        'label' => 'Contact Page — Sections',
+        'fields' => [
+            'eyebrow_tagline' => ['label' => 'Intro Tagline', 'type' => 'text', 'default' => 'Happy To Contact Us'],
+            'eyebrow_title' => ['label' => 'Intro Title', 'type' => 'textarea', 'default' => "Orion Contracting\nCompany"],
+            'form_tagline' => ['label' => 'Form Tagline', 'type' => 'text', 'default' => 'Write a Message'],
+            'form_title' => ['label' => 'Form Title', 'type' => 'textarea', 'default' => "We're always here to\nhelp you"],
+        ],
+    ],
+
+    'footer' => [
+        'label' => 'Site Footer',
+        'fields' => [
+            'tagline' => ['label' => 'Tagline (under logo)', 'type' => 'text', 'default' => 'We Build Your Vision Into Reality'],
+        ],
+    ],
+
+    'about_page' => [
+        'label' => 'About Page — Sections',
+        'fields' => [
+            'page_header_title' => ['label' => 'Page Header Title', 'type' => 'text', 'default' => 'About Orion'],
+            'eyebrow_tagline' => ['label' => 'Intro Tagline', 'type' => 'text', 'default' => 'About Our Company'],
+            'eyebrow_title' => ['label' => 'Intro Title', 'type' => 'textarea', 'default' => "Orion\nContracting Company"],
+            'years_label' => ['label' => 'Experience Badge Label', 'type' => 'text', 'default' => 'Years of experience'],
+            'get_to_know_tagline' => ['label' => '"Get to Know Us" Tagline', 'type' => 'text', 'default' => 'Get to Know us'],
+            'mission_point_title' => ['label' => 'Mission Highlight — Title', 'type' => 'text', 'default' => 'Innovation in Construction'],
+            'mission_point_text' => ['label' => 'Mission Highlight — Text', 'type' => 'textarea', 'default' => 'We strive for excellence in every project, delivering unparalleled quality and innovation to our clients.'],
+            'vision_point_title' => ['label' => 'Vision Highlight — Title', 'type' => 'text', 'default' => 'Excellence in Delivery'],
+            'vision_point_text' => ['label' => 'Vision Highlight — Text', 'type' => 'textarea', 'default' => 'We are committed to delivering superior projects on time and within budget, while fostering growth and development for our team.'],
+            'capabilities_tagline' => ['label' => 'Capabilities Tagline', 'type' => 'text', 'default' => 'Get to Know us'],
+            'capabilities_title' => ['label' => 'Capabilities Title', 'type' => 'text', 'default' => 'Staff, Manpower and Equipment Breakdown'],
+            'capability_1' => ['label' => 'Capability Point 1', 'type' => 'text', 'default' => 'We Experienced in Dealing with Local Authorities'],
+            'capability_2' => ['label' => 'Capability Point 2', 'type' => 'text', 'default' => 'We have Long Experience in Local Market and relationships with Key providers'],
+            'capability_3' => ['label' => 'Capability Point 3', 'type' => 'text', 'default' => 'Dedicated Services After the Completion of the Contractual Commitment'],
+        ],
+    ],
+
 ];

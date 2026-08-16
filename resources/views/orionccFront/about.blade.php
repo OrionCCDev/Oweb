@@ -287,7 +287,7 @@ new Chart(equipmentCtx, {
                 <li><span>/</span></li>
                 <li><a>About Us</a></li>
             </ul>
-            <h2 class="fnt-clr-g">About Orion</h2>
+            <h2 class="fnt-clr-g">{{ setting('about_page.page_header_title', 'About Orion') }}</h2>
         </div>
     </div>
 </section>
@@ -299,10 +299,8 @@ new Chart(equipmentCtx, {
             <div class="row">
                 <div class="col-xl-12">
                     <div class="section-title text-center">
-                        <span class="section-title__tagline">About Our Company</span>
-                        <h2 class="section-title__title">Orion <br> Contarcting Company
-
-                        </h2>
+                        <span class="section-title__tagline">{{ setting('about_page.eyebrow_tagline', 'About Our Company') }}</span>
+                        <h2 class="section-title__title">{!! nl2br(e(setting('about_page.eyebrow_title', "Orion\nContracting Company"))) !!}</h2>
                     </div>
 
                 </div>
@@ -319,7 +317,7 @@ new Chart(equipmentCtx, {
                                     alt="">
                             </div>
                             <div class="section-title text-left">
-                                <span class="section-title__tagline">Get to Know us</span>
+                                <span class="section-title__tagline">{{ setting('about_page.get_to_know_tagline', 'Get to Know us') }}</span>
                                 <h2 class="section-title__title">{{ setting('about_intro_title', 'Welcome to Orion Contracting Company') }}</h2>
                             </div>
                             @if (setting('about_intro_text'))
@@ -371,10 +369,10 @@ new Chart(equipmentCtx, {
                                             <img src="{{ asset('orionFrontAssets/assets/images/')}}" alt="">
                                         </div>
                                         <div class="about-three__experience-year">
-                                            <h3>18</h3>
+                                            <h3>{{ now()->year - 2008 }}</h3>
                                         </div>
                                         <div class="about-three__experience-text">
-                                            <p>Years of <br> experience</p>
+                                            <p>{{ setting('about_page.years_label', 'Years of experience') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -469,10 +467,8 @@ new Chart(equipmentCtx, {
                             <div class="col-12">
                                 <div class="why-choose-one__single">
 
-                                    <h4 class="why-choose-one__title">Innovation in Construction</h4>
-                                    <p class="why-choose-one__text f-clr-w">We strive for excellence in every project,
-                                        delivering
-                                        unparalleled quality and innovation to our clients.</p>
+                                    <h4 class="why-choose-one__title">{{ setting('about_page.mission_point_title', 'Innovation in Construction') }}</h4>
+                                    <p class="why-choose-one__text f-clr-w">{{ setting('about_page.mission_point_text', 'We strive for excellence in every project, delivering unparalleled quality and innovation to our clients.') }}</p>
                                 </div>
                             </div>
 
@@ -489,10 +485,8 @@ new Chart(equipmentCtx, {
                             <div class="col-12">
                                 <div class="why-choose-one__single">
 
-                                    <h4 class="why-choose-one__title">Excellence in Delivery</h4>
-                                    <p class="why-choose-one__text f-clr-w">We are committed to delivering superior
-                                        projects on
-                                        time and within budget, while fostering growth and development for our team.</p>
+                                    <h4 class="why-choose-one__title">{{ setting('about_page.vision_point_title', 'Excellence in Delivery') }}</h4>
+                                    <p class="why-choose-one__text f-clr-w">{{ setting('about_page.vision_point_text', 'We are committed to delivering superior projects on time and within budget, while fostering growth and development for our team.') }}</p>
                                 </div>
                             </div>
 
@@ -516,17 +510,14 @@ new Chart(equipmentCtx, {
                                     alt="">
                             </div>
                             <div class="section-title text-left">
-                                <span class="section-title__tagline">Get to Know us</span>
-                                <h2 class="section-title__title">STAFF, MANPOWER AND EQUIPMENT BREAKDOWN</h2>
+                                <span class="section-title__tagline">{{ setting('about_page.capabilities_tagline', 'Get to Know us') }}</span>
+                                <h2 class="section-title__title">{{ setting('about_page.capabilities_title', 'Staff, Manpower and Equipment Breakdown') }}</h2>
                             </div>
-                            <p class="about-three__text-1">We Experienced in Dealing with Local Authorities
+                            <p class="about-three__text-1">{{ setting('about_page.capability_1', 'We Experienced in Dealing with Local Authorities') }}
                             </p>
-                            <p class="about-three__text-1">We have Long Experience in Local Market and relationships
-                                with Key providers
+                            <p class="about-three__text-1">{{ setting('about_page.capability_2', 'We have Long Experience in Local Market and relationships with Key providers') }}
                             </p>
-                            <p class="about-three__text-1">Dedicated Services After the Completion of the Contractual
-                                Commitment
-
+                            <p class="about-three__text-1">{{ setting('about_page.capability_3', 'Dedicated Services After the Completion of the Contractual Commitment') }}
                             </p>
 
                         </div>

@@ -17,12 +17,12 @@
                                     alt=""></a>
                         </div>
                         <div class="footer-widget__about-text-box">
-                            <p class="footer-widget__about-text">We're Making Your Dream <br> Became Reality</p>
+                            <p class="footer-widget__about-text">{{ setting('footer.tagline', "We Build Your Vision Into Reality") }}</p>
                         </div>
                         <div class="footer-widget__social-box">
-                            <a href="#"><i class="fab fa-facebook"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="{{ setting('facebook', 'https://www.facebook.com/orioncontractingcompany/') }}" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
+                            <a href="{{ setting('instagram', 'https://www.instagram.com/orioncontracting/') }}" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                            <a href="{{ setting('linkedin', 'https://www.linkedin.com/company/orion-contracting-company-llc/') }}" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
@@ -33,11 +33,11 @@
                         </div>
                         <div class="footer-widget__explore-list-box">
                             <ul class="footer-widget__explore-list list-unstyled">
-                                <li><a href="about.html">About Company</a></li>
-                                <li><a href="services.html">Our Sectors</a></li>
-                                <li><a href="pricing.html">Our Staff</a></li>
-                                <li><a href="products.html">Projects</a></li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="{{ route('about') }}">About Company</a></li>
+                                <li><a href="{{ route('sectors.index') }}">Our Sectors</a></li>
+                                <li><a href="{{ route('certificate.index') }}">Certifications</a></li>
+                                <li><a href="{{ route('projects.index') }}">Projects</a></li>
+                                <li><a href="{{ route('contact') }}">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -47,18 +47,18 @@
                         <div class="footer-widget__title-box">
                             <h3 class="footer-widget__title">Contact</h3>
                         </div>
-                        <p class="footer-widget__contact-text">UAE , Ras Al-Khaimah , Al-Hamra Industrial Area
+                        <p class="footer-widget__contact-text">{{ setting('address', 'Al Hamrah Industrial Zone Al Jazirah Alhamra – Ras al Khaimah – United Arab Emirates') }}
                         </p>
                         <ul class="list-unstyled footer-widget__contact-list">
                             <li>
                                 <div class="text">
-                                    <p><a href="tel:97172335531">
-                                            +971 7233 5531</a></p>
+                                    <p><a href="tel:{{ str_replace([' ', '+'], '', setting('phone', '+971 7 2335531')) }}">
+                                            {{ setting('phone', '+971 7 2335531') }}</a></p>
                                 </div>
                             </li>
                             <li>
                                 <div class="text">
-                                    <p><a href="mailto:info@orioncc.com ">info@orioncc.com</a></p>
+                                    <p><a href="mailto:{{ setting('email', 'info@orioncc.com') }}">{{ setting('email', 'info@orioncc.com') }}</a></p>
                                 </div>
                             </li>
                         </ul>
@@ -69,49 +69,30 @@
                         <div class="footer-widget__title-box">
                             <h3 class="footer-widget__title">Gallery</h3>
                         </div>
+                        @php
+                            $footerGalleryImages = \App\Models\GalleryImage::orderBy('sort_order')->orderBy('id')->take(6)->get();
+                            $footerStaticImages = ['Picture1.jpg', 'Picture10.png', 'Picture12.png', 'Picture32.jpg', 'Picture212.jpg', 'Picture3.jpg'];
+                        @endphp
                         <ul class="footer-widget__gallery-list list-unstyled clearfix">
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture1.jpg') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture10.png') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture12.png') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture32.jpg') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture212.jpg') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="footer-widget__gallery-img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/Picture3.jpg') }}"
-                                        alt="">
-                                    <a href="portfolio-details.html"><span class="fa fa-link"></span></a>
-                                </div>
-                            </li>
+                            @forelse ($footerGalleryImages as $footerImage)
+                                <li>
+                                    <div class="footer-widget__gallery-img">
+                                        @if ($footerImage->hasMedia('image'))
+                                        <img src="{{ $footerImage->getFirstMediaUrl('image') }}" alt="{{ $footerImage->caption }}">
+                                        @endif
+                                        <a href="{{ route('projects.index') }}"><span class="fa fa-link"></span></a>
+                                    </div>
+                                </li>
+                            @empty
+                                @foreach ($footerStaticImages as $footerStaticImage)
+                                <li>
+                                    <div class="footer-widget__gallery-img">
+                                        <img src="{{ asset('orionFrontAssets/assets/images/project/' . $footerStaticImage) }}" alt="">
+                                        <a href="{{ route('projects.index') }}"><span class="fa fa-link"></span></a>
+                                    </div>
+                                </li>
+                                @endforeach
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -124,16 +105,12 @@
                 <div class="col-xl-12">
                     <div class="site-footer__bottom-inner">
                         <div class="site-footer__bottom-left">
-                            <p class="site-footer__bottom-text">© Copyright 2024 by <a href="#">Orion</a>
+                            <p class="site-footer__bottom-text">© Copyright {{ now()->year }} by <a href="{{ route('home') }}">Orion</a>
                             </p>
                         </div>
                         <div class="site-footer__bottom-right">
                             <ul class="list-unstyled site-footer__bottom-menu">
-                                <li><a href="about.html">Terms & Conditions</a></li>
-                                <li><span>/</span></li>
-                                <li><a href="about.html">Privacy Policy</a></li>
-                                <li><span>/</span></li>
-                                <li><a href="about.html">Privacy Policy</a></li>
+                                <li><a href="{{ route('contact') }}">Contact Us</a></li>
                             </ul>
                         </div>
                     </div>

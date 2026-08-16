@@ -14,10 +14,23 @@ class AdminUserSeeder extends Seeder
      * Set ADMIN_SEED_EMAIL / ADMIN_SEED_PASSWORD in .env to control the
      * credentials explicitly. If ADMIN_SEED_PASSWORD is not set, a random
      * password is generated and printed once to the console.
+     *
+     * Safe to re-run: an existing account's password is never touched here
+     * (only its role, in case it predates the role column) — only a
+     * brand-new account gets a password set.
      */
     public function run(): void
     {
         $email = env('ADMIN_SEED_EMAIL', 'ahmed@orion.com');
+
+        $existing = User::where('email', $email)->first();
+
+        if ($existing) {
+            $existing->role = 'super_admin';
+            $existing->save();
+            return;
+        }
+
         $password = env('ADMIN_SEED_PASSWORD');
         $generated = false;
 
@@ -26,13 +39,12 @@ class AdminUserSeeder extends Seeder
             $generated = true;
         }
 
-        User::updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => 'Ahmed Orion',
-                'password' => $password,
-            ]
-        );
+        User::create([
+            'email' => $email,
+            'name' => 'Ahmed Orion',
+            'password' => $password,
+            'role' => 'super_admin',
+        ]);
 
         if ($generated && $this->command) {
             $this->command->warn("Generated admin password for {$email}: {$password}");

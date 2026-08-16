@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\CertificateController as AdminCertificateController;
 use App\Http\Controllers\Admin\HomeFeatureController as AdminHomeFeatureController;
 use App\Http\Controllers\Admin\GalleryImageController as AdminGalleryImageController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContentSettingController;
 use App\Http\Controllers\ContactSubmissionController;
@@ -104,6 +105,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
         Route::patch('settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
         Route::delete('settings/{setting}', [SettingController::class, 'destroy'])->name('settings.destroy');
+
+        // Admin User Management (super admins only)
+        Route::resource('admin-users', AdminUserController::class)
+            ->middleware('can:manage-admins');
 
         // Generic, config-driven content sections (config/site_content.php)
         Route::get('content', [ContentSettingController::class, 'index'])->name('content.index');

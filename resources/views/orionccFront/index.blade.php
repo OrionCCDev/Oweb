@@ -116,45 +116,6 @@ $p_nam = 'home';
         background: #10ca9d;
     }
 
-    /* Shining hover effect for project cards */
-    .hot-products__single {
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.3s ease;
-    }
-
-    .hot-products__single::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-            45deg,
-            transparent 30%,
-            rgba(255, 255, 255, 0.3) 50%,
-            transparent 70%
-        );
-        transform: translateX(-100%) translateY(-100%) rotate(45deg);
-        transition: transform 0.6s ease;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    .hot-products__single:hover::before {
-        transform: translateX(100%) translateY(100%) rotate(45deg);
-    }
-
-    .hot-products__single:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .hot-products__single-inner {
-        position: relative;
-        z-index: 2;
-    }
 </style>
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" /> -->
 @if ($p_nam == 'projects')
@@ -863,54 +824,9 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="hot-products-two__bottom">
                 <div class="row filter-layout">
                     @foreach ($projects as $project )
-                        <!-- Hot Products Two Single Start -->
                         <div class="col-xl-4 col-lg-6 col-md-6 filter-item fresh Commercial">
-                            <div class="hot-products__single">
-                                <div class="hot-products__single-inner">
-                                    <div class="hot-products__img-box">
-                                        <div class="hot-products__img">
-                                            @php
-                                                $resolveMain = function($proj){
-                                                    $name = $proj->main_image;
-                                                    $candidates = [];
-                                                    $candidates[] = $name;
-                                                    if ($name && !str_contains($name, '/')) {
-                                                        $candidates[] = $proj->slug_name . '/' . $name;
-                                                        $candidates[] = $proj->slug_name . '/gallery/' . $name;
-                                                    }
-                                                    foreach (array_unique($candidates) as $c) {
-                                                        if (Storage::disk('projects')->exists($c)) {
-                                                            return Storage::disk('projects')->url($c);
-                                                        }
-                                                    }
-                                                    return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
-                                                };
-                                                $cardMainUrl = $resolveMain($project);
-                                            @endphp
-                                            <img src="{{ $cardMainUrl }}"
-                                                alt="{{ $project->name }}">
-                                        </div>
-                                    </div>
-                                    <div class="hot-products__content">
-                                        <!-- <div class="hot-products__rating">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div> -->
-                                        <h3 class="hot-products__title"><a href="{{ route('projects.show' , ['project' => $project->id]) }}">{{ $project->name }}</a>
-                                        </h3>
-                                        <p class="hot-products__price">{{ $project->Sector->name }}</p>
-                                        <div class="hot-products__btn-box">
-                                            <a href="{{ route('projects.show' , ['project' => $project->id]) }}" class="hot-products__btn thm-btn">More</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                            @include('orionccFront.partials.project-card', ['project' => $project, 'index' => $loop->index])
                         </div>
-                        <!-- Hot Products Two Single End -->
                     @endforeach
                     <div class="testimonial-one__btn-box offset-5">
                         <a href="{{ route('projects.index') }}" class="testimonial-one__btn thm-btn">View all

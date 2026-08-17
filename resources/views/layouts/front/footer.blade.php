@@ -317,6 +317,30 @@
             }
         })();
     </script>
+
+    <noscript><style>.project-card--reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+    <script>
+        (function () {
+            var cards = document.querySelectorAll('.project-card--reveal');
+            if (!cards.length) return;
+
+            if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                cards.forEach(function (card) { card.classList.add('is-visible'); });
+                return;
+            }
+
+            var observer = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            cards.forEach(function (card) { observer.observe(card); });
+        })();
+    </script>
 </body>
 
 

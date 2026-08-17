@@ -85,63 +85,9 @@ $p_nam = 'projects';
                     <div class="product__all">
                         <div class="row">
                             @foreach ($allData as $data )
-
-                            <!--Product All Single Start-->
                             <div class="col-xl-4 col-lg-4 col-md-6">
-                                <div class="product__all-single">
-                                    <a href="{{ route('projects.show' ,['project'=>$data['id']] ) }}">
-                                        <div class="product__all-single-inner">
-                                            <div class="product__all-img">
-                                                            @php
-                                                                $resolveMain = function($proj){
-                                                                    $name = $proj->main_image ?: 'main.webp';
-                                                                    $candidates = [];
-                                                                    $candidates[] = $name;
-                                                                    if ($name && !str_contains($name, '/')) {
-                                                                        $candidates[] = $proj->slug_name . '/' . $name;
-                                                                        $candidates[] = $proj->slug_name . '/gallery/' . $name;
-                                                                    }
-                                                                    foreach (array_unique($candidates) as $c) {
-                                                                        if (Storage::disk('projects')->exists($c)) {
-                                                                            return Storage::disk('projects')->url($c);
-                                                                        }
-                                                                    }
-                                                                    return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
-                                                                };
-                                                                $cardMainUrl = $resolveMain($data);
-                                                            @endphp
-                                                            <img src="{{ $cardMainUrl }}"
-                                                                alt="{{ $data->name }}">
-                                            </div>
-                                            <div class="product__all-content">
-                                                <h4 class="product__all-title"><a
-                                                        href="{{ route('projects.show' , ['project'=>$data['id']]) }}">{{
-                                                        $data->name }}</a></h4>
-                                                {{-- <p class="product__all-price">{{ $data->Client->name }}</p> --}}
-                                                <div class="product__all-btn-box">
-                                                    <a href="{{ route('projects.show', ['project'=>$data['id']]) }}"
-                                                        class="thm-btn product__all-btn">More</a>
-                                                </div>
-                                            </div>
-                                            @if ($data->status == 'completed')
-                                            <div class="products__all-icon-boxes">
-                                                <span href="#" class="bg-lbn fnt-clr-g"><i
-                                                        class="fas fa-check-square px-2"></i>{{ $data->status }}</span>
-                                                <span href="#" class="bg-blu fnt-clr-w"><i
-                                                        class="far fa-calendar-alt px-2"></i>{{ $data->end }}</span>
-                                            </div>
-                                            @else
-                                            <div class="products__all-icon-boxes">
-                                                <span href="#" class="bg-lim fnt-clr-b"><i
-                                                        class="fas fa-spinner px-2"></i>{{ $data->status }}</span>
-
-                                            </div>
-                                            @endif
-                                        </div>
-                                    </a>
-                                </div>
+                                @include('orionccFront.partials.project-card', ['project' => $data, 'index' => $loop->index])
                             </div>
-                            <!--Product All Single End-->
                             @endforeach
                         </div>
                         <div class="row">

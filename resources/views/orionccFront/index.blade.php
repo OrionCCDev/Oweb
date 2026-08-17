@@ -478,7 +478,7 @@ $p_nam = 'home';
 <!--Hero Start-->
 <section class="hero-crystal" id="hero-crystal">
     <video class="hero-crystal__video" autoplay muted loop playsinline
-        poster="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}">
+        poster="{{ setting_image('hero_background_image', 'orionFrontAssets/assets/video/video-screen.png') }}">
         <source src="{{ setting('hero_video') ?: asset('orionFrontAssets/assets/video/hero-bg-loop.mp4') }}" type="video/mp4">
     </video>
     <div class="hero-crystal__video-overlay"></div>

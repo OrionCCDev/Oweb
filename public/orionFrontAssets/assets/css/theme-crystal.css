@@ -527,14 +527,6 @@ select:focus-visible,
     line-height: 1;
 }
 
-.stats-bar__value::after {
-    content: "+";
-}
-
-.stats-bar__value--plain::after {
-    content: "";
-}
-
 .stats-bar__label {
     font-family: var(--font-body);
     font-size: 11px;

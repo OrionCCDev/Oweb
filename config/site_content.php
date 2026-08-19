@@ -31,14 +31,6 @@ return [
         ],
     ],
 
-    'home_certificates' => [
-        'label' => 'Homepage — Certificates Carousel',
-        'fields' => [
-            'tagline' => ['label' => 'Tagline', 'type' => 'text', 'default' => 'Our Certificate'],
-            'title' => ['label' => 'Title', 'type' => 'textarea', 'default' => "Orion\nYour Trusted Partner"],
-        ],
-    ],
-
     'home_sectors' => [
         'label' => 'Homepage — Sectors Carousel',
         'fields' => [

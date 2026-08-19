@@ -455,7 +455,7 @@ $p_nam = 'home';
     <div class="hero-crystal__corner hero-crystal__corner--br" aria-hidden="true"></div>
 
     <div class="hero-crystal__content">
-        <span class="hero-crystal__eyebrow">Since 2008 · UAE &amp; Saudi Arabia</span>
+        <span class="hero-crystal__eyebrow">{{ setting('hero_eyebrow', 'Since 2008 · UAE & Saudi Arabia') }}</span>
         <h1 class="hero-crystal__title">{{ setting('hero_title', 'Precision-Built Structures Across the UAE & Saudi Arabia') }}</h1>
         <p class="hero-crystal__subtitle">{{ setting('hero_subtitle', 'Commercial, industrial & MEP construction — trusted for quality, reliability, and on-schedule delivery.') }}</p>
         <div class="hero-crystal__actions">
@@ -482,22 +482,20 @@ $p_nam = 'home';
 <section class="stats-bar">
     <div class="container">
         <div class="stats-bar__inner">
+            @php
+                $statsBarDefaults = [
+                    1 => ['value' => $stats['years'], 'suffix' => '+', 'label' => 'Years of Experience'],
+                    2 => ['value' => $stats['projects'], 'suffix' => '+', 'label' => 'Projects Delivered'],
+                    3 => ['value' => $stats['sectors'], 'suffix' => '+', 'label' => 'Sectors Served'],
+                    4 => ['value' => 'UAE & KSA', 'suffix' => '', 'label' => 'Where We Build'],
+                ];
+            @endphp
+            @foreach ($statsBarDefaults as $n => $statDefault)
             <div class="stats-bar__item">
-                <div class="stats-bar__value">{{ $stats['years'] }}</div>
-                <div class="stats-bar__label">Years of Experience</div>
+                <div class="stats-bar__value">{{ setting("stats_{$n}_value", $statDefault['value']) }}{{ setting("stats_{$n}_suffix", $statDefault['suffix']) }}</div>
+                <div class="stats-bar__label">{{ setting("stats_{$n}_label", $statDefault['label']) }}</div>
             </div>
-            <div class="stats-bar__item">
-                <div class="stats-bar__value">{{ $stats['projects'] }}</div>
-                <div class="stats-bar__label">Projects Delivered</div>
-            </div>
-            <div class="stats-bar__item">
-                <div class="stats-bar__value">{{ $stats['sectors'] }}</div>
-                <div class="stats-bar__label">Sectors Served</div>
-            </div>
-            <div class="stats-bar__item">
-                <div class="stats-bar__value stats-bar__value--plain">UAE&nbsp;&amp;&nbsp;KSA</div>
-                <div class="stats-bar__label">Where We Build</div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -803,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="row">
                     <div class="col-xl-6 col-lg-6">
                         <div class="section-title text-left">
-                            <span class="section-title__tagline">Checkout Our Projects</span>
+                            <span class="section-title__tagline">{{ setting('projects_tagline', 'Checkout Our Projects') }}</span>
                             <h2 class="section-title__title">{{ setting('projects_title', 'Our Projects') }}</h2>
                             @if (setting('projects_description'))
                                 <p class="section-title__text">{{ setting('projects_description') }}</p>
@@ -918,88 +916,6 @@ document.addEventListener('DOMContentLoaded', function () {
             </section> -->
 <!--Why Choose One End-->
 <!--About One Start-->
-<section class="banner-one my-5">
-    <div class="container">
-        <div class="section-title text-center">
-            <span class="section-title__tagline">{{ setting('home_certificates.tagline', 'Our Certificate') }}</span>
-            <h2 class="section-title__title">{!! nl2br(e(setting('home_certificates.title', "Orion\nYour Trusted Partner"))) !!}</h2>
-        </div>
-        @if ($certificates->isNotEmpty())
-        <div class="row">
-            <div class="thm-swiper__slider swiper-container certificates-slider" data-swiper-options='{"spaceBetween": 100,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3000 },"loop":true, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
-                "0": {
-                    "spaceBetween": 30,
-                    "slidesPerView": 1
-                },
-                "375": {
-                    "spaceBetween": 30,
-                    "slidesPerView": 1
-                },
-                "575": {
-                    "spaceBetween": 30,
-                    "slidesPerView": 1
-                },
-                "767": {
-                    "spaceBetween": 50,
-                    "slidesPerView": 2
-                },
-                "991": {
-                    "spaceBetween": 50,
-                    "slidesPerView": 2
-                },
-                "1199": {
-                    "spaceBetween": 100,
-                    "slidesPerView": 3
-                }
-            }}'>
-                <div class="swiper-wrapper">
-                    @foreach ($certificates as $certificate)
-                    <div class="col-xl-6 col-lg-6 swiper-slide" data-wow-delay="100ms">
-                        <div class="banner-one__right wow" data-wow-delay="100ms" data-wow-duration="2500ms"
-                            style="visibility: visible; animation-duration: 2500ms; animation-delay: 100ms; animation-name: slideInRight;">
-                            <div class="banner-one__inner {{ $loop->even ? 'banner-one__inner-2' : '' }}">
-                                <div class="banner-one__img-2">
-                                    @if ($certificate->hasMedia('certificates'))
-                                    <img data-src="{{ $certificate->getFirstMediaUrl('certificates') }}"
-                                        alt="{{ $certificate->title }}" class="lazy">
-                                    @endif
-                                </div>
-                                <div class="banner-one__shape-1">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-4.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-                                <div class="banner-one__shape-5">
-                                    <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/banner-shape-5.png') }}"
-                                        alt="" class="lazy">
-                                </div>
-
-                                <p class="banner-one__tagline">OrionCC</p>
-                                <h3 class="banner-one__title">{{ $certificate->title }}</h3>
-                                @if ($certificate->subtitle)
-                                <div class="banner-one__btn-box">
-                                    <p class="banner-one__tagline">{{ $certificate->subtitle }}</p>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                <!-- Add Pagination -->
-                <div class="swiper-pagination"></div>
-                <!-- Add Navigation -->
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-
-            <div class="testimonial-one__btn-box offset-5 mt-5">
-                <a href="{{ route('certificate.index') }}" class="testimonial-one__btn thm-btn">View all
-                    Certifications</a>
-            </div>
-        </div>
-        @endif
-    </div>
-</section>
 <section class="about-one">
     <div class="about-one__shape-11 float-bob-y">
         <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/shapes2-01.png') }}" alt="" loading="lazy" class="lazy">
@@ -1063,16 +979,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         <h2 class="section-title__title">{{ setting('about_title', 'Orion Founders Message') }}</h2>
                     </div>
 
-                    @if (setting('about_description'))
-                        <p class="about-one__text-1">{{ setting('about_description') }}</p>
-                    @else
-                        <p class="about-one__text-1">Founded in 2008 by a team of young, Experts engineers, our
-                            company has grown by leveraging extensive knowledge in industrial and commercial
-                            construction within the region.</p>
-                        <p class="about-one__text-2">We have built our reputation on the foundation of innovative
-                            technologies and methods, combined with creative concepts, designs, and meticulous
-                            project execution.</p>
-                    @endif
+                    <p class="about-one__text-1">{{ setting('about_description_1', 'Founded in 2008 by a team of young, Experts engineers, our company has grown by leveraging extensive knowledge in industrial and commercial construction within the region.') }}</p>
+                    <p class="about-one__text-2">{{ setting('about_description_2', 'We have built our reputation on the foundation of innovative technologies and methods, combined with creative concepts, designs, and meticulous project execution.') }}</p>
                     <div class="about-one__bottom">
                         <div class="about-one__bottom-icon">
                             <img data-src="{{ asset('orionFrontAssets/assets/images/icon/014-labor.png') }}" alt="" class="lazy">
@@ -1293,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div class="cta-one__left">
                 <div class="cta-one__title-box">
-                    <span class="cta-one__tagline">Need Orion Help?</span>
+                    <span class="cta-one__tagline">{{ setting('cta_tagline', 'Need Orion Help?') }}</span>
                     <h2 class="cta-one__title">{{ setting('contact_title', "We're leader in Contracting of Constructions market") }}</h2>
                     @if (setting('contact_description'))
                         <p class="cta-one__text">{{ setting('contact_description') }}</p>
@@ -1342,8 +1250,17 @@ document.addEventListener('DOMContentLoaded', function () {
         <div class="col-12">
             <div class="row">
                 @foreach ($clients as $client )
+                    @php
+                        $clientLogoSrc = $client->hasMedia('clients') ? $client->getFirstMediaUrl('clients') : asset('orionFrontAssets/assets/images/clinets/' . $client->logo);
+                    @endphp
                     <div class="col clinet-logo-item">
-                        <img data-src="{{ $client->hasMedia('clients') ? $client->getFirstMediaUrl('clients') : asset('orionFrontAssets/assets/images/clinets/' . $client->logo) }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
+                        @if ($client->website_url)
+                            <a href="{{ $client->website_url }}" target="_blank" rel="noopener" aria-label="{{ $client->name }} — visit website">
+                                <img data-src="{{ $clientLogoSrc }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
+                            </a>
+                        @else
+                            <img data-src="{{ $clientLogoSrc }}" alt="{{ $client->name . ' company image' }}" srcset="" class="lazy">
+                        @endif
                     </div>
                 @endforeach
 

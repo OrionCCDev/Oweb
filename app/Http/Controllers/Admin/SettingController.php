@@ -3,11 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
+use App\Models\Sector;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+    /**
+     * Live-site fallback text for fields an admin hasn't overridden yet.
+     * Shown in the dashboard forms (pre-filled, not just placeholder) so
+     * an admin can see exactly what's on the site right now before
+     * changing it. Must match the defaults passed to setting() in the
+     * corresponding front-end Blade views.
+     */
+    private const HOMEPAGE_DEFAULTS = [
+        'hero_eyebrow' => 'Since 2008 · UAE & Saudi Arabia',
+        'hero_title' => 'Precision-Built Structures Across the UAE & Saudi Arabia',
+        'hero_subtitle' => 'Commercial, industrial & MEP construction — trusted for quality, reliability, and on-schedule delivery.',
+        'projects_tagline' => 'Checkout Our Projects',
+        'projects_title' => 'Our Projects',
+        'about_tagline' => 'You Dream We Build',
+        'about_title' => 'Orion Founders Message',
+        'about_description_1' => 'Founded in 2008 by a team of young, Experts engineers, our company has grown by leveraging extensive knowledge in industrial and commercial construction within the region.',
+        'about_description_2' => 'We have built our reputation on the foundation of innovative technologies and methods, combined with creative concepts, designs, and meticulous project execution.',
+        'about_commitment_text' => 'Our unwavering commitment is to achieve the ultimate satisfaction of our clients',
+        'cta_tagline' => 'Need Orion Help?',
+        'contact_title' => "We're leader in Contracting of Constructions market",
+    ];
+
     public function index()
     {
         $settings = Setting::orderBy('group')->orderBy('key')->get()->groupBy('group');
@@ -17,25 +41,63 @@ class SettingController extends Controller
     public function homepage()
     {
         $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
-        return view('admin.settings.homepage', compact('settings'));
+        $defaults = self::HOMEPAGE_DEFAULTS + $this->statsBarDefaults();
+        return view('admin.settings.homepage', compact('settings', 'defaults'));
+    }
+
+    /**
+     * Stats bar defaults for items 1-3 are computed from real data (same
+     * math as MainHomePageController's $stats), so an admin who never
+     * touches these fields keeps getting a live, always-current count.
+     * Saving a field overrides it with a fixed value from then on.
+     */
+    private function statsBarDefaults(): array
+    {
+        return [
+            'stats_1_value' => (string) (now()->year - 2008),
+            'stats_1_suffix' => '+',
+            'stats_1_label' => 'Years of Experience',
+            'stats_2_value' => (string) Project::count(),
+            'stats_2_suffix' => '+',
+            'stats_2_label' => 'Projects Delivered',
+            'stats_3_value' => (string) Sector::count(),
+            'stats_3_suffix' => '+',
+            'stats_3_label' => 'Sectors Served',
+            'stats_4_value' => 'UAE & KSA',
+            'stats_4_suffix' => '',
+            'stats_4_label' => 'Where We Build',
+        ];
     }
 
     public function updateHomepage(Request $request)
     {
         $fields = [
+            'hero_eyebrow' => 'nullable|string',
             'hero_title' => 'nullable|string',
             'hero_subtitle' => 'nullable|string',
             'hero_video' => 'nullable|url',
             'hero_background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+            'stats_1_value' => 'nullable|string',
+            'stats_1_suffix' => 'nullable|string',
+            'stats_1_label' => 'nullable|string',
+            'stats_2_value' => 'nullable|string',
+            'stats_2_suffix' => 'nullable|string',
+            'stats_2_label' => 'nullable|string',
+            'stats_3_value' => 'nullable|string',
+            'stats_3_suffix' => 'nullable|string',
+            'stats_3_label' => 'nullable|string',
+            'stats_4_value' => 'nullable|string',
+            'stats_4_suffix' => 'nullable|string',
+            'stats_4_label' => 'nullable|string',
             'about_tagline' => 'nullable|string',
             'about_title' => 'nullable|string',
-            'about_description' => 'nullable|string',
-            'about_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+            'about_description_1' => 'nullable|string',
+            'about_description_2' => 'nullable|string',
             'about_commitment_text' => 'nullable|string',
-            'services_title' => 'nullable|string',
-            'services_description' => 'nullable|string',
+            'projects_tagline' => 'nullable|string',
             'projects_title' => 'nullable|string',
             'projects_description' => 'nullable|string',
+            'cta_tagline' => 'nullable|string',
             'contact_title' => 'nullable|string',
             'contact_description' => 'nullable|string',
         ];

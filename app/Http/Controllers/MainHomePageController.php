@@ -6,7 +6,6 @@ use App\Models\Event;
 use App\Models\Client;
 use App\Models\Sector;
 use App\Models\Project;
-use App\Models\Certificate;
 use App\Models\HomeFeature;
 use App\Models\GalleryImage;
 use Illuminate\Http\Request;
@@ -18,8 +17,7 @@ class MainHomePageController extends Controller
         $events = Event::all();
         $main_event = Event::latest()->take(1)->first();
         $projects = Project::orderBy('priority')->take(9)->get();
-        $clients = Client::whereNotNull('logo')->orWhereHas('media')->get();
-        $certificates = Certificate::orderBy('sort_order')->orderBy('id')->take(5)->get();
+        $clients = Client::whereNotNull('logo')->orWhereHas('media')->orderBy('sort_order')->orderBy('id')->get();
         $homeFeatures = HomeFeature::orderBy('sort_order')->orderBy('id')->get();
         $galleryImages = GalleryImage::orderBy('sort_order')->orderBy('id')->get();
         $stats = [
@@ -29,7 +27,7 @@ class MainHomePageController extends Controller
             'clients' => $clients->count(),
         ];
         // dd($events , $main_event);
-        return view('orionccFront.index', compact('sectors','events' , 'main_event','projects' , 'clients', 'stats', 'certificates', 'homeFeatures', 'galleryImages'));
+        return view('orionccFront.index', compact('sectors','events' , 'main_event','projects' , 'clients', 'stats', 'homeFeatures', 'galleryImages'));
     }
 
     public function modeled(){

@@ -38,11 +38,58 @@ class SettingController extends Controller
         return view('admin.settings.index', compact('settings'));
     }
 
-    public function homepage()
+    /**
+     * Landing page for the Homepage section group - links out to each
+     * section's own dedicated edit page instead of one long form.
+     */
+    public function homepageOverview()
+    {
+        return view('admin.settings.homepage-overview');
+    }
+
+    public function hero()
     {
         $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
-        $defaults = self::HOMEPAGE_DEFAULTS + $this->statsBarDefaults();
-        return view('admin.settings.homepage', compact('settings', 'defaults'));
+        $defaults = self::HOMEPAGE_DEFAULTS;
+        return view('admin.settings.hero', compact('settings', 'defaults'));
+    }
+
+    public function updateHero(Request $request)
+    {
+        $fields = [
+            'hero_eyebrow' => 'nullable|string',
+            'hero_title' => 'nullable|string',
+            'hero_subtitle' => 'nullable|string',
+            'hero_video' => 'nullable|url',
+            'hero_background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+        ];
+
+        $this->saveHomepageFields($request, $fields);
+
+        return redirect()->route('admin.settings.hero')
+            ->with('success', 'Hero section updated successfully.');
+    }
+
+    public function statsBar()
+    {
+        $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
+        $defaults = $this->statsBarDefaults();
+        return view('admin.settings.stats-bar', compact('settings', 'defaults'));
+    }
+
+    public function updateStatsBar(Request $request)
+    {
+        $fields = [];
+        foreach ([1, 2, 3, 4] as $n) {
+            $fields["stats_{$n}_value"] = 'nullable|string';
+            $fields["stats_{$n}_suffix"] = 'nullable|string';
+            $fields["stats_{$n}_label"] = 'nullable|string';
+        }
+
+        $this->saveHomepageFields($request, $fields);
+
+        return redirect()->route('admin.settings.stats-bar')
+            ->with('success', 'Stats bar updated successfully.');
     }
 
     /**
@@ -69,52 +116,88 @@ class SettingController extends Controller
         ];
     }
 
-    public function updateHomepage(Request $request)
+    public function projectsSection()
+    {
+        $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
+        $defaults = self::HOMEPAGE_DEFAULTS;
+        return view('admin.settings.projects-section', compact('settings', 'defaults'));
+    }
+
+    public function updateProjectsSection(Request $request)
     {
         $fields = [
-            'hero_eyebrow' => 'nullable|string',
-            'hero_title' => 'nullable|string',
-            'hero_subtitle' => 'nullable|string',
-            'hero_video' => 'nullable|url',
-            'hero_background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
-            'stats_1_value' => 'nullable|string',
-            'stats_1_suffix' => 'nullable|string',
-            'stats_1_label' => 'nullable|string',
-            'stats_2_value' => 'nullable|string',
-            'stats_2_suffix' => 'nullable|string',
-            'stats_2_label' => 'nullable|string',
-            'stats_3_value' => 'nullable|string',
-            'stats_3_suffix' => 'nullable|string',
-            'stats_3_label' => 'nullable|string',
-            'stats_4_value' => 'nullable|string',
-            'stats_4_suffix' => 'nullable|string',
-            'stats_4_label' => 'nullable|string',
+            'projects_tagline' => 'nullable|string',
+            'projects_title' => 'nullable|string',
+            'projects_description' => 'nullable|string',
+        ];
+
+        $this->saveHomepageFields($request, $fields);
+
+        return redirect()->route('admin.settings.projects-section')
+            ->with('success', 'Projects section updated successfully.');
+    }
+
+    public function aboutSection()
+    {
+        $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
+        $defaults = self::HOMEPAGE_DEFAULTS;
+        return view('admin.settings.about-section', compact('settings', 'defaults'));
+    }
+
+    public function updateAboutSection(Request $request)
+    {
+        $fields = [
             'about_tagline' => 'nullable|string',
             'about_title' => 'nullable|string',
             'about_description_1' => 'nullable|string',
             'about_description_2' => 'nullable|string',
             'about_commitment_text' => 'nullable|string',
-            'projects_tagline' => 'nullable|string',
-            'projects_title' => 'nullable|string',
-            'projects_description' => 'nullable|string',
+        ];
+
+        $this->saveHomepageFields($request, $fields);
+
+        return redirect()->route('admin.settings.about-section')
+            ->with('success', 'Founders message section updated successfully.');
+    }
+
+    public function ctaBanner()
+    {
+        $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
+        $defaults = self::HOMEPAGE_DEFAULTS;
+        return view('admin.settings.cta-banner', compact('settings', 'defaults'));
+    }
+
+    public function updateCtaBanner(Request $request)
+    {
+        $fields = [
             'cta_tagline' => 'nullable|string',
             'contact_title' => 'nullable|string',
             'contact_description' => 'nullable|string',
         ];
 
+        $this->saveHomepageFields($request, $fields);
+
+        return redirect()->route('admin.settings.cta-banner')
+            ->with('success', 'CTA banner updated successfully.');
+    }
+
+    /**
+     * Shared save routine for every homepage-section form: all of them
+     * write into the same Setting group ("homepage"), just a different
+     * field subset per section.
+     */
+    private function saveHomepageFields(Request $request, array $fields): void
+    {
         $request->validate($fields);
 
         foreach ($fields as $field => $rule) {
-            if ($request->has($field) && !$request->hasFile($field)) {
-                Setting::set($field, $request->$field, 'text', 'homepage');
-            } elseif ($request->hasFile($field)) {
+            if ($request->hasFile($field)) {
                 $path = $request->file($field)->store('settings', 'public');
                 Setting::set($field, $path, 'image', 'homepage');
+            } elseif ($request->has($field)) {
+                Setting::set($field, $request->$field, 'text', 'homepage');
             }
         }
-
-        return redirect()->route('admin.settings.homepage')
-            ->with('success', 'Homepage settings updated successfully.');
     }
 
     public function about()

@@ -94,8 +94,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Settings Management
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-        Route::get('settings/homepage', [SettingController::class, 'homepage'])->name('settings.homepage');
-        Route::post('settings/homepage', [SettingController::class, 'updateHomepage'])->name('settings.homepage.update');
+        Route::get('settings/homepage', [SettingController::class, 'homepageOverview'])->name('settings.homepage');
+        Route::get('settings/hero', [SettingController::class, 'hero'])->name('settings.hero');
+        Route::post('settings/hero', [SettingController::class, 'updateHero'])->name('settings.hero.update');
+        Route::get('settings/stats-bar', [SettingController::class, 'statsBar'])->name('settings.stats-bar');
+        Route::post('settings/stats-bar', [SettingController::class, 'updateStatsBar'])->name('settings.stats-bar.update');
+        Route::get('settings/projects-section', [SettingController::class, 'projectsSection'])->name('settings.projects-section');
+        Route::post('settings/projects-section', [SettingController::class, 'updateProjectsSection'])->name('settings.projects-section.update');
+        Route::get('settings/about-section', [SettingController::class, 'aboutSection'])->name('settings.about-section');
+        Route::post('settings/about-section', [SettingController::class, 'updateAboutSection'])->name('settings.about-section.update');
+        Route::get('settings/cta-banner', [SettingController::class, 'ctaBanner'])->name('settings.cta-banner');
+        Route::post('settings/cta-banner', [SettingController::class, 'updateCtaBanner'])->name('settings.cta-banner.update');
         Route::get('settings/about', [SettingController::class, 'about'])->name('settings.about');
         Route::post('settings/about', [SettingController::class, 'updateAbout'])->name('settings.about.update');
         Route::get('settings/contact', [SettingController::class, 'contact'])->name('settings.contact');

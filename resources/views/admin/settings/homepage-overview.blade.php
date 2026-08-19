@@ -48,7 +48,7 @@
                 <div>
                     <span class="text-xs font-semibold text-gray-400">4</span>
                     <h3 class="text-base font-semibold text-gray-900">Projects Section</h3>
-                    <p class="text-sm text-gray-500">Heading text here — the project cards themselves (image, status, sector, title) are in <span class="text-blue-600 font-medium">Catalog → Projects</span></p>
+                    <p class="text-sm text-gray-500">Heading text, plus a picker for exactly which projects show as cards and in what order</p>
                 </div>
                 <span class="text-gray-400">→</span>
             </div>

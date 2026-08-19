@@ -66,6 +66,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('can:manage-projects')->group(function () {
         // Projects Management
+        Route::get('projects-homepage', [AdminProjectController::class, 'homepagePicker'])->name('projects.homepage-picker');
+        Route::post('projects-homepage', [AdminProjectController::class, 'updateHomepagePicker'])->name('projects.homepage-picker.update');
         Route::resource('projects', AdminProjectController::class);
         Route::delete('projects/image/delete', [AdminProjectController::class, 'deleteImage'])->name('projects.deleteImage');
         Route::delete('projects/gallery/{id}', [AdminProjectController::class, 'deleteGalleryImage'])->name('projects.deleteGalleryImage');

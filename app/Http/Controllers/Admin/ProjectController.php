@@ -19,6 +19,40 @@ class ProjectController extends Controller
         return view('admin.projects.index', compact('projects'));
     }
 
+    /**
+     * Picker for exactly which projects show as cards on the homepage
+     * "Projects Section", and in what order - replaces the old implicit
+     * "top 9 by priority" selection with an explicit admin choice.
+     */
+    public function homepagePicker()
+    {
+        $projects = Project::with('sector')
+            ->orderByDesc('featured_on_homepage')
+            ->orderBy('homepage_sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.projects.homepage-picker', compact('projects'));
+    }
+
+    public function updateHomepagePicker(Request $request)
+    {
+        $featured = $request->input('featured', []);
+        $order = $request->input('homepage_sort_order', []);
+
+        Project::query()->update(['featured_on_homepage' => false]);
+
+        foreach ($featured as $projectId) {
+            Project::whereKey($projectId)->update([
+                'featured_on_homepage' => true,
+                'homepage_sort_order' => (int) ($order[$projectId] ?? 0),
+            ]);
+        }
+
+        return redirect()->route('admin.projects.homepage-picker')
+            ->with('success', 'Homepage projects updated successfully.');
+    }
+
     public function create()
     {
         $sectors = Sector::all();

@@ -7,10 +7,10 @@
 
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex items-center justify-between">
         <div>
-            <p class="text-sm font-medium text-blue-900">Looking for the project cards themselves? (image, status, sector, title)</p>
-            <p class="text-sm text-blue-700">This page only controls the heading text above them. Each card's own content lives in the Projects catalog.</p>
+            <p class="text-sm font-medium text-blue-900">Looking for the project cards themselves?</p>
+            <p class="text-sm text-blue-700">This page only controls the heading text above them. Choose which projects show as cards, and in what order, on the dedicated picker.</p>
         </div>
-        <a href="{{ route('admin.projects.index') }}" class="shrink-0 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">Manage Projects →</a>
+        <a href="{{ route('admin.projects.homepage-picker') }}" class="shrink-0 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">Choose Homepage Projects →</a>
     </div>
 
     <form action="{{ route('admin.settings.projects-section.update') }}" method="POST" class="bg-white rounded-lg shadow p-6 space-y-4">
@@ -27,7 +27,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Projects Description (optional, blank on the site right now)</label>
             <textarea name="projects_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['projects_description']->value ?? '' }}</textarea>
         </div>
-        <p class="text-sm text-gray-500">The projects shown here are the ones marked "Priority" highest, up to 9.</p>
+        <p class="text-sm text-gray-500">Up to 9 projects show, chosen on the <a href="{{ route('admin.projects.homepage-picker') }}" class="text-blue-600 hover:underline">Homepage Projects</a> picker above.</p>
 
         <div class="flex justify-end">
             <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Changes</button>

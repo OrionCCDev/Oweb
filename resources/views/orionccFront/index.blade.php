@@ -1226,12 +1226,6 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="testimonial-two__bg"
         style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg.jpg') }});">
     </div>
-    <div class="testimonial-two__bg-img"
-        style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg-img.png') }});">
-    </div>
-    <div class="testimonial-two__shape-1">
-        <img data-src="{{ asset('orionFrontAssets/assets/images/shapes/testimonial-two-shape-1.png') }}" alt="" class="lazy">
-    </div>
     <div class="container">
         <div class="row">
             <div class="col-12">

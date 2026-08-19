@@ -181,7 +181,9 @@
     $("#datepicker-inline").datepicker();
   }
 
-  $('input[name="time"]').ptTimeSelect();
+  if ($('input[name="time"]').length && $.fn.ptTimeSelect) {
+    $('input[name="time"]').ptTimeSelect();
+  }
 
   if ($(".banner-bg-slide").length) {
     $(".banner-bg-slide").each(function () {
@@ -332,7 +334,7 @@
     });
   }
 
-  if ($(".contact-form-validated").length) {
+  if ($(".contact-form-validated").length && $.fn.validate) {
     $(".contact-form-validated").validate({
       // initialize the plugin
       rules: {
@@ -417,25 +419,6 @@
     speed: 0.2,
   });
 
-  // Initialize video popup
-  $(".video-popup").magnificPopup({
-    type: "iframe",
-    mainClass: "mfp-fade",
-    removalDelay: 160,
-    preloader: false,
-    fixedContentPos: false,
-    iframe: {
-      patterns: {
-        youtube: {
-          index: "youtube.com/",
-          id: "v=",
-          src: videoUrl,
-        },
-      },
-    },
-
-
-  });
   if ($(".img-popup").length) {
     var groups = {};
     $(".img-popup").each(function () {
@@ -2327,7 +2310,10 @@
     });
   }
 
-  $("select:not(.ignore)").niceSelect();
+  if ($("select:not(.ignore)").length && $.fn.niceSelect) {
+    $("select:not(.ignore)").niceSelect();
+  }
+  if (typeof particlesJS === "function" && document.getElementById("particles-js")) {
   particlesJS("particles-js", {
     particles: {
       number: { value: 189, density: { enable: true, value_area: 800 } },
@@ -2383,25 +2369,28 @@
     },
     retina_detect: true,
   });
-  var count_particles, stats, update;
-  stats = new Stats();
-  stats.setMode(0);
-  stats.domElement.style.position = "absolute";
-  stats.domElement.style.left = "0px";
-  stats.domElement.style.top = "0px";
-  document.body.appendChild(stats.domElement);
-  count_particles = document.querySelector(".js-count-particles");
-  update = function () {
-    stats.begin();
-    stats.end();
-    if (
-      window.pJSDom[0].pJS.particles &&
-      window.pJSDom[0].pJS.particles.array
-    ) {
-      count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;
-    }
+  if (typeof Stats === "function") {
+    var count_particles, stats, update;
+    stats = new Stats();
+    stats.setMode(0);
+    stats.domElement.style.position = "absolute";
+    stats.domElement.style.left = "0px";
+    stats.domElement.style.top = "0px";
+    document.body.appendChild(stats.domElement);
+    count_particles = document.querySelector(".js-count-particles");
+    update = function () {
+      stats.begin();
+      stats.end();
+      if (
+        window.pJSDom[0].pJS.particles &&
+        window.pJSDom[0].pJS.particles.array
+      ) {
+        count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;
+      }
+      requestAnimationFrame(update);
+    };
     requestAnimationFrame(update);
-  };
-  requestAnimationFrame(update);
+  }
+  }
   // Initialize LightGallery
 })(jQuery);

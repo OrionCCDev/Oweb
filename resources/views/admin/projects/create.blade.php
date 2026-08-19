@@ -50,10 +50,8 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
                 <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="c-pro" {{ old('status') == 'c-pro' ? 'selected' : '' }}>Completed</option>
-                    <option value="u-con" {{ old('status') == 'u-con' ? 'selected' : '' }}>Under Construction</option>
-                    <option value="u-pro" {{ old('status') == 'u-pro' ? 'selected' : '' }}>Under Progress</option>
-                    <option value="h-100" {{ old('status') == 'h-100' ? 'selected' : '' }}>100% Complete</option>
+                    <option value="in progress" {{ old('status') == 'in progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                 </select>
             </div>
 
@@ -108,9 +106,15 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Main Images</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Card Thumbnail</label>
+            <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <p class="text-sm text-gray-500 mt-1">The image shown on the project card on the homepage and projects listing. Recommended 4:3 ratio (e.g. 1200×900px). Max 5MB.</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Main Images (Gallery/Slider)</label>
             <input type="file" name="images[]" multiple accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <p class="text-sm text-gray-500 mt-1">You can select multiple images. Max 10MB per image.</p>
+            <p class="text-sm text-gray-500 mt-1">Shown on the project's own page, not the card. You can select multiple images. Max 10MB per image.</p>
         </div>
 
         <div>

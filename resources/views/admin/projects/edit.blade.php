@@ -51,10 +51,8 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
                 <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                    <option value="c-pro" {{ old('status', $project->status) == 'c-pro' ? 'selected' : '' }}>Completed</option>
-                    <option value="u-con" {{ old('status', $project->status) == 'u-con' ? 'selected' : '' }}>Under Construction</option>
-                    <option value="u-pro" {{ old('status', $project->status) == 'u-pro' ? 'selected' : '' }}>Under Progress</option>
-                    <option value="h-100" {{ old('status', $project->status) == 'h-100' ? 'selected' : '' }}>100% Complete</option>
+                    <option value="in progress" {{ old('status', $project->status) == 'in progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="completed" {{ old('status', $project->status) == 'completed' ? 'selected' : '' }}>Completed</option>
                 </select>
             </div>
 
@@ -109,7 +107,20 @@
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Main Images (Flipster)</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Card Thumbnail</label>
+            @php
+                $thumbCandidate = $project->slug_name . '/' . $project->main_image;
+                $thumbUrl = \Illuminate\Support\Facades\Storage::disk('projects')->exists($thumbCandidate)
+                    ? \Illuminate\Support\Facades\Storage::disk('projects')->url($thumbCandidate)
+                    : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
+            @endphp
+            <img src="{{ $thumbUrl }}?v={{ $project->updated_at->timestamp }}" alt="Current card thumbnail" class="w-40 h-30 object-cover rounded-lg mb-2 border" onerror="this.style.display='none'">
+            <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">The image shown on the project card on the homepage and projects listing. Recommended 4:3 ratio (e.g. 1200×900px). Max 5MB.</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Main Images (Gallery/Slider)</label>
             @if($project->getMedia('flipster')->count() > 0)
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     @foreach($project->getMedia('flipster') as $media)

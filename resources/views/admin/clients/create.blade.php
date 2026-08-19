@@ -14,6 +14,16 @@
             <textarea name="description" rows="4" class="w-full px-4 py-2 border rounded-lg"></textarea>
         </div>
         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Website URL</label>
+            <input type="url" name="website_url" placeholder="https://example.com" class="w-full px-4 py-2 border rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">If set, the client's logo links out to their site on the homepage.</p>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+            <input type="number" name="sort_order" value="0" min="0" class="w-full px-4 py-2 border rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">Lower numbers show first (top-left). Clients with the same number keep their creation order.</p>
+        </div>
+        <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Logo</label>
             <input type="file" name="logo" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
         </div>

@@ -34,7 +34,7 @@ class ProjectController extends Controller
             'contract_type' => 'nullable|string|max:255',
             'scope' => 'nullable|string',
             'duration' => 'nullable|string|max:255',
-            'status' => 'required|in:c-pro,u-con,u-pro,h-100',
+            'status' => 'required|in:completed,in progress',
             'priority' => 'required|in:h-v1,h-v2,m-v1,m-v2,l-v1,l-v2',
             'cost' => 'nullable|numeric',
             'sector_id' => 'required|exists:sectors,id',
@@ -42,16 +42,28 @@ class ProjectController extends Controller
             'video' => 'nullable|url',
             'mini_desc' => 'nullable|string',
             'full_desc' => 'nullable|string',
+            'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
             'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
         // Remove file fields from validated data before creating project
-        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
+        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points'])->toArray();
         $projectData['slug_name'] = Str::slug($request->name);
 
         $project = Project::create($projectData);
+
+        // Handle the card thumbnail (plain file on the 'projects' disk,
+        // named main.{ext} inside the project's own slug folder - this is
+        // the legacy convention every existing project image already
+        // follows, resolved by orionccFront/partials/project-card.blade.php)
+        if ($request->hasFile('main_image')) {
+            $file = $request->file('main_image');
+            $filename = 'main.' . $file->getClientOriginalExtension();
+            $file->storeAs($project->slug_name, $filename, 'projects');
+            $project->update(['main_image' => $filename]);
+        }
 
         // Handle main images (flipster collection)
         if ($request->hasFile('images')) {
@@ -105,7 +117,7 @@ class ProjectController extends Controller
             'contract_type' => 'nullable|string|max:255',
             'scope' => 'nullable|string',
             'duration' => 'nullable|string|max:255',
-            'status' => 'required|in:c-pro,u-con,u-pro,h-100',
+            'status' => 'required|in:completed,in progress',
             'priority' => 'required|in:h-v1,h-v2,m-v1,m-v2,l-v1,l-v2',
             'cost' => 'nullable|numeric',
             'sector_id' => 'required|exists:sectors,id',
@@ -113,16 +125,25 @@ class ProjectController extends Controller
             'video' => 'nullable|url',
             'mini_desc' => 'nullable|string',
             'full_desc' => 'nullable|string',
+            'main_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:5120',
             'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
         ]);
 
         // Remove file fields from validated data before updating project
-        $projectData = collect($validated)->except(['images', 'gallery', 'project_points'])->toArray();
+        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points'])->toArray();
         $projectData['slug_name'] = Str::slug($request->name);
 
         $project->update($projectData);
+
+        // Handle a replacement card thumbnail
+        if ($request->hasFile('main_image')) {
+            $file = $request->file('main_image');
+            $filename = 'main.' . $file->getClientOriginalExtension();
+            $file->storeAs($project->slug_name, $filename, 'projects');
+            $project->update(['main_image' => $filename]);
+        }
 
         // Handle new main images (flipster collection)
         if ($request->hasFile('images')) {

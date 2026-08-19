@@ -10,6 +10,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Photo</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Projects Count</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -18,6 +19,13 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($sectors as $sector)
                     <tr>
+                        <td class="px-6 py-4">
+                            @if ($sector->hasMedia('sectors'))
+                                <img src="{{ $sector->getFirstMediaUrl('sectors') }}" alt="{{ $sector->name }}" class="w-16 h-10 object-cover rounded">
+                            @else
+                                <div class="w-16 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">—</div>
+                            @endif
+                        </td>
                         <td class="px-6 py-4"><div class="text-sm font-medium text-gray-900">{{ $sector->name }}</div></td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $sector->projects_count }}</td>
                         <td class="px-6 py-4 text-sm font-medium space-x-2">
@@ -30,7 +38,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">No sectors found.</td></tr>
+                    <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No sectors found.</td></tr>
                 @endforelse
             </tbody>
         </table>

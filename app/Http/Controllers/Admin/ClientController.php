@@ -10,7 +10,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::withCount('projects')->latest()->paginate(20);
+        $clients = Client::withCount('projects')->orderBy('sort_order')->orderBy('id')->paginate(20);
         return view('admin.clients.index', compact('clients'));
     }
 
@@ -24,6 +24,8 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'website_url' => 'nullable|url|max:255',
+            'sort_order' => 'nullable|integer|min:0',
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
 
@@ -47,14 +49,19 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'website_url' => 'nullable|url|max:255',
+            'sort_order' => 'nullable|integer|min:0',
             'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
+            'remove_logo' => 'nullable|boolean',
         ]);
 
-        $client->update(collect($validated)->except('logo')->toArray());
+        $client->update(collect($validated)->except(['logo', 'remove_logo'])->toArray());
 
         if ($request->hasFile('logo')) {
             $client->clearMediaCollection('clients');
             $client->addMedia($request->file('logo'))->toMediaCollection('clients');
+        } elseif ($request->boolean('remove_logo')) {
+            $client->clearMediaCollection('clients');
         }
 
         return redirect()->route('admin.clients.index')

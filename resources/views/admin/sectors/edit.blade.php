@@ -20,7 +20,11 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Photo</label>
+            @if ($sector->hasMedia('sectors'))
+                <img src="{{ $sector->getFirstMediaUrl('sectors') }}" alt="{{ $sector->name }}" class="w-40 h-28 object-cover rounded-lg mb-2 border">
+            @endif
             <input type="file" name="photo" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">Uploading a new photo replaces the current one.</p>
         </div>
         <div class="flex justify-end space-x-4">
             <a href="{{ route('admin.sectors.index') }}" class="px-6 py-2 bg-gray-200 rounded-lg">Cancel</a>

@@ -60,8 +60,10 @@ class ClientController extends Controller
         if ($request->hasFile('logo')) {
             $client->clearMediaCollection('clients');
             $client->addMedia($request->file('logo'))->toMediaCollection('clients');
+            $client->update(['logo' => null]);
         } elseif ($request->boolean('remove_logo')) {
             $client->clearMediaCollection('clients');
+            $client->update(['logo' => null]);
         }
 
         return redirect()->route('admin.clients.index')

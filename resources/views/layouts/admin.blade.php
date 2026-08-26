@@ -7,7 +7,7 @@
 
     <title>{{ config('app.name', 'Orion Contracting Company') }} - Admin Dashboard</title>
 
-    <link rel="icon" href="{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
+    <link rel="icon" href="{{ site_logo_url('favicon_32', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -23,7 +23,7 @@
                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             <div class="admin-sidebar__brand flex items-center justify-between h-20 px-5">
                 <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company" class="admin-sidebar__logo">
+                    <img src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company" class="admin-sidebar__logo">
                 </a>
                 <button @click="sidebarOpen = false" class="admin-sidebar__close lg:hidden">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,6 +129,13 @@
                 <div class="admin-sidebar__divider my-4"></div>
 
                 <p class="admin-nav__group-label px-3 mb-2">Settings</p>
+
+                <a href="{{ route('admin.settings.logo') }}" class="admin-nav__link {{ request()->routeIs('admin.settings.logo') ? 'is-active' : '' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Site Logo
+                </a>
 
                 <a href="{{ route('admin.settings.about') }}" class="admin-nav__link {{ request()->routeIs('admin.settings.about') ? 'is-active' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,6 +252,45 @@
          x-transition:leave="transition-opacity ease-linear duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"></div>
+
+    <script>
+        // Live preview for every image file input across the admin - shows
+        // the newly picked file immediately, before the form is saved.
+        document.addEventListener('change', function (e) {
+            const input = e.target;
+            if (input.tagName !== 'INPUT' || input.type !== 'file') return;
+            if (!(input.getAttribute('accept') || '').toLowerCase().includes('image')) return;
+
+            const files = input.files ? Array.from(input.files) : [];
+            let preview = input.parentElement.querySelector('.js-file-preview');
+
+            if (!files.length) {
+                if (preview) preview.remove();
+                return;
+            }
+
+            if (!preview) {
+                preview = document.createElement('div');
+                preview.className = 'js-file-preview mt-2';
+                preview.innerHTML = '<p class="text-xs font-medium text-gray-500 mb-1">New image' + (input.multiple ? 's' : '') + ' (not saved yet):</p><div class="js-file-preview-thumbs flex flex-wrap gap-2"></div>';
+                input.insertAdjacentElement('afterend', preview);
+            }
+
+            const thumbs = preview.querySelector('.js-file-preview-thumbs');
+            thumbs.innerHTML = '';
+
+            files.forEach(function (file) {
+                const img = document.createElement('img');
+                img.className = 'w-24 h-16 object-cover border rounded-lg bg-gray-50 p-1';
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+                thumbs.appendChild(img);
+            });
+        });
+    </script>
 
     @stack('scripts')
 </body>

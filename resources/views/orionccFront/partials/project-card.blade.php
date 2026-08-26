@@ -1,19 +1,5 @@
 @php
-    $cardResolveMain = function ($proj) {
-        $name = $proj->main_image ?: 'main.webp';
-        $candidates = [$name];
-        if ($name && !str_contains($name, '/')) {
-            $candidates[] = $proj->slug_name . '/' . $name;
-            $candidates[] = $proj->slug_name . '/gallery/' . $name;
-        }
-        foreach (array_unique($candidates) as $candidate) {
-            if (Storage::disk('projects')->exists($candidate)) {
-                return Storage::disk('projects')->url($candidate);
-            }
-        }
-        return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
-    };
-    $cardMainUrl = $cardResolveMain($project);
+    $cardMainUrl = resolve_project_image($project);
     $cardIsDone = $project->status === 'completed';
     $cardDelay = (($index ?? 0) % 3) * 90;
 @endphp

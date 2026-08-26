@@ -24,7 +24,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0" style="background: linear-gradient(180deg, #0A1628 0%, #0F2138 100%);">
             <div>
                 <a href="/" class="flex flex-col items-center gap-2">
-                    <img src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company" class="h-14 w-auto">
+                    <img src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company" class="h-14 w-auto">
                 </a>
             </div>
 

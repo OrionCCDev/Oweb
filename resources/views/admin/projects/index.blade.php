@@ -15,6 +15,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thumbnail</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
@@ -27,6 +28,9 @@
                 @forelse($projects as $project)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
+                            <img src="{{ resolve_project_image($project) }}" alt="{{ $project->name }}" class="w-16 h-10 object-cover rounded" onerror="this.style.display='none'">
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $project->name }}</div>
                             <div class="text-sm text-gray-500">{{ $project->sub_name }}</div>
                         </td>
@@ -38,11 +42,10 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full
-                                @if($project->status == 'c-pro') bg-green-100 text-green-800
-                                @elseif($project->status == 'u-con') bg-yellow-100 text-yellow-800
-                                @elseif($project->status == 'u-pro') bg-blue-100 text-blue-800
+                                @if($project->status == 'completed') bg-green-100 text-green-800
+                                @elseif($project->status == 'in_progress') bg-blue-100 text-blue-800
                                 @else bg-gray-100 text-gray-800 @endif">
-                                {{ $project->status }}
+                                {{ $project->status == 'in_progress' ? 'In Progress' : ucfirst($project->status) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -59,7 +62,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                             No projects found. <a href="{{ route('admin.projects.create') }}" class="text-blue-600 hover:underline">Create one</a>
                         </td>
                     </tr>

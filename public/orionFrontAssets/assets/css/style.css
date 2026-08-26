@@ -14873,7 +14873,8 @@ body.boxed-wrapper {
 }
 .page-wrapper .main-header .main-header__wrapper .main-header__logo a img {
     width: 130px;
-    height: 86px;
+    height: auto;
+    max-height: 86px;
 }
 .footer-widget__logo a img {
     width: 200px;

@@ -20,8 +20,8 @@
                 @forelse($sectors as $sector)
                     <tr>
                         <td class="px-6 py-4">
-                            @if ($sector->hasMedia('sectors'))
-                                <img src="{{ $sector->getFirstMediaUrl('sectors') }}" alt="{{ $sector->name }}" class="w-16 h-10 object-cover rounded">
+                            @if (resolve_sector_photo($sector))
+                                <img src="{{ resolve_sector_photo($sector) }}" alt="{{ $sector->name }}" class="w-16 h-10 object-cover rounded">
                             @else
                                 <div class="w-16 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">—</div>
                             @endif

@@ -56,7 +56,7 @@ $p_nam = 'about';
     "name": "Orion Contracting Company",
     "foundingDate": "2008",
     "url": "{{ url('/') }}",
-    "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+    "logo": "{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Al-Hamra Industrial Area",

@@ -63,6 +63,7 @@ class EventController extends Controller
         if ($request->hasFile('main_image')) {
             $event->clearMediaCollection('events');
             $event->addMedia($request->file('main_image'))->toMediaCollection('events');
+            $event->update(['main_image' => null]);
         }
 
         return redirect()->route('admin.events.index')

@@ -29,8 +29,8 @@
                 @forelse($clients as $client)
                     <tr>
                         <td class="px-6 py-4">
-                            @if ($client->hasMedia('clients'))
-                                <img src="{{ $client->getFirstMediaUrl('clients') }}" alt="{{ $client->name }}" class="w-16 h-10 object-contain">
+                            @if (resolve_client_logo($client))
+                                <img src="{{ resolve_client_logo($client) }}" alt="{{ $client->name }}" class="w-16 h-10 object-contain">
                             @else
                                 <div class="w-16 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">—</div>
                             @endif

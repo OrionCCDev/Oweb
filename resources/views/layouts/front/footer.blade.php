@@ -13,8 +13,8 @@
                     <div class="footer-widget__column footer-widget__about">
                         <div class="footer-widget__logo">
                             <a href="{{ route('home') }}"><img
-                                    src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}"
-                                    alt=""></a>
+                                    src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}"
+                                    alt="Orion Company Logo"></a>
                         </div>
                         <div class="footer-widget__about-text-box">
                             <p class="footer-widget__about-text">{{ setting('footer.tagline', "We Build Your Vision Into Reality") }}</p>
@@ -130,8 +130,8 @@
 
         <div class="logo-box">
             <a href="{{ route('home') }}" aria-label="logo image"><img
-                    src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}" width="104"
-                    alt="" /></a>
+                    src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}" width="104"
+                    alt="Orion Company Logo" /></a>
         </div>
         <!-- /.logo-box -->
         <div class="mobile-nav__container"></div>
@@ -189,7 +189,7 @@
         "name": "Orion Contracting Company",
         "description": "Leading construction and contracting experts with 15+ years of experience specializing in commercial, industrial and residential projects across United Arab Emirates And Saudi Arabia",
         "url": "{{ url('/') }}",
-        "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+        "logo": "{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
         "foundingDate": "2008",
         "address": {
             "@type": "PostalAddress",

@@ -10,6 +10,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
@@ -19,6 +20,13 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($events as $event)
                     <tr>
+                        <td class="px-6 py-4">
+                            @if (resolve_event_image($event))
+                                <img src="{{ resolve_event_image($event) }}" alt="{{ $event->title }}" class="w-16 h-10 object-cover rounded">
+                            @else
+                                <div class="w-16 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs">—</div>
+                            @endif
+                        </td>
                         <td class="px-6 py-4"><div class="text-sm font-medium text-gray-900">{{ $event->title }}</div></td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $event->type }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $event->created_at->format('M d, Y') }}</td>
@@ -32,7 +40,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No events found.</td></tr>
+                    <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No events found.</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -26,23 +26,32 @@ class Project extends Model implements HasMedia
             ->useDisk('projects');
     }
 
+    /**
+     * nonQueued(): this hosting has no queue worker running, so a queued
+     * conversion never actually generates and getFirstMediaUrl() ends up
+     * pointing at a file that doesn't exist. Generating synchronously on
+     * upload means the conversion is always there when a view needs it.
+     */
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('flip_out')
             ->width(350)
             ->height(380)
             ->withResponsiveImages()
+            ->nonQueued()
             ->performOnCollections('flipster');
 
         $this->addMediaConversion('flip_out_low')
             ->width(350)
             ->height(380)
             ->quality(70)
+            ->nonQueued()
             ->performOnCollections('flipster');
 
         $this->addMediaConversion('mini_gallary_out')
             ->width(770)
             ->height(340)
+            ->nonQueued()
             ->performOnCollections('mini_gallary');
     }
 

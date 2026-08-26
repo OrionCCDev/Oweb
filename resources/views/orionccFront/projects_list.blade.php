@@ -88,25 +88,7 @@ $p_nam = 'projects';
                                 <div class="product-list__single-inner">
                                     <div class="product-list__img-box">
                                         <div class="product-list__img">
-                                            @php
-                                                $resolveMain = function($proj){
-                                                    $name = $proj->main_image;
-                                                    $candidates = [];
-                                                    $candidates[] = $name;
-                                                    if ($name && !str_contains($name, '/')) {
-                                                        $candidates[] = $proj->slug_name . '/' . $name;
-                                                        $candidates[] = $proj->slug_name . '/gallery/' . $name;
-                                                    }
-                                                    foreach (array_unique($candidates) as $c) {
-                                                        if (Storage::disk('projects')->exists($c)) {
-                                                            return Storage::disk('projects')->url($c);
-                                                        }
-                                                    }
-                                                    return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
-                                                };
-                                                $cardMainUrl = $resolveMain($data);
-                                            @endphp
-                                            <img src="{{ $cardMainUrl }}"
+                                            <img src="{{ resolve_project_image($data) }}"
                                                 alt="{{ $data->name }}">
                                         </div>
 

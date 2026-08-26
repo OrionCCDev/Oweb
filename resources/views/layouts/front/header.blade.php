@@ -7,11 +7,11 @@
     <title> Orion CC | @yield('page_name' , '') </title>
     <!-- favicons Icons -->
     <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ asset('orionFrontAssets/assets/images/favicons/favicon.webp') }}" />
+        href="{{ site_logo_url('favicon_180', 'orionFrontAssets/assets/images/favicons/favicon.webp') }}" />
     <link rel="icon" type="image/png" sizes="32x32"
-        href="{{ asset('orionFrontAssets/assets/images/favicons/favicon32.webp') }}" />
+        href="{{ site_logo_url('favicon_32', 'orionFrontAssets/assets/images/favicons/favicon32.webp') }}" />
     <link rel="icon" type="image/png" sizes="16x16"
-        href="{{ asset('orionFrontAssets/assets/images/favicons/favicon16.webp') }}" />
+        href="{{ site_logo_url('favicon_16', 'orionFrontAssets/assets/images/favicons/favicon16.webp') }}" />
     <meta name="description"
         content="@yield('meta_description', 'ORION Leading contracting company in Ras Al Khaimah, UAE, specializing in residential, commercial, and industrial projects. Trusted for quality, reliability, and timely delivery. Contact us for your construction needs.')" />
     <meta name="keywords"
@@ -31,7 +31,7 @@
     <meta property="og:type" content="@yield('og_type', 'website')" />
     <meta property="og:title" content="@yield('og_title', 'Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia')" />
     <meta property="og:description" content="@yield('og_description', 'Orion Contracting Company is a premier construction and contracting firm with over 15 years of expertise, specializing in commercial, industrial, and MEP projects across UAE and Saudi Arabia.')" />
-    <meta property="og:image" content="@yield('og_image', asset('orionFrontAssets/assets/images/favicons/logo-blue.webp'))" />
+    <meta property="og:image" content="@yield('og_image', site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp'))" />
     <meta property="og:url" content="@yield('og_url', url()->current())" />
     <meta property="og:site_name" content="Orion Contracting Company" />
 
@@ -39,7 +39,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@yield('twitter_title', 'Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia')" />
     <meta name="twitter:description" content="@yield('twitter_description', 'Orion Contracting Company is a premier construction and contracting firm with over 15 years of expertise, specializing in commercial, industrial, and MEP projects across UAE and Saudi Arabia.')" />
-    <meta name="twitter:image" content="@yield('twitter_image', asset('orionFrontAssets/assets/images/favicons/logo-blue.webp'))" />
+    <meta name="twitter:image" content="@yield('twitter_image', site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp'))" />
 
 @yield('meta_tags')
     <!-- fonts -->
@@ -73,8 +73,8 @@
                 <div class="main-header__wrapper-inner">
                     <div class="main-header__logo">
                         <a href="{{ route('home') }}"><img
-                                src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}"
-                                alt="Orion Company White Logo"></a>
+                                src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}"
+                                alt="Orion Company Logo"></a>
                     </div>
                     <div class="main-header__right">
                         <div class="main-header__top">

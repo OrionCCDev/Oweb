@@ -256,6 +256,38 @@ class SettingController extends Controller
             ->with('success', 'Contact settings updated successfully.');
     }
 
+    /**
+     * The site-wide logo lives on one fixed Setting row (key = 'site_logo')
+     * with a media conversion per placement (header, footer, favicons,
+     * social previews) - see Setting::registerMediaConversions() and the
+     * site_logo_url() helper that every front-end/admin view reads from.
+     */
+    public function logo()
+    {
+        $setting = Setting::firstOrCreate(['key' => 'site_logo'], ['group' => 'branding', 'type' => 'image']);
+        return view('admin.settings.logo', compact('setting'));
+    }
+
+    public function updateLogo(Request $request)
+    {
+        $request->validate([
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:5120',
+            'remove_logo' => 'nullable|boolean',
+        ]);
+
+        $setting = Setting::firstOrCreate(['key' => 'site_logo'], ['group' => 'branding', 'type' => 'image']);
+
+        if ($request->hasFile('logo')) {
+            $setting->clearMediaCollection('logo');
+            $setting->addMedia($request->file('logo'))->toMediaCollection('logo');
+        } elseif ($request->boolean('remove_logo')) {
+            $setting->clearMediaCollection('logo');
+        }
+
+        return redirect()->route('admin.settings.logo')
+            ->with('success', 'Site logo updated successfully.');
+    }
+
     public function create()
     {
         return view('admin.settings.create');

@@ -92,13 +92,7 @@
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Card Thumbnail</label>
-            @php
-                $thumbCandidate = $project->slug_name . '/' . $project->main_image;
-                $thumbUrl = \Illuminate\Support\Facades\Storage::disk('projects')->exists($thumbCandidate)
-                    ? \Illuminate\Support\Facades\Storage::disk('projects')->url($thumbCandidate)
-                    : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
-            @endphp
-            <img src="{{ $thumbUrl }}?v={{ $project->updated_at->timestamp }}" alt="Current card thumbnail" class="w-40 h-30 object-cover rounded-lg mb-2 border" onerror="this.style.display='none'">
+            <img src="{{ resolve_project_image($project) }}?v={{ $project->updated_at->timestamp }}" alt="Current card thumbnail" class="w-40 h-30 object-cover rounded-lg mb-2 border" onerror="this.style.display='none'">
             <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
             <p class="text-sm text-gray-500 mt-1">The image shown on the project card on the homepage and projects listing. Recommended 4:3 ratio (e.g. 1200×900px). Max 5MB.</p>
         </div>

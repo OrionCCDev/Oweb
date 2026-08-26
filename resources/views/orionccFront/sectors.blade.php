@@ -185,25 +185,7 @@ $p_nam = 'sectors';
                         @foreach ($sector->Projects as $project )
                         <div class="swiper-slide" style="width: 154px; margin-right: 100px;">
                             <a href="{{ route('projects.show' , ['project'=>$project->id]) }}"> <img
-                                    @php
-                                        $resolveMain = function($proj){
-                                            $name = $proj->main_image;
-                                            $candidates = [];
-                                            $candidates[] = $name;
-                                            if ($name && !str_contains($name, '/')) {
-                                                $candidates[] = $proj->slug_name . '/' . $name;
-                                                $candidates[] = $proj->slug_name . '/gallery/' . $name;
-                                            }
-                                            foreach (array_unique($candidates) as $c) {
-                                                if (Storage::disk('projects')->exists($c)) {
-                                                    return Storage::disk('projects')->url($c);
-                                                }
-                                            }
-                                            return asset('orionFrontAssets/assets/images/project/' . $proj->slug_name . '/' . $name);
-                                        };
-                                        $cardMainUrl = $resolveMain($project);
-                                    @endphp
-                                    src="{{ $cardMainUrl }}"
+                                    src="{{ resolve_project_image($project) }}"
                                     style="width: 225px;height:155px" alt="{{ $project->name }}"></a>
                         </div><!-- /.swiper-slide -->
 
@@ -294,7 +276,7 @@ $p_nam = 'sectors';
                         @foreach ($sector->Projects as $project )
                         <div class="swiper-slide" style="width: 154px; margin-right: 100px;">
                             <a href="{{ route('projects.show' , ['project'=>$project->id]) }}"> <img
-                                    src="{{ asset('orionFrontAssets/assets/images/project/'.$project->slug_name.'/'.$project->main_image)}}"
+                                    src="{{ resolve_project_image($project) }}"
                                     style="width: 225px;height:155px" alt=""></a>
                         </div><!-- /.swiper-slide -->
                         @endforeach

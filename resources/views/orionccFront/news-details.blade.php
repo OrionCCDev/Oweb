@@ -73,7 +73,7 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
     "name": "Orion Contracting Company",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}"
+      "url": "{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}"
     }
   }
 }

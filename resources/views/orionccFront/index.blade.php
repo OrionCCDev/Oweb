@@ -13,13 +13,13 @@ $p_nam = 'home';
 @section('og_type', 'website')
 @section('og_title', 'Orion Contracting Company - Leading Construction Experts in UAE & Saudi Arabia')
 @section('og_description', 'Leading construction experts delivering innovative solutions across UAE & Saudi Arabia. 15+ years of excellence in commercial and industrial projects.')
-@section('og_image', asset('orionFrontAssets/assets/images/resources/logo-blue.webp'))
+@section('og_image', site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp'))
 @section('og_url', route('home'))
 
 {{-- Twitter Card Tags --}}
 @section('twitter_title', 'Orion Contracting - Construction Excellence in UAE & KSA')
 @section('twitter_description', 'Leading construction and contracting experts with 15+ years of experience across UAE and Saudi Arabia.')
-@section('twitter_image', asset('orionFrontAssets/assets/images/resources/logo-blue.webp'))
+@section('twitter_image', site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp'))
 
 @section('css_style_links')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" />
@@ -47,8 +47,8 @@ $p_nam = 'home';
   "@type": "GeneralContractor",
   "name": "Orion Contracting Company",
   "url": "{{ url('/') }}",
-  "logo": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
-  "image": "{{ asset('orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+  "logo": "{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
+  "image": "{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-blue.webp') }}",
   "telephone": "+97172335531",
   "email": "info@orioncc.com",
   "foundingDate": "2008",
@@ -144,7 +144,7 @@ $p_nam = 'home';
     </video>
     <div class="site-intro__overlay"></div>
     <div class="site-intro__logo">
-        <img src="{{ asset('orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company">
+        <img src="{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}" alt="Orion Contracting Company">
     </div>
     <button type="button" id="site-intro-skip" class="site-intro__skip">
         <span>Skip Intro</span>

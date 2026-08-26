@@ -27,11 +27,11 @@ class SecurityHeaders
         // which is the main protection this buys against the SVG-upload / injected-content risk.
         $response->headers->set('Content-Security-Policy', implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://threejs.org",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://threejs.org https://www.youtube.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net",
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net data:",
             "img-src 'self' data: https:",
-            "frame-src 'self' https://www.google.com",
+            "frame-src 'self' https://www.google.com https://www.youtube.com https://www.youtube-nocookie.com",
             "connect-src 'self'",
             "object-src 'none'",
             "base-uri 'self'",

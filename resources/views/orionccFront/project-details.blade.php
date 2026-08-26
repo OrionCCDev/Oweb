@@ -1,10 +1,9 @@
 @extends('layouts.front.app')
 @php
 $p_nam = 'projects';
-$projectImage = $project->hasMedia('flipster') ? $project->getFirstMediaUrl('flipster') : asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $project->main_image);
-$projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$project->Sector->name} project by Orion Contracting Company. Completed in " . \Carbon\Carbon::parse($project->end)->format('Y') . " with expertise in commercial and industrial construction.";
-// Backward-compatible image resolver for gallery images
-// Ensures old flat structure `project/{slug}/` and new `project/{slug}/gallery/` both work
+
+// Backward-compatible image resolver for the main/gallery images.
+// Ensures old flat structure `project/{slug}/` and new `project/{slug}/gallery/` both work.
 if (!isset($resolveProjectImage)) {
     $resolveProjectImage = function (string $path) use ($project) {
         $candidates = [];
@@ -22,23 +21,27 @@ if (!isset($resolveProjectImage)) {
         return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
     };
 }
+
+$projectImage = $project->hasMedia('flipster') ? $project->getFirstMediaUrl('flipster') : $resolveProjectImage($project->main_image ?: $project->gif ?: '');
+$sectorName = $project->Sector?->name ?: 'Construction';
+$projectDescription = $project->mini_desc ?: "Explore {$project->name} - a {$sectorName} project by Orion Contracting Company, delivering expertise in commercial and industrial construction across the UAE and Saudi Arabia.";
 @endphp
 @section('page_name' , $project->name )
 
 {{-- SEO Meta Tags --}}
 @section('meta_description', $projectDescription)
-@section('meta_keywords', "{{ $project->name }}, {{ $project->Sector->name }}, construction project UAE, {{ $project->Client?->name }}, Orion Contracting, MEP project, construction company")
+@section('meta_keywords', "{{ $project->name }}, {{ $sectorName }}, construction project UAE, {{ $project->Client?->name }}, Orion Contracting, MEP project, construction company")
 @section('canonical_url', route('projects.show', $project->id))
 
 {{-- Open Graph Tags --}}
 @section('og_type', 'article')
-@section('og_title', "{$project->name} - {$project->Sector->name} Project | Orion Contracting")
+@section('og_title', "{$project->name} - {$sectorName} Project | Orion Contracting")
 @section('og_description', $projectDescription)
 @section('og_image', $projectImage)
 @section('og_url', route('projects.show', $project->id))
 
 {{-- Twitter Card Tags --}}
-@section('twitter_title', "{$project->name} - {$project->Sector->name} Project | Orion Contracting")
+@section('twitter_title', "{$project->name} - {$sectorName} Project | Orion Contracting")
 @section('twitter_description', $projectDescription)
 @section('twitter_image', $projectImage)
 
@@ -86,7 +89,7 @@ if (!isset($resolveProjectImage)) {
     "name": "Orion Contracting Company",
     "url": "{{ url('/') }}"
   },
-  "category": "{{ $project->Sector->name }}"
+  "category": "{{ $sectorName }}"
 }
 </script>
 @endsection
@@ -110,9 +113,6 @@ if (!isset($resolveProjectImage)) {
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bxslider/jquery.bxslider.css') }}" />
-<!-- lightGallery CSS -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/css/lightgallery.min.css" />
 <style>
     /* Custom Video Popup Styles */
     .video-modal iframe {
@@ -171,12 +171,6 @@ if (!isset($resolveProjectImage)) {
 {{-- <script src="{{ asset('orionFrontAssets/assets/js/flip/jquery.flipster.min.js') }}"></script> --}}
 <!-- template js -->
 
-<!-- lightGallery JS + Plugins -->
-<!-- Add lightGallery JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.1/lightgallery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-zoom/2.7.1/lg-zoom.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lg-fullscreen/2.7.1/lg-fullscreen.min.js"></script>
-
 
 <script src="{{ asset('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
@@ -196,7 +190,7 @@ if (!isset($resolveProjectImage)) {
                 <li><span>/</span></li>
                 <li><a href="{{ route('projects.index') }}">Projects</a></li>
             </ul>
-            <h2 class="fnt-clr-g">{{ $project?->Client?->name }}</h2>
+            <h2 class="fnt-clr-g">{{ $project->name }}</h2>
         </div>
     </div>
 </section>
@@ -209,44 +203,47 @@ if (!isset($resolveProjectImage)) {
                 <div class="col-xl-12">
                     <div class="section-title text-center">
                         <span class="section-title__tagline">Checkout Our Project</span>
-                        <h2 class="section-title__title">{{ $project->name }}
-                            {{-- <br> {{ $project->Client->name }} --}}
-                        </h2>
-                        <h5>{{ $project->sub_name }}</h5>
+                        <h2 class="section-title__title">{{ $project->name }}</h2>
+                        @if ($project->sub_name)
+                            <h5>{{ $project->sub_name }}</h5>
+                        @endif
+                        @if ($project->Client)
+                            <p class="section-title__tagline" style="margin-top: 6px;">{{ $project->Client->name }}</p>
+                        @endif
                     </div>
                     <div class="portfolio-details__img video-one video-one__video-link" style="position: relative">
                         @php
-                            $mainName = $project->gif ?: $project->main_image;
+                            $mainName = $project->main_image ?: $project->gif;
                             $mainUrl = $resolveProjectImage($mainName ?? '');
                         @endphp
                         <img src="{{ $mainUrl }}"
                             alt="{{ $project->name }} - Main Project Image">
+                        @if ($project->video)
                         <a href="#" style="position: absolute;top:50%;left:50%;transform:translate(-50% , -50%)" class="video-popup-trigger" data-bs-toggle="modal" data-bs-target="#videoModal">
                             <div class="video-one__video-icon">
                                 <span class="fa fa-play"></span>
                                 <i class="ripple"></i>
                             </div>
                         </a>
+                        @endif
                     </div>
+
+                    @if ($project->video)
                     <script src="https://www.youtube.com/iframe_api"></script>
 
-                    <!-- Your existing HTML (modified iframe) -->
                     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                             <div class="modal-content">
                                 <div class="modal-body video-modal">
-                                    @if($videoUrl)
                                     <iframe id="youtubePlayer"
                                         src="{{ $videoUrl }}?autoplay=1&mute=1&enablejsapi=1&rel=0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>
-                                    @else
-                                    <div class="alert alert-info">Video not available</div>
-                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -255,54 +252,36 @@ if (!isset($resolveProjectImage)) {
                 <div class="col-xl-8 col-lg-7">
                     <div class="portfolio-details__left">
                         <h3 class="portfolio-details__title">About our project</h3>
-                        <p class="portfolio-details__text-1">{{ $project->mini_desc }}</p>
-                        <p class="portfolio-details__text-2">{{ $project->full_desc }}</p>
-                        <p class="portfolio-details__text-2">{{ $project->scope }}</p>
+                        @if ($project->mini_desc)
+                            <p class="portfolio-details__text-1">{{ $project->mini_desc }}</p>
+                        @endif
+                        @if ($project->full_desc)
+                            <p class="portfolio-details__text-2">{{ $project->full_desc }}</p>
+                        @endif
                         <ul class="portfolio-details__points-box list-unstyled">
-                            @foreach ($project->points as $point )
-
+                            @foreach ($project->points as $point)
                             <li>
                                 <div class="icon">
                                     <span class="fa fa-check"></span>
                                 </div>
                                 <div class="text">
-                                    <p>{{ $point->point }}
-                                    </p>
+                                    <p>{{ $point->point }}</p>
                                 </div>
                             </li>
                             @endforeach
-
                         </ul>
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="portfolio-details__right">
                         <ul class="list-unstyled portfolio-details__details-list">
-
+                            @foreach ($project->details as $detail)
                             <li>
-                                <p class="portfolio-details__client">Consultant:</p>
-                                <h4 class="portfolio-details__name">{{ $project->consultant }}</h4>
+                                <p class="portfolio-details__client">{{ $detail->label }}:</p>
+                                <h4 class="portfolio-details__name">{{ $detail->value }}</h4>
                             </li>
-                            <li>
-                                <p class="portfolio-details__client">Category:</p>
-                                <h4 class="portfolio-details__name">{{ $project->Sector->name }}</h4>
-                            </li>
-                            <li>
-                                <p class="portfolio-details__client">Contract Type:</p>
-                                <h4 class="portfolio-details__name">{{ $project->contract_type }}</h4>
-                            </li>
-                            <li>
-                                <p class="portfolio-details__client">completion:</p>
-                                <h4 class="portfolio-details__name">{{
-                                    \Carbon\Carbon::parse($project->end)->format('Y M') }}</h4>
-                            </li>
-                            <li>
-                                <p class="portfolio-details__client">Duration:</p>
-                                <h4 class="portfolio-details__name">{{ $project->duration }}
-                                </h4>
-                            </li>
+                            @endforeach
                         </ul>
-
                     </div>
                 </div>
             </div>
@@ -310,208 +289,78 @@ if (!isset($resolveProjectImage)) {
     </div>
 </section>
 <div class="container-fluid">
-    {{-- <section class="testimonial-two" style="padding: 50px 0 50px;">
-        <div class="testimonial-two__bg"
-            style="background-image: url({{ asset('orionFrontAssets/assets/images/backgrounds/testimonial-two-bg.jpg') }});">
-        </div>
-        <div class="testimonial-two__bg-img">
-        </div>
-        <div class="testimonial-two__shape-1">
-
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-4">
-                    <div class="testimonial-two__left mt-5">
-                        <div class="section-title text-left">
-                            <span class="section-title__tagline">Our project Gallary</span>
-                            <h2 class="section-title__title">It's Good To Share Our Work With You</h2>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="col-xl-8">
-                    <div class="testimonial-two__right" style="min-height: 410px;max-height:410px">
-                        <div class="main-slider-three__right" style="min-height: 410px;max-height:410px">
-
-                            <div id="inline-gallery-container" class="inline-gallery-container swiper-wrapper"></div>
-                            <script>
-                                var videoUrl = @json($videoUrl);
-                                var projectg = @json($projectg->gallaries);
-                                </script>
-                                @php
-                                    // Resolve image URL with backward compatibility:
-                                    // 1) Stored path as-is
-                                    // 2) Prepend slug if missing
-                                    // 3) Replace slug/gallery/ with slug/ (old flat structure)
-                                    $resolveProjectImage = function (string $path) use ($project) {
-                                        $candidates = [];
-                                        $candidates[] = $path;
-                                        if (!str_contains($path, '/')) {
-                                            $candidates[] = $project->slug_name . '/' . $path;
-                                        }
-                                        $candidates[] = str_replace($project->slug_name . '/gallery/', $project->slug_name . '/', $path);
-                                        $candidates = array_values(array_unique(array_filter($candidates)));
-                                        foreach ($candidates as $candidate) {
-                                            if (Storage::disk('projects')->exists($candidate)) {
-                                                return Storage::disk('projects')->url($candidate);
-                                            }
-                                        }
-                                        // Fallback to asset path to avoid breaking the UI
-                                        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . basename($path));
-                                    };
-                                    $galleryImagesArray = $project->gallaries->map(function ($gallery) use ($resolveProjectImage) {
-                                        $url = $resolveProjectImage($gallery->image ?? '');
-                                        return ['src' => $url, 'thumb' => $url];
-                                    })->values();
-                                @endphp
-                                <script>
-                                    var galleryImages = @json($galleryImagesArray);
-                                var lgContainer = document.getElementById('inline-gallery-container');
-                                    var inlineGallery = lightGallery(lgContainer, {
-                                        container: lgContainer,
-                                    dynamic: true,
-                                    dynamicEl: galleryImages,
-                                    autoplay: true,
-                                    thumbnail: true,
-                                    hash: false,
-                                    closable: false,
-                                    showMaximizeIcon: false,
-                                    appendSubHtmlTo: '.lg-item',
-                                    slideDelay: 400,
-                                    thumbWidth: 60,
-                                    thumbHeight: "40px",
-                                    thumbMargin: 4,
-                                    download: false,
-                                    counter: true,
-                                    enableSwipe: true,
-                                    enableDrag: true,
-                                    swipeThreshold: 50,
-                                    loop: true,
-                                    fullScreen: true,
-                                    zoom: true,
-                                    scale: 1,
-                                    actualSize: true
-                                    });
-
-                                    // Since we are using dynamic mode, we need to programmatically open lightGallery
-                                    inlineGallery.openGallery();
-
-                                // Initialize Magnific Popup on the video link
-                                $('.video-popup{{ $project->id }}').magnificPopup({
-                                    type: 'iframe',
-                                    mainClass: 'mfp-fade',
-                                    removalDelay: 160,
-                                    preloader: false,
-                                    fixedContentPos: false,
-                                    iframe: {
-                                        patterns: {
-                                            youtube: {
-                                                index: 'youtube.com/',
-                                                id: 'v=',
-                                                src: '//www.youtube.com/embed/%id%?autoplay=1'
-                                            }
-                                        }
-                                    }
-                                });
-
-                            </script>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> --}}
+    @if ($project->gallaries->isNotEmpty())
     <section class="testimonial-two" style="padding: 50px 0 50px;">
         <div class="container">
             <div class="row">
                 <div class="col-xl-4">
                     <div class="testimonial-two__left mt-5">
                         <div class="section-title text-left">
-                            <span class="section-title__tagline">Our project Gallery</span>
+                            <span class="section-title__tagline">Our Project Gallery</span>
                             <h2 class="section-title__title">It's Good To Share Our Work With You</h2>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-8">
                     <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-                        {{-- <div class="carousel-indicators">
-                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        </div> --}}
+                        <div class="carousel-indicators">
+                            @foreach ($project->gallaries as $index => $gallery)
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}" class="{{ $loop->first ? 'active' : '' }}" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                            @endforeach
+                        </div>
                         <div class="carousel-inner">
-                            @foreach($project->gallaries as $gallery)
-                          <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
-                            @php
-                                $imgUrl = $resolveProjectImage($gallery->image ?? '');
-                            @endphp
-                            <img src="{{ $imgUrl }}" class="d-block w-100" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}">
-                          </div>
-                          @endforeach
-
+                            @foreach ($project->gallaries as $gallery)
+                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                <img src="{{ $resolveProjectImage($gallery->image ?? '') }}" class="d-block w-100" loading="lazy" alt="{{ $project->name }} - Gallery Image {{ $loop->iteration }}">
+                            </div>
+                            @endforeach
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
                         </button>
-                      </div>
-
-
-
-
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    @endif
 
+    @if ($project->video)
     <script>
+        var ytPlayer;
 
-// YouTube Player Instance
-let ytPlayer;
-
-// Initialize YouTube Player
-function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('youtubePlayer', {
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('youtubePlayer', {});
         }
-    });
-}
 
-// Handle modal close events
-$('#videoModal').on('hidden.bs.modal', function() {
-    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-        ytPlayer.stopVideo();
-    }
-});
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('videoModal');
+            if (!modal) return;
 
-// Optional: Pause video when closing with ESC or other methods
-$('#videoModal').on('hide.bs.modal', function() {
-    if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
-        ytPlayer.pauseVideo();
-    }
-});
+            modal.addEventListener('hide.bs.modal', function () {
+                if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+                    ytPlayer.pauseVideo();
+                }
+            });
 
-// Remove the document click handler - Bootstrap handles closing on outside click by default
-
-
-        // Reset iframe source when modal is closed
-        // $('#videoModal').on('hidden.bs.modal', function() {
-        //     const $iframe = $(this).find('iframe');
-        //     $iframe.attr('src', $iframe.attr('src'));
-        // });
+            modal.addEventListener('hidden.bs.modal', function () {
+                if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+                    ytPlayer.stopVideo();
+                }
+            });
+        });
     </script>
+    @endif
 </div>
 
-<!--Gallery One Start-->
+
+@if ($sug_proj->isNotEmpty())
+<!--Related Projects Start-->
 <section class="gallery-one gallery-two">
     <div class="section-title text-center">
         <span class="section-title__tagline">Checkout</span>
@@ -520,49 +369,39 @@ $('#videoModal').on('hide.bs.modal', function() {
         </h2>
     </div>
     <div class="container">
-        <div class="row">
-            <!--Gallery One Single Start-->
-            @foreach ($sug_proj as $pro )
-            @if ($loop->count == 3)
-            <div class="col-xl-4 col-lg-6 col-12 wow fadeInUp" data-wow-delay="100ms">
-                @elseif ($loop->count == 2)
-                <div class="col-xl-offset-4 col-xl-4 col-lg-6 col-12 wow fadeInUp" data-wow-delay="100ms">
-                    @else
-                    <div class="col-xl-offset-6 col-xl-3 col-lg-6 col-12 wow fadeInUp" data-wow-delay="100ms">
-                        @endif
-                        <div class="gallery-one__single">
-                            <div class="gallery-one__img-box">
-                                <div class="gallery-one__img">
-                                    <img src="{{ asset('orionFrontAssets/assets/images/project/' . $pro->slug_name . '/' . $pro->main_image) }}"
-                                        alt="{{ $pro->name }} - Related Project" loading="lazy">
-                                </div>
-                                <div class="gallery-one__content-box">
-                                    <div class="gallery-one__content">
-                                        <div class="gallery-one__shape-1">
-                                            <img src="{{ asset('orionFrontAssets/assets/images/shapes/gallery-one-shape-1.png') }}"
-                                                alt="">
-                                        </div>
-                                        <div class="gallery-one__title-box">
-                                            <h3 class="gallery-one__title"><a
-                                                    href="{{ route('projects.show' , ['project'=>$pro->id]) }}">{{
-                                                    $pro->name
-                                                    }}</a></h3>
-                                            {{-- <p class="gallery-one__sub-title">{{ $pro->Client->name }}</p> --}}
-                                        </div>
-                                    </div>
-                                    <div class="gallery-one__arrow-box">
-                                        <a href="{{ route('projects.show' , ['project'=>$pro->id]) }}"
-                                            class="gallery-one__arrow"><span class="icon-right-arrow"></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Gallery One Single End-->
-                    @endforeach
-
+        <div class="thm-swiper__slider swiper-container related-projects-slider" data-swiper-options='{"spaceBetween": 30,"slidesPerView": 3,"speed": 500, "autoplay": { "delay": 3500 },"loop": false, "pagination": {"el": ".swiper-pagination", "clickable": true}, "navigation": {"nextEl": ".swiper-button-next", "prevEl": ".swiper-button-prev"}, "breakpoints": {
+            "0": { "spaceBetween": 20, "slidesPerView": 1 },
+            "575": { "spaceBetween": 20, "slidesPerView": 1 },
+            "767": { "spaceBetween": 24, "slidesPerView": 2 },
+            "1199": { "spaceBetween": 30, "slidesPerView": 3 }
+        }}'>
+            <div class="swiper-wrapper">
+                @foreach ($sug_proj as $index => $pro)
+                <div class="swiper-slide">
+                    @include('orionccFront.partials.project-card', ['project' => $pro, 'index' => $index])
                 </div>
+                @endforeach
             </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
 </section>
-<!--Gallery One End-->
+<!--Related Projects End-->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function initRelatedSlider() {
+        if (typeof Swiper === 'undefined') {
+            return setTimeout(initRelatedSlider, 100);
+        }
+        var el = document.querySelector('.related-projects-slider');
+        if (!el) return;
+        var options = el.dataset.swiperOptions ? JSON.parse(el.dataset.swiperOptions.replace(/'/g, '"')) : {};
+        new Swiper('.related-projects-slider', options);
+    }
+    initRelatedSlider();
+});
+</script>
+@endif
 @endsection

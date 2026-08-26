@@ -274,7 +274,7 @@
 
 .filter-layout .filter-item {
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .filter-layout .filter-item > .hot-products__single {

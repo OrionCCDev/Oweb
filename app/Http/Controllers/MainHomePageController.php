@@ -19,12 +19,12 @@ class MainHomePageController extends Controller
         $projects = Project::where('featured_on_homepage', true)
             ->orderBy('homepage_sort_order')
             ->orderBy('id')
-            ->take(9)
+            ->take(6)
             ->get();
         if ($projects->isEmpty()) {
             // Nothing explicitly chosen yet - show the most recent projects
             // rather than an empty section.
-            $projects = Project::latest()->take(9)->get();
+            $projects = Project::latest()->take(6)->get();
         }
         $clients = Client::whereNotNull('logo')->orWhereHas('media')->orderBy('sort_order')->orderBy('id')->get();
         $homeFeatures = HomeFeature::orderBy('sort_order')->orderBy('id')->get();

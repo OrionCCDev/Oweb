@@ -19,8 +19,9 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Sub Name</label>
-                <input type="text" name="sub_name" value="{{ old('sub_name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Full Project Name</label>
+                <input type="text" name="sub_name" value="{{ old('sub_name') }}" placeholder="e.g. Ministry of Health National Healthcare Facility" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <p class="text-sm text-gray-500 mt-1">"Project Name" above is the short name (breadcrumbs, cards). This longer version shows on the project's own page.</p>
             </div>
         </div>
 
@@ -50,7 +51,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
                 <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="in progress" {{ old('status') == 'in progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="in_progress" {{ old('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                     <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                 </select>
             </div>
@@ -71,23 +72,6 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Cost</label>
                 <input type="number" step="0.01" name="cost" value="{{ old('cost') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Contract Type</label>
-                <input type="text" name="contract_type" value="{{ old('contract_type') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
-                <input type="text" name="duration" value="{{ old('duration') }}" placeholder="e.g., 12 months" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            </div>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Scope</label>
-            <textarea name="scope" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('scope') }}</textarea>
         </div>
 
         <div>
@@ -124,6 +108,19 @@
         </div>
 
         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Project Details</label>
+            <p class="text-sm text-gray-500 mb-2">Label/value rows shown on the project's own page — Consultant, Category, Contract Type, Completion, Duration, or anything else you want.</p>
+            <div id="project-details" class="space-y-2">
+                <div class="flex gap-2 items-center project-detail-row">
+                    <input type="text" name="detail_labels[]" placeholder="Label, e.g. Consultant" class="w-1/3 px-4 py-2 border border-gray-300 rounded-lg">
+                    <input type="text" name="detail_values[]" placeholder="Value" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg">
+                    <button type="button" onclick="this.closest('.project-detail-row').remove()" class="text-red-600 hover:text-red-900 px-2" aria-label="Remove row">✕</button>
+                </div>
+            </div>
+            <button type="button" onclick="addProjectDetail()" class="mt-2 text-sm text-blue-600 hover:text-blue-800">+ Add Another Row</button>
+        </div>
+
+        <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Project Points</label>
             <div id="project-points" class="space-y-2">
                 <input type="text" name="project_points[]" placeholder="Achievement point 1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -139,6 +136,18 @@
 </div>
 
 <script>
+function addProjectDetail() {
+    const container = document.getElementById('project-details');
+    const row = document.createElement('div');
+    row.className = 'flex gap-2 items-center project-detail-row';
+    row.innerHTML = `
+        <input type="text" name="detail_labels[]" placeholder="Label, e.g. Consultant" class="w-1/3 px-4 py-2 border border-gray-300 rounded-lg">
+        <input type="text" name="detail_values[]" placeholder="Value" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg">
+        <button type="button" onclick="this.closest('.project-detail-row').remove()" class="text-red-600 hover:text-red-900 px-2" aria-label="Remove row">✕</button>
+    `;
+    container.appendChild(row);
+}
+
 function addProjectPoint() {
     const container = document.getElementById('project-points');
     const input = document.createElement('input');

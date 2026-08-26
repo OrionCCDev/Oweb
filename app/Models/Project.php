@@ -59,4 +59,8 @@ class Project extends Model implements HasMedia
     public function gallaries(){
         return $this->hasMany(ProjectGallary::class , 'project_id' , 'id');
     }
+
+    public function details(){
+        return $this->hasMany(ProjectDetail::class , 'project_id' , 'id')->orderBy('sort_order');
+    }
 }

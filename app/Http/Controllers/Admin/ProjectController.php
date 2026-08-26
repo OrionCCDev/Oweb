@@ -65,10 +65,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sub_name' => 'nullable|string|max:255',
-            'contract_type' => 'nullable|string|max:255',
-            'scope' => 'nullable|string',
-            'duration' => 'nullable|string|max:255',
-            'status' => 'required|in:completed,in progress',
+            'status' => 'required|in:completed,in_progress',
             'priority' => 'required|in:h-v1,h-v2,m-v1,m-v2,l-v1,l-v2',
             'cost' => 'nullable|numeric',
             'sector_id' => 'required|exists:sectors,id',
@@ -80,10 +77,12 @@ class ProjectController extends Controller
             'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
+            'detail_labels.*' => 'nullable|string|max:255',
+            'detail_values.*' => 'nullable|string|max:255',
         ]);
 
         // Remove file fields from validated data before creating project
-        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points'])->toArray();
+        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points', 'detail_labels', 'detail_values'])->toArray();
         $projectData['slug_name'] = Str::slug($request->name);
 
         $project = Project::create($projectData);
@@ -131,13 +130,15 @@ class ProjectController extends Controller
             }
         }
 
+        $this->saveProjectDetails($request, $project);
+
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project created successfully.');
     }
 
     public function edit(Project $project)
     {
-        $project->load(['sector', 'client', 'points', 'gallaries']);
+        $project->load(['sector', 'client', 'points', 'gallaries', 'details']);
         $sectors = Sector::all();
         $clients = Client::all();
         return view('admin.projects.edit', compact('project', 'sectors', 'clients'));
@@ -148,10 +149,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sub_name' => 'nullable|string|max:255',
-            'contract_type' => 'nullable|string|max:255',
-            'scope' => 'nullable|string',
-            'duration' => 'nullable|string|max:255',
-            'status' => 'required|in:completed,in progress',
+            'status' => 'required|in:completed,in_progress',
             'priority' => 'required|in:h-v1,h-v2,m-v1,m-v2,l-v1,l-v2',
             'cost' => 'nullable|numeric',
             'sector_id' => 'required|exists:sectors,id',
@@ -163,10 +161,12 @@ class ProjectController extends Controller
             'images.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'gallery.*' => 'image|mimes:jpeg,jpg,png,webp,gif|max:10240',
             'project_points.*' => 'nullable|string',
+            'detail_labels.*' => 'nullable|string|max:255',
+            'detail_values.*' => 'nullable|string|max:255',
         ]);
 
         // Remove file fields from validated data before updating project
-        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points'])->toArray();
+        $projectData = collect($validated)->except(['main_image', 'images', 'gallery', 'project_points', 'detail_labels', 'detail_values'])->toArray();
         $projectData['slug_name'] = Str::slug($request->name);
 
         $project->update($projectData);
@@ -212,8 +212,40 @@ class ProjectController extends Controller
             }
         }
 
+        $this->saveProjectDetails($request, $project);
+
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project updated successfully.');
+    }
+
+    /**
+     * The project details list is fully admin-managed (add/rename/reorder/
+     * remove any row), so - like project points - the simplest correct
+     * update is delete-and-recreate from the submitted label/value arrays
+     * rather than trying to diff against existing rows.
+     */
+    private function saveProjectDetails(Request $request, Project $project): void
+    {
+        if (!$request->has('detail_labels')) {
+            return;
+        }
+
+        $project->details()->delete();
+
+        $labels = $request->input('detail_labels', []);
+        $values = $request->input('detail_values', []);
+
+        foreach ($labels as $index => $label) {
+            if (trim((string) $label) === '') {
+                continue;
+            }
+
+            $project->details()->create([
+                'label' => $label,
+                'value' => $values[$index] ?? null,
+                'sort_order' => $index * 10,
+            ]);
+        }
     }
 
     public function destroy(Project $project)

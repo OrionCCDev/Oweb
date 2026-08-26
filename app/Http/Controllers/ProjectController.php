@@ -57,37 +57,30 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        // $suggested_projects = Project::where('sector_id', $project->sector_id)
-        // ->where('id', '!=', $project->id)
-        // ->with('Client')
-        // ->inRandomOrder()
-        // ->limit(3)
-        // ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
-        // $projectg = Project::with(['gallaries'])->where('id', $project->id)->first();
-        // // Pass the original video URL without modification
-        // $videoUrl = $project->video;
+        $project->load(['gallaries', 'sector', 'client', 'points', 'details']);
 
-        // return view('orionccFront.project-details', [
-        //     'videoUrl' => $videoUrl,
-        //     'project' => $project,
-        //     'sug_proj' => $suggested_projects,
-        //     'projectg' => $projectg,
-        // ]);
-
-        // Eager load necessary relationships
-        $project->load(['gallaries', 'sector', 'client']);
-
-        $suggested_projects = Project::where('sector_id', $project->sector_id)
-            ->where('id', '!=', $project->id)
-            ->with('client')
-            ->inRandomOrder()
-            ->limit(3)
-            ->get(['id', 'main_image', 'name', 'slug_name', 'client_id']);
+        // Related projects: same sector or same client as this one, with
+        // sector+client double-matches shown first. Deterministic order
+        // (not random) so the section doesn't reshuffle on every visit.
+        $sug_proj = Project::where('id', '!=', $project->id)
+            ->where(function ($query) use ($project) {
+                $query->where('sector_id', $project->sector_id)
+                    ->orWhere('client_id', $project->client_id);
+            })
+            ->with('sector')
+            ->orderByRaw('CASE WHEN sector_id = ? AND client_id = ? THEN 0 WHEN sector_id = ? THEN 1 ELSE 2 END', [
+                $project->sector_id,
+                $project->client_id,
+                $project->sector_id,
+            ])
+            ->orderByDesc('id')
+            ->limit(9)
+            ->get(['id', 'name', 'slug_name', 'main_image', 'status', 'sector_id', 'client_id']);
 
         return view('orionccFront.project-details', [
             'videoUrl' => $project->video,
             'project' => $project,
-            'sug_proj' => $suggested_projects,
+            'sug_proj' => $sug_proj,
         ]);
     }
 

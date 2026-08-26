@@ -27,7 +27,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Projects Description (optional, blank on the site right now)</label>
             <textarea name="projects_description" rows="3" class="w-full px-4 py-2 border rounded-lg">{{ $settings['projects_description']->value ?? '' }}</textarea>
         </div>
-        <p class="text-sm text-gray-500">Up to 9 projects show, chosen on the <a href="{{ route('admin.projects.homepage-picker') }}" class="text-blue-600 hover:underline">Homepage Projects</a> picker above.</p>
+        <p class="text-sm text-gray-500">Up to 6 projects show, chosen on the <a href="{{ route('admin.projects.homepage-picker') }}" class="text-blue-600 hover:underline">Homepage Projects</a> picker above.</p>
 
         <div class="flex justify-end">
             <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Changes</button>

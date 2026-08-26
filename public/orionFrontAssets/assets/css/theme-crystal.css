@@ -1039,6 +1039,14 @@ select:focus-visible,
 
 /* ---- Project cards (homepage "Our Projects" grid + /projects listing) ---- */
 
+/* Bootstrap's .row is a flex-wrap container, so margin-bottom on a
+   height:100% child like .project-card gets absorbed by align-items:stretch
+   instead of creating visible space between wrapped rows. row-gap is
+   immune to that and reliably spaces the cards. */
+.product__all > .row {
+    row-gap: 30px;
+}
+
 .project-card {
     position: relative;
     display: block;

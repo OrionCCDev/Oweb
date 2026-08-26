@@ -319,7 +319,16 @@ class SettingController extends Controller
             'value' => 'nullable|string',
             'type' => 'required|in:text,textarea,image,video,file',
             'group' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ]);
+
+        unset($validated['image_file']);
+
+        // An uploaded file wins over whatever is typed in the path box, so
+        // the stored path always matches the file that was just uploaded.
+        if ($request->hasFile('image_file')) {
+            $validated['value'] = $request->file('image_file')->store('settings', 'public');
+        }
 
         $setting->update($validated);
 

@@ -48,6 +48,9 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
                 @if (!empty($settings['hero_background_image']->value ?? null))
                     <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($settings['hero_background_image']->value) }}" alt="" class="w-48 h-28 object-cover rounded mb-2 border">
+                @else
+                    <p class="text-sm text-gray-500 mb-2">Currently showing the built-in default image (nothing custom uploaded):</p>
+                    <img src="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}" alt="" class="w-48 h-28 object-cover rounded mb-2 border">
                 @endif
                 <input type="file" name="hero_background_image" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
                 <p class="text-sm text-gray-500 mt-1">Shown while the video loads, and as the background on mobile / when motion is reduced.</p>

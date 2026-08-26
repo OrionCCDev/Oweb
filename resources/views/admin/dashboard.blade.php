@@ -79,9 +79,12 @@
                     <div class="space-y-4">
                         @foreach($stats['recent_projects'] as $project)
                             <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-                                <div>
-                                    <h3 class="font-medium text-gray-900">{{ $project->name }}</h3>
-                                    <p class="text-sm text-gray-600">{{ $project->sector->name ?? 'No Sector' }}</p>
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ resolve_project_image($project) }}" alt="" class="w-14 h-10 object-cover rounded border flex-shrink-0" onerror="this.style.display='none'">
+                                    <div>
+                                        <h3 class="font-medium text-gray-900">{{ $project->name }}</h3>
+                                        <p class="text-sm text-gray-600">{{ $project->sector->name ?? 'No Sector' }}</p>
+                                    </div>
                                 </div>
                                 <a href="{{ route('admin.projects.edit', $project) }}" class="text-blue-600 hover:text-blue-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,9 +110,16 @@
                     <div class="space-y-4">
                         @foreach($stats['recent_events'] as $event)
                             <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
-                                <div>
-                                    <h3 class="font-medium text-gray-900">{{ $event->title }}</h3>
-                                    <p class="text-sm text-gray-600">{{ $event->created_at->format('M d, Y') }}</p>
+                                <div class="flex items-center gap-3">
+                                    @if (resolve_event_image($event))
+                                        <img src="{{ resolve_event_image($event) }}" alt="" class="w-14 h-10 object-cover rounded border flex-shrink-0" onerror="this.style.display='none'">
+                                    @else
+                                        <div class="w-14 h-10 bg-gray-100 rounded border flex items-center justify-center text-gray-400 text-xs flex-shrink-0">—</div>
+                                    @endif
+                                    <div>
+                                        <h3 class="font-medium text-gray-900">{{ $event->title }}</h3>
+                                        <p class="text-sm text-gray-600">{{ $event->created_at->format('M d, Y') }}</p>
+                                    </div>
                                 </div>
                                 <a href="{{ route('admin.events.edit', $event) }}" class="text-blue-600 hover:text-blue-800">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

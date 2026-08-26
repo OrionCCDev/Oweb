@@ -25,7 +25,13 @@
                 @foreach($groupSettings as $setting)
                 <tr>
                     <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $setting->key }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-900">{{ Str::limit($setting->value, 50) }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-900">
+                        @if ($setting->type === 'image' && $setting->value)
+                            <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($setting->value) }}" alt="{{ $setting->key }}" class="w-20 h-12 object-cover rounded border" onerror="this.style.display='none'">
+                        @else
+                            {{ Str::limit($setting->value, 50) }}
+                        @endif
+                    </td>
                     <td class="px-6 py-4 text-sm text-gray-900">{{ $setting->type }}</td>
                     <td class="px-6 py-4 text-sm font-medium space-x-2">
                         <a href="{{ route('admin.settings.edit', $setting) }}" class="text-blue-600 hover:text-blue-900">Edit</a>

@@ -17,8 +17,8 @@ class DashboardController extends Controller
             'sectors' => Sector::count(),
             'events' => Event::count(),
             'clients' => Client::count(),
-            'recent_projects' => Project::latest()->take(5)->get(),
-            'recent_events' => Event::latest()->take(5)->get(),
+            'recent_projects' => Project::with('sector')->latest()->take(5)->get(),
+            'recent_events' => Event::with('media')->latest()->take(5)->get(),
         ];
 
         return view('admin.dashboard', compact('stats'));

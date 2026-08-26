@@ -38,6 +38,9 @@
                 @elseif ($config['type'] === 'image')
                     @if ($current)
                         <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($current) }}" alt="" class="w-40 h-24 object-cover rounded mb-2 border">
+                    @elseif (!empty($config['default']))
+                        <p class="text-sm text-gray-500 mb-2">Currently showing the built-in default image (nothing custom uploaded):</p>
+                        <img src="{{ asset($config['default']) }}" alt="" class="w-40 h-24 object-cover rounded mb-2 border">
                     @endif
                     <input type="file" name="{{ $field }}" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
 

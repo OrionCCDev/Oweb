@@ -36,6 +36,11 @@ class SecurityHeaders
             "object-src 'none'",
             "base-uri 'self'",
             "frame-ancestors 'self'",
+            // Restrict where forms can submit (blocks credential exfil via an
+            // injected <form action="attacker">) and auto-upgrade any stray
+            // http:// subresource to https://.
+            "form-action 'self'",
+            "upgrade-insecure-requests",
         ]));
 
         return $response;

@@ -25,10 +25,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MainHomePageController::class , 'index'])->name('home');
 Route::get('/home-modeled', [MainHomePageController::class , 'modeled'])->name('home.modeled');
-Route::resource('projects' , ProjectController::class);
-Route::resource('certificate' , CertificateController::class );
-Route::resource('sectors' , SectorController::class);
-Route::resource('news' , EventController::class);
+// Public catalog pages are read-only: exposing the full resource here
+// previously left store/update/destroy (including an unauthenticated
+// file-upload endpoint) reachable by anyone. All writes live under the
+// authenticated /admin group instead.
+Route::resource('projects' , ProjectController::class)->only(['index', 'show']);
+Route::resource('certificate' , CertificateController::class )->only(['index', 'show']);
+Route::resource('sectors' , SectorController::class)->only(['index', 'show']);
+Route::resource('news' , EventController::class)->only(['index', 'show']);
 Route::get('/projects-list', [ProjectController::class , 'indexOfList'])->name('indexOfList');
 Route::get('/contact', function(){
     return view('orionccFront.contact-us');
@@ -132,4 +136,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/qrcode', [App\Http\Controllers\QRCodeController::class, 'index'])->name('qrcode');
+// Behind auth: this endpoint fetches from an external API and writes into
+// the web root, so it must not be reachable (and abusable) by anonymous
+// visitors.
+Route::get('/qrcode', [App\Http\Controllers\QRCodeController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('qrcode');

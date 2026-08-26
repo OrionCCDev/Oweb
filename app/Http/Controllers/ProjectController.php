@@ -29,30 +29,6 @@ class ProjectController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $data = Project::all(['id' , 'name']);
-        return view('orionccFront.create_project',compact('data'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $project = Project::findOrFail($request->project_id);
-        if ($request->hasFile('pro_images')) {
-            $project->addMultipleMediaFromRequest(['pro_images'])
-                ->each(function ($fileAdder) use ($request) {
-                    $fileAdder->withResponsiveImages()->toMediaCollection($request->project_collection);
-                });
-        }
-        return redirect()->back()->with('success', 'Images uploaded successfully.');
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Project $project)
@@ -84,27 +60,4 @@ class ProjectController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Project $project)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Project $project)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Project $project)
-    {
-        //
-    }
 }

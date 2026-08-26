@@ -1,0 +1,19 @@
+# Uploaded project images live here. Never let anything in this tree be
+# executed as a script - deny direct access to any code file and strip any
+# script handler, so a file uploaded with a code extension is served inert.
+<FilesMatch "\.(?i:php|php3|php4|php5|php7|php8|phtml|phps|phar|pl|py|cgi|asp|aspx|jsp|sh|shtml)$">
+    Require all denied
+</FilesMatch>
+
+RemoveHandler .php .php3 .php4 .php5 .php7 .php8 .phtml .phps .phar
+RemoveType .php .php3 .php4 .php5 .php7 .php8 .phtml .phps .phar
+
+<IfModule mod_php.c>
+    php_admin_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_admin_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_admin_flag engine off
+</IfModule>

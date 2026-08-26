@@ -33,9 +33,8 @@ Options -Indexes
 	Require all denied
 </FilesMatch>
 
-# Prevent PHP execution in uploads/storage directories
-<DirectoryMatch "^.*(storage|uploads|cache|temp).*$">
-	<FilesMatch "\.php$">
-		Require all denied
-	</FilesMatch>
-</DirectoryMatch>
+# NOTE: PHP execution inside upload directories is blocked by a dedicated
+# .htaccess dropped into each upload folder (public/orionFrontAssets/assets/
+# images/project/ and storage/app/public/). <DirectoryMatch> is NOT valid in
+# .htaccess context - it 500s on Apache and is ignored on LiteSpeed - so it
+# must not be used here.

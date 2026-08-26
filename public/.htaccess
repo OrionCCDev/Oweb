@@ -41,12 +41,10 @@
 	RewriteRule .* - [F,L]
 </IfModule>
 
-# Prevent PHP execution in uploads/storage directories
-<DirectoryMatch "^.*(storage|uploads|cache|temp).*$">
-	<FilesMatch "\.php$">
-		Require all denied
-	</FilesMatch>
-</DirectoryMatch>
+# NOTE: PHP execution inside upload directories is blocked by a dedicated
+# .htaccess inside each upload folder (orionFrontAssets/assets/images/project/
+# and the storage symlink target). <DirectoryMatch> is invalid in .htaccess
+# context - it 500s on Apache and is silently ignored on LiteSpeed.
 
 # Browser caching for static assets
 <IfModule mod_expires.c>

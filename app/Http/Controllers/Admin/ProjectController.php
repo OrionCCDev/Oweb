@@ -93,7 +93,10 @@ class ProjectController extends Controller
         // follows, resolved by orionccFront/partials/project-card.blade.php)
         if ($request->hasFile('main_image')) {
             $file = $request->file('main_image');
-            $filename = 'main.' . $file->getClientOriginalExtension();
+            // Use the extension guessed from the file's real MIME type, not
+            // the client-supplied name - a JPEG-header polyglot named x.php
+            // would otherwise land as main.php in the web root.
+            $filename = 'main.' . $file->extension();
             $file->storeAs($project->slug_name, $filename, 'projects');
             $project->update(['main_image' => $filename]);
         }
@@ -174,7 +177,10 @@ class ProjectController extends Controller
         // Handle a replacement card thumbnail
         if ($request->hasFile('main_image')) {
             $file = $request->file('main_image');
-            $filename = 'main.' . $file->getClientOriginalExtension();
+            // Use the extension guessed from the file's real MIME type, not
+            // the client-supplied name - a JPEG-header polyglot named x.php
+            // would otherwise land as main.php in the web root.
+            $filename = 'main.' . $file->extension();
             $file->storeAs($project->slug_name, $filename, 'projects');
             $project->update(['main_image' => $filename]);
         }
@@ -263,8 +269,16 @@ class ProjectController extends Controller
 
     public function deleteImage(Request $request)
     {
-        $mediaId = $request->media_id;
-        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+        $request->validate(['media_id' => 'required|integer']);
+
+        // Only allow deleting media that actually belongs to a Project via one
+        // of its own collections - not arbitrary rows in the shared media table
+        // (client logos, sector photos, the site logo, etc.).
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::query()
+            ->where('id', $request->media_id)
+            ->where('model_type', Project::class)
+            ->whereIn('collection_name', ['flipster', 'mini_gallary'])
+            ->first();
 
         if ($media) {
             $media->delete();

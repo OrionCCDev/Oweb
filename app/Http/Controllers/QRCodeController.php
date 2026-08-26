@@ -11,34 +11,26 @@ class QRCodeController extends Controller
     public function index()
     {
         $pdfUrl = 'https://orion-contracting.com/uploads/AOJ%20COMPANY%20PROFILE.pdf';
+        $path = public_path('images/qrcode.png');
 
-        // Generate QR code using QR Server API
-        $apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pdfUrl);
+        // Generate the QR image once and reuse it, instead of hitting the
+        // external API and rewriting the file on every single request.
+        if (!file_exists($path)) {
+            try {
+                $apiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode($pdfUrl);
+                $response = Http::timeout(10)->get($apiUrl);
 
-        try {
-            // Get QR code image content
-            $response = Http::get($apiUrl);
-
-            if ($response->successful()) {
-                // Save the QR code image
-                $path = public_path('images/qrcode.png');
-
-                // Create directory if it doesn't exist
-                if (!file_exists(public_path('images'))) {
-                    mkdir(public_path('images'), 0755, true);
-                }
-
-                // Save the image
-                if (file_put_contents($path, $response->body())) {
-                    Log::info('QR code generated successfully');
+                if ($response->successful()) {
+                    if (!file_exists(public_path('images'))) {
+                        mkdir(public_path('images'), 0755, true);
+                    }
+                    file_put_contents($path, $response->body());
                 } else {
-                    Log::error('Failed to save QR code image');
+                    Log::error('QR Server API request failed: ' . $response->status());
                 }
-            } else {
-                Log::error('QR Server API request failed: ' . $response->status());
+            } catch (\Exception $e) {
+                Log::error('QR Code generation failed: ' . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            Log::error('QR Code generation failed: ' . $e->getMessage());
         }
 
         // Pass the PDF URL to the view

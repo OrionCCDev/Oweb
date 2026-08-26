@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,22 +21,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate for the entire /admin panel (sectors, events, clients, settings, projects).
-        // Role-based: 'admin' and 'super_admin' both get in. The old
-        // PROJECT_ADMIN_EMAILS env allowlist is kept as a fallback so an
-        // account never loses access just because its role wasn't migrated.
+        // Strong password policy everywhere Password::defaults() is used
+        // (registration is disabled, but this covers admin-user creation
+        // and password resets): 12+ chars, mixed case, number, symbol,
+        // and rejected if it appears in a known-breach list.
+        Password::defaults(fn () => Password::min(12)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ->uncompromised());
+
+        // Gate for the entire /admin panel (sectors, events, clients,
+        // settings, projects). Role-based: 'admin' and 'super_admin' get in.
         Gate::define('manage-projects', function ($user) {
-            if ($user->isAdmin()) {
-                return true;
-            }
-
-            $emailsEnv = (string) env('PROJECT_ADMIN_EMAILS', 'ahmed@orion.com');
-            $allowedEmails = collect(explode(',', $emailsEnv))
-                ->map(fn ($e) => trim(Str::lower($e)))
-                ->filter()
-                ->all();
-
-            return in_array(Str::lower($user->email), $allowedEmails, true);
+            return $user->isAdmin();
         });
 
         // Gate for managing OTHER admin accounts — super admins only.

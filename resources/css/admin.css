@@ -307,3 +307,83 @@
 .admin-shell nav[role="navigation"] .focus\:border-blue-300:focus { border-color: var(--db-accent) !important; }
 
 /* Modal / overlay backdrops stay as-is (already dark-friendly) */
+
+/* ==========================================================================
+   Preloader — the three glyphs of the OCC mark bouncing in a wave.
+   Markup: layouts/admin.blade.php, right after <body>. The logo URL arrives
+   as --loader-logo (set inline) so an admin-uploaded logo is honoured.
+   The slicing assumes the three-glyph OCC mark: background-size 300% shows
+   one glyph per tile, and the tagline strip is the bottom band of the same
+   image.
+   ========================================================================== */
+
+.admin-shell .admin-loader {
+    --lw: 240px;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--db-bg, #0B0F14);
+    transition: opacity .45s ease, visibility .45s ease;
+    /* Failsafe: hide after 6s even if the script never runs, so a blocked or
+       broken script can't leave this overlay covering the dashboard. */
+    animation: admin-loader-failsafe 0s linear 6s forwards;
+}
+
+/* animation: none is load-bearing here. The failsafe above animates opacity
+   and visibility, and a property under a CSS animation's control cannot also
+   be transitioned - with the animation still pending, adding this class had
+   no visible effect and the loader sat there until the failsafe fired at 6s.
+   Dropping the animation hands both properties back to the transition. */
+.admin-shell .admin-loader.is-hidden {
+    animation: none;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.admin-shell .admin-loader__glyphs {
+    display: flex;
+    width: var(--lw);
+    filter: drop-shadow(0 0 18px rgba(125, 196, 255, .35));
+}
+
+.admin-shell .admin-loader__glyphs span {
+    width: calc(var(--lw) / 3);
+    /* the mark is ~1.9:1, and its glyph row is the top ~75% of that */
+    height: calc(var(--lw) / 1.9 * .75);
+    background-image: var(--loader-logo);
+    background-repeat: no-repeat;
+    background-size: 300% auto;
+    animation: admin-loader-bounce .9s cubic-bezier(.45, 0, .55, 1) infinite;
+}
+
+.admin-shell .admin-loader__glyphs span:nth-child(1) { background-position-x: 0%; }
+.admin-shell .admin-loader__glyphs span:nth-child(2) { background-position-x: 50%; animation-delay: .15s; }
+.admin-shell .admin-loader__glyphs span:nth-child(3) { background-position-x: 100%; animation-delay: .30s; }
+
+.admin-shell .admin-loader__tagline {
+    width: var(--lw);
+    height: calc(var(--lw) / 1.9 * .25);
+    background-image: var(--loader-logo);
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: 0 100%;
+    opacity: .85;
+}
+
+@keyframes admin-loader-bounce {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-16px); }
+}
+
+@keyframes admin-loader-failsafe {
+    to { opacity: 0; visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-shell .admin-loader__glyphs span { animation: none; }
+}

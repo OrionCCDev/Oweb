@@ -55,12 +55,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/site-loader.css') }}?v={{ filemtime(public_path('orionFrontAssets/assets/css/site-loader.css')) }}" />
     @yield('css_style_links')
     <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/custom-overrides.css') }}" />
     <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/theme-crystal.css') }}" />
 </head>
 
 <body class="custom-cursor">
+
+    @include('layouts.front.loader')
 
     <div class="custom-cursor__cursor"></div>
     <div class="custom-cursor__cursor-two"></div>

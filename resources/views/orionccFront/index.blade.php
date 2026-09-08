@@ -139,7 +139,7 @@ $p_nam = 'home';
 
 @section('pageLoader')
 <div id="site-intro" class="site-intro">
-    <video id="site-intro-video" class="site-intro__video" autoplay muted playsinline preload="auto">
+    <video id="site-intro-video" class="site-intro__video" muted playsinline preload="auto">
         <source src="{{ asset('orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
     </video>
     <div class="site-intro__overlay"></div>
@@ -190,12 +190,31 @@ $p_nam = 'home';
                 progressBar.style.width = ((video.currentTime / video.duration) * 100) + '%';
             }
         });
-        video.play().catch(closeIntro);
 
-        // Safety net: if the video never loads (network issue etc.), don't trap the visitor
-        setTimeout(function () {
-            if (!closed && video.readyState === 0) closeIntro();
-        }, 4000);
+        // The video has no autoplay attribute: the site preloader sits above
+        // this intro for a couple of seconds so the page can load behind it,
+        // and the story shouldn't be playing unseen under it. preload="auto"
+        // keeps buffering meanwhile; playback starts the moment the preloader
+        // announces it has gone.
+        var started = false;
+        var startIntro = function () {
+            if (started || closed) return;
+            started = true;
+            video.play().catch(closeIntro);
+
+            // Safety net: if the video never loads (network issue etc.), don't trap the visitor
+            setTimeout(function () {
+                if (!closed && video.readyState === 0) closeIntro();
+            }, 4000);
+        };
+
+        if (window.siteLoaderHidden || !document.getElementById('siteLoader')) {
+            startIntro();
+        } else {
+            document.addEventListener('site-loader:hidden', startIntro, { once: true });
+            // never wait on the preloader forever if its script was blocked
+            setTimeout(startIntro, 6000);
+        }
     } else {
         closeIntro();
     }

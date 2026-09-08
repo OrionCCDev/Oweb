@@ -17,6 +17,19 @@
     @vite(['resources/css/app.css', 'resources/css/admin.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased admin-shell">
+
+    {{-- Preloader: the three glyphs of the OCC mark bouncing in a wave.
+         Styles live in resources/css/admin.css. The logo comes through
+         site_logo_url() so an admin-uploaded logo is used when one is set,
+         passed as a custom property because the URL isn't known to the CSS. --}}
+    <div class="admin-loader" id="adminLoader" aria-hidden="true"
+         style="--loader-logo: url('{{ site_logo_url('web', 'orionFrontAssets/assets/images/resources/logo-white.webp') }}')">
+        <div class="admin-loader__glyphs">
+            <span></span><span></span><span></span>
+        </div>
+        <span class="admin-loader__tagline"></span>
+    </div>
+
     <div class="min-h-screen">
         <!-- Sidebar -->
         <aside class="admin-sidebar fixed inset-y-0 left-0 z-50 w-72 transform lg:translate-x-0 transition-transform duration-200 ease-in-out"
@@ -290,6 +303,28 @@
                 thumbs.appendChild(img);
             });
         });
+    </script>
+
+    <script>
+        // Hide the preloader once the page has loaded. The CSS carries its own
+        // timed failsafe as well, so a blocked script can never leave the
+        // overlay covering the dashboard.
+        (function () {
+            var loader = document.getElementById('adminLoader');
+            if (!loader) return;
+
+            var hide = function () { loader.classList.add('is-hidden'); };
+
+            if (document.readyState === 'complete') {
+                setTimeout(hide, 300);
+            } else {
+                window.addEventListener('load', function () { setTimeout(hide, 300); });
+            }
+
+            setTimeout(hide, 5000);
+            // coming back via the bfcache restores the old DOM, loader included
+            window.addEventListener('pageshow', function (e) { if (e.persisted) hide(); });
+        })();
     </script>
 
     @stack('scripts')

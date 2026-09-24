@@ -80,6 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('sectors', AdminSectorController::class);
 
         // Events/News Management
+        Route::delete('events/{event}/gallery/{media}', [AdminEventController::class, 'destroyGalleryImage'])->name('events.gallery.destroy');
         Route::resource('events', AdminEventController::class);
 
         // Clients Management

@@ -33,6 +33,12 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Main Image</label>
             <input type="file" name="main_image" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
         </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Photo Gallery</label>
+            <input type="file" name="gallery[]" multiple accept="image/jpeg,image/png,image/webp" class="w-full px-4 py-2 border rounded-lg">
+            <p class="text-sm text-gray-500 mt-1">Optional. Select several photos at once — they appear as a gallery on the article page, and open full-size when clicked.</p>
+            @error('gallery.*')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+        </div>
         <div class="flex justify-end space-x-4">
             <a href="{{ route('admin.events.index') }}" class="px-6 py-2 bg-gray-200 rounded-lg">Cancel</a>
             <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg">Create</button>

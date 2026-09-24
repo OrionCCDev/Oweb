@@ -92,7 +92,6 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}">
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.theme.default.min.css') }}" />
-<link href="https://cdn.jsdelivr.net/npm/lightgallery@2.3.0/css/lightgallery.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/style.css') }}" />
 @endsection
 @section('cust_js')
@@ -106,44 +105,7 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
 <script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
 
-<!-- template js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.3.0/lightgallery.min.js"
-    integrity="sha512-+1CyleTPoFvPO15/CfBZ5h6k/mu/qCQe9uxq1tEfO7SRJ52MnCAQ561bAYkvrsGtnG7AkcvKtVwdeoZc8ps7bQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script>
-    $(document).ready(function () {
-      // Initialize LightGallery
-      var lightGalleryInstance = lightGallery(document.getElementById('customize-thumbnails-gallery'), {
-        selector: 'a',
-        addClass: 'lg-custom-thumbnails',
-        appendThumbnailsTo: '.lg-outer',
-        animateThumb: true,
-        allowMediaOverlap: true,
-        speed: 500,
-        closeOnTap: true,
-        hideBarsDelay: 3000,
-        loop: true,
-        download: false,
-        counter: true,
-        enableSwipe: true,
-        enableDrag: true,
-        swipeThreshold: 50,
-        thumbnail: true,
-        animateThumb: true,
-        currentPagerPosition: 'middle',
-        thumbWidth: 100,
-        thumbHeight: '80px',
-        thumbContHeight: 100,
-        showThumbByDefault: true,
-        toogleThumb: true,
-        fullScreen: true,
-        zoom: true,
-        scale: 1,
-        actualSize: true
-      });
-
-    });
-</script>
+<!-- template js (main.js also opens the photo gallery in Magnific Popup) -->
 <script src="{{ asset_v('orionFrontAssets/assets/js/main.js') }}"></script>
 @endsection
 @section('page_content')
@@ -255,20 +217,31 @@ $eventDate = \Carbon\Carbon::parse($event->created_at)->format('F j, Y');
     </section>
 
 </div>
-<div class="container" style="margin-top: 120px;">
-    <div id="customize-thumbnails-gallery">
-        <ul class="flip-items enhanced-reflection">
-            {{-- @foreach ( $project->getMedia("flipster") as $media )
-            <li data-flip-title="Title {{ $loop->index + 1 }}">
-                <a class="flipster__item" href="{{ $media->getFullUrl() }}">
-                    <img src="{{ $media->getFullUrl() }}" />
-                </a>
-            </li>
-            @endforeach --}}
-        </ul>
+{{-- Photo gallery: small thumbnails in the grid, full-size image in a
+     Magnific Popup lightbox (main.js wires up every .img-popup link, and
+     data-group keeps them in one swipeable set). Hidden when empty. --}}
+@php $galleryMedia = $event->getMedia('gallery'); @endphp
+@if ($galleryMedia->isNotEmpty())
+<section class="news-gallery">
+    <div class="container">
+        <div class="section-title text-center">
+            <span class="section-title__tagline">Gallery</span>
+            <h2 class="section-title__title">Event Photos</h2>
+        </div>
+        <div class="row news-gallery__grid">
+            @foreach ($galleryMedia as $photo)
+                <div class="col-xl-3 col-lg-4 col-md-4 col-6">
+                    <a href="{{ $photo->getUrl() }}" class="img-popup news-gallery__item" data-group="1"
+                        aria-label="Open photo {{ $loop->iteration }} of {{ $galleryMedia->count() }}">
+                        <img src="{{ $photo->hasGeneratedConversion('thumb') ? $photo->getUrl('thumb') : $photo->getUrl() }}"
+                            alt="{{ $event->title }} — photo {{ $loop->iteration }}" loading="lazy">
+                    </a>
+                </div>
+            @endforeach
+        </div>
     </div>
-
-</div>
+</section>
+@endif
 
 <!--Video One Start-->
 <section class="video-one">

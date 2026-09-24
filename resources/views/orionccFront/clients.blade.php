@@ -21,7 +21,7 @@ $p_nam = 'clients';
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/animate/custom-animate.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/fontawesome/css/all.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}">
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" />
+<link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/style.css') }}" />
 <style>
     .orion-clients-grid {
         display: grid;
@@ -64,7 +64,7 @@ $p_nam = 'clients';
 <script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+<script src="{{ asset_v('orionFrontAssets/assets/js/main.js') }}"></script>
 @endsection
 
 @section('page_content')

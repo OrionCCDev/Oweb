@@ -240,7 +240,7 @@
     }
     </script>
 
-    <script src="{{ asset('orionFrontAssets/assets/js/custom-effects.js') }}" defer></script>
+    <script src="{{ asset_v('orionFrontAssets/assets/js/custom-effects.js') }}" defer></script>
 
     <noscript><style>.project-card--reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
     <script>

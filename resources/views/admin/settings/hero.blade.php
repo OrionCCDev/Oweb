@@ -29,17 +29,13 @@
 
         <div class="border rounded-lg p-4">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">2. Background Video</p>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Video Link</label>
-                @if (!empty($settings['hero_video']->value ?? null))
-                    <video src="{{ $settings['hero_video']->value }}" muted playsinline class="w-64 rounded mb-2 border" controls></video>
-                @else
-                    <p class="text-sm text-gray-500 mb-2">Currently playing the built-in default video (no custom link set):</p>
-                    <video src="{{ asset('orionFrontAssets/assets/video/hero-bg-loop.mp4') }}" muted playsinline class="w-64 rounded mb-2 border" controls></video>
-                @endif
-                <input type="url" name="hero_video" value="{{ $settings['hero_video']->value ?? '' }}" placeholder="https://example.com/video.mp4" class="w-full px-4 py-2 border rounded-lg">
-                <p class="text-sm text-gray-500 mt-1">Plays behind the hero title on larger screens. Leave blank to use the default background video.</p>
-            </div>
+            @include('admin.settings.partials.video-field', [
+                'key' => 'hero_video',
+                'label' => 'Background Video',
+                'current' => $settings['hero_video']->value ?? null,
+                'fallbackAsset' => 'orionFrontAssets/assets/video/hero-bg-loop.mp4',
+                'help' => 'Plays behind the hero title on larger screens. Keep it short and quiet — it loops silently.',
+            ])
         </div>
 
         <div class="border rounded-lg p-4">
@@ -50,7 +46,7 @@
                     <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($settings['hero_background_image']->value) }}" alt="" class="w-48 h-28 object-cover rounded mb-2 border">
                 @else
                     <p class="text-sm text-gray-500 mb-2">Currently showing the built-in default image (nothing custom uploaded):</p>
-                    <img src="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}" alt="" class="w-48 h-28 object-cover rounded mb-2 border">
+                    <img src="{{ asset('orionFrontAssets/assets/video/video-screen.webp') }}" alt="" class="w-48 h-28 object-cover rounded mb-2 border">
                 @endif
                 <input type="file" name="hero_background_image" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
                 <p class="text-sm text-gray-500 mt-1">Shown while the video loads, and as the background on mobile / when motion is reduced.</p>

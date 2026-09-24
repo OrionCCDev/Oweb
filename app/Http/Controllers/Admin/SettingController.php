@@ -60,14 +60,64 @@ class SettingController extends Controller
             'hero_eyebrow' => 'nullable|string',
             'hero_title' => 'nullable|string',
             'hero_subtitle' => 'nullable|string',
-            'hero_video' => 'nullable|url',
             'hero_background_image' => 'nullable|image|mimes:jpeg,jpg,png,webp,gif|max:10240',
         ];
 
         $this->saveHomepageFields($request, $fields);
+        $this->saveVideoSetting($request, 'hero_video');
 
         return redirect()->route('admin.settings.hero')
             ->with('success', 'Hero section updated successfully.');
+    }
+
+    /**
+     * The full-screen intro that plays before the homepage, and the same
+     * clip behind "Watch Our Story".
+     */
+    public function introVideo()
+    {
+        $settings = Setting::where('group', 'homepage')->get()->keyBy('key');
+        return view('admin.settings.intro-video', compact('settings'));
+    }
+
+    public function updateIntroVideo(Request $request)
+    {
+        $this->saveVideoSetting($request, 'intro_video');
+
+        return redirect()->route('admin.settings.intro-video')
+            ->with('success', 'Intro video updated successfully.');
+    }
+
+    /**
+     * A video setting holds either an uploaded file's path on the public
+     * disk or a link to a video hosted elsewhere - large files are better
+     * served from a CDN than from this shared host. An upload wins over a
+     * link, and ticking "remove" reverts to the built-in default.
+     */
+    private function saveVideoSetting(Request $request, string $key): void
+    {
+        $request->validate([
+            $key . '_file' => 'nullable|file|mimetypes:video/mp4,video/webm,video/ogg|max:' . max_upload_kb(),
+            $key . '_url' => 'nullable|url',
+        ], [
+            $key . '_file.max' => 'That video is larger than this server accepts. Upload a smaller file, or host it elsewhere and paste the link instead.',
+            $key . '_file.mimetypes' => 'Please upload an MP4, WebM or Ogg video.',
+        ]);
+
+        if ($request->hasFile($key . '_file')) {
+            $path = $request->file($key . '_file')->store('settings', 'public');
+            Setting::set($key, $path, 'video', 'homepage');
+            return;
+        }
+
+        if ($request->boolean($key . '_remove')) {
+            Setting::set($key, null, 'video', 'homepage');
+            return;
+        }
+
+        if ($request->has($key . '_url')) {
+            Setting::set($key, $request->input($key . '_url') ?: null, 'video', 'homepage');
+        }
     }
 
     public function statsBar()

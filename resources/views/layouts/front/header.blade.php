@@ -57,8 +57,8 @@
         rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/site-loader.css') }}?v={{ filemtime(public_path('orionFrontAssets/assets/css/site-loader.css')) }}" />
     @yield('css_style_links')
-    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/custom-overrides.css') }}" />
-    <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/theme-crystal.css') }}" />
+    <link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/custom-overrides.css') }}" />
+    <link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/theme-crystal.css') }}" />
 </head>
 
 <body class="custom-cursor">

@@ -72,12 +72,18 @@ if (!function_exists('resolve_project_image')) {
             $candidates[] = $project->slug_name . '/' . $name;
             $candidates[] = $project->slug_name . '/gallery/' . $name;
         }
+
+        // The thumbnail is saved as main.{ext} and overwritten in place on
+        // re-upload, so browsers caching it would keep showing the old one.
+        // Stamp it with the project's last update to force a fresh copy.
+        $version = $project->updated_at ? '?v=' . $project->updated_at->timestamp : '';
+
         foreach (array_unique($candidates) as $candidate) {
             if (\Illuminate\Support\Facades\Storage::disk('projects')->exists($candidate)) {
-                return \Illuminate\Support\Facades\Storage::disk('projects')->url($candidate);
+                return \Illuminate\Support\Facades\Storage::disk('projects')->url($candidate) . $version;
             }
         }
-        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $name);
+        return asset('orionFrontAssets/assets/images/project/' . $project->slug_name . '/' . $name) . $version;
     }
 }
 
@@ -136,6 +142,77 @@ if (!function_exists('resolve_event_image')) {
         }
 
         return null;
+    }
+}
+
+if (!function_exists('asset_v')) {
+    /**
+     * asset() plus a ?v=<last-modified> stamp, for the site's own CSS/JS
+     * that gets edited. Lets the server tell browsers to cache these for a
+     * long time: the URL changes the moment the file does, so visitors
+     * never get stuck on a stale stylesheet after a deploy.
+     */
+    function asset_v(string $path): string
+    {
+        $file = public_path($path);
+
+        return asset($path) . (is_file($file) ? '?v=' . filemtime($file) : '');
+    }
+}
+
+if (!function_exists('setting_video')) {
+    /**
+     * Resolve a dashboard-managed video setting. The stored value is either
+     * a full URL (video hosted elsewhere) or a path on the public disk (an
+     * uploaded file), so handle both and fall back to the built-in asset
+     * until an admin sets one.
+     */
+    function setting_video(string $key, string $fallbackAssetPath): string
+    {
+        $value = Setting::get($key);
+
+        if (!$value) {
+            return asset($fallbackAssetPath);
+        }
+
+        if (\Illuminate\Support\Str::startsWith($value, ['http://', 'https://', '//'])) {
+            return $value;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($value);
+    }
+}
+
+if (!function_exists('max_upload_kb')) {
+    /**
+     * The largest file this server will actually accept, in kilobytes.
+     * PHP silently discards a POST larger than post_max_size (which then
+     * surfaces as a confusing 419), so the real ceiling is the smaller of
+     * the two limits - used for both validation and the dashboard hint.
+     */
+    function max_upload_kb(): int
+    {
+        $toBytes = function ($value): int {
+            $value = trim((string) $value);
+            if ($value === '') {
+                return 0;
+            }
+
+            $number = (int) $value;
+            return match (strtolower(substr($value, -1))) {
+                'g' => $number * 1024 * 1024 * 1024,
+                'm' => $number * 1024 * 1024,
+                'k' => $number * 1024,
+                default => $number,
+            };
+        };
+
+        $limits = array_filter([
+            $toBytes(ini_get('upload_max_filesize')),
+            $toBytes(ini_get('post_max_size')),
+        ]);
+
+        return $limits ? (int) floor(min($limits) / 1024) : 51200;
     }
 }
 

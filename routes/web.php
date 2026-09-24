@@ -115,6 +115,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('settings/about', [SettingController::class, 'updateAbout'])->name('settings.about.update');
         Route::get('settings/contact', [SettingController::class, 'contact'])->name('settings.contact');
         Route::post('settings/contact', [SettingController::class, 'updateContact'])->name('settings.contact.update');
+        Route::get('settings/intro-video', [SettingController::class, 'introVideo'])->name('settings.intro-video');
+        Route::post('settings/intro-video', [SettingController::class, 'updateIntroVideo'])->name('settings.intro-video.update');
         Route::get('settings/logo', [SettingController::class, 'logo'])->name('settings.logo');
         Route::post('settings/logo', [SettingController::class, 'updateLogo'])->name('settings.logo.update');
         Route::get('settings/create', [SettingController::class, 'create'])->name('settings.create');

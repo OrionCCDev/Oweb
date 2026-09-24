@@ -29,9 +29,6 @@ $p_nam = 'home';
 <!-- used in popup video -->
 <link rel="stylesheet"
     href="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css') }}" />
-<!-- used on mobile for slider -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.pips.css') }}" />
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/odometer/odometer.min.css') }}" /> -->
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}">
@@ -123,15 +120,13 @@ $p_nam = 'home';
     href="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/css/bootstrap-select.min.css') }}" />
 @endif
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/vegas/vegas.min.css') }}" /> -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.css') }}" />
 @if ($p_nam == 'projects')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nice-select/nice-select.css') }}" />
 @endif
 <!-- template styles -->
 <!-- <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/packages.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/bootstrap/css/bootstrap.min.css') }}" /> -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" />
+<link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/style.css') }}" />
 
 @endsection
 
@@ -140,7 +135,7 @@ $p_nam = 'home';
 @section('pageLoader')
 <div id="site-intro" class="site-intro">
     <video id="site-intro-video" class="site-intro__video" muted playsinline preload="auto">
-        <source src="{{ asset('orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
+        <source src="{{ setting_video('intro_video', 'orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
     </video>
     <div class="site-intro__overlay"></div>
     <div class="site-intro__logo">
@@ -353,103 +348,24 @@ $p_nam = 'home';
             window.addEventListener("orientationchange", lazyLoad);
             lazyLoad();
         }
-
-        // Initialize certificate slider specifically
-        if (typeof Swiper !== 'undefined') {
-            // Check if the Swiper container exists
-            const certificateSlider = document.querySelector('.certificates-slider');
-            if (certificateSlider) {
-                // Get swiper options from data attribute
-                const options = certificateSlider.dataset.swiperOptions ?
-                    JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                // Initialize the swiper
-                new Swiper('.certificates-slider', options);
-            }
-        } else {
-            // If Swiper isn't loaded yet, wait for it
-            const checkSwiper = setInterval(function() {
-                if (typeof Swiper !== 'undefined') {
-                    clearInterval(checkSwiper);
-
-                    const certificateSlider = document.querySelector('.certificates-slider');
-                    if (certificateSlider) {
-                        const options = certificateSlider.dataset.swiperOptions ?
-                            JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                        new Swiper('.certificates-slider', options);
-                    }
-                }
-            }, 100);
-        }
     });
 
-    // Load non-critical scripts
-    function loadDeferredScripts() {
-        const scripts = [
-            '{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}',
-            '{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}',
-            '{{ asset('orionFrontAssets/assets/js/main.js') }}'
-        ];
-
-        let loadedCount = 0;
-
-        function loadScript(index) {
-            if (index >= scripts.length) {
-                // All scripts loaded
-                return;
-            }
-
-            const script = document.createElement('script');
-            script.src = scripts[index];
-            script.onload = function() {
-                loadedCount++;
-                loadScript(index + 1);
-
-                // Initialize certificate slider after swiper.min.js is loaded
-                if (script.src.includes('swiper.min.js')) {
-                    setTimeout(function() {
-                        const certificateSlider = document.querySelector('.certificates-slider');
-                        if (certificateSlider) {
-                            const options = certificateSlider.dataset.swiperOptions ?
-                                JSON.parse(certificateSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.certificates-slider', options);
-                        }
-
-                        // Initialize sectors slider
-                        const sectorsSlider = document.querySelector('.sectors-slider');
-                        if (sectorsSlider) {
-                            const options = sectorsSlider.dataset.swiperOptions ?
-                                JSON.parse(sectorsSlider.dataset.swiperOptions.replace(/'/g, '"')) : {};
-
-                            new Swiper('.sectors-slider', options);
-                        }
-                    }, 500);
-                }
-            };
-            document.body.appendChild(script);
-        }
-
-        // Start loading scripts
-        loadScript(0);
-    }
-
-    // Use requestIdleCallback or setTimeout to defer non-critical tasks
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(loadDeferredScripts);
-    } else {
-        setTimeout(loadDeferredScripts, 2000);
-    }
 </script>
+
+{{-- defer: every script downloads in parallel straight away but still runs in
+     this order once the HTML is parsed. This replaced a loader that waited for
+     browser idle (a flat 2s on Safari) and then fetched them one at a time.
+     main.js initializes every .thm-swiper__slider, the sectors carousel
+     included, so no separate slider setup is needed here. --}}
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery/jquery-3.6.0.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/bootstrap/js/bootstrap.bundle.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jarallax/jarallax.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-appear/jquery.appear.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}" defer></script>
+<script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}" defer></script>
+<script src="{{ asset_v('orionFrontAssets/assets/js/main.js') }}" defer></script>
 @endsection
 
 
@@ -458,8 +374,8 @@ $p_nam = 'home';
 <!--Hero Start-->
 <section class="hero-crystal" id="hero-crystal">
     <video class="hero-crystal__video" autoplay muted loop playsinline
-        poster="{{ setting_image('hero_background_image', 'orionFrontAssets/assets/video/video-screen.png') }}">
-        <source src="{{ setting('hero_video') ?: asset('orionFrontAssets/assets/video/hero-bg-loop.mp4') }}" type="video/mp4">
+        poster="{{ setting_image('hero_background_image', 'orionFrontAssets/assets/video/video-screen.webp') }}">
+        <source src="{{ setting_video('hero_video', 'orionFrontAssets/assets/video/hero-bg-loop.mp4') }}" type="video/mp4">
     </video>
     <div class="hero-crystal__video-overlay"></div>
     <div class="hero-crystal__blueprint" aria-hidden="true"></div>
@@ -521,8 +437,8 @@ $p_nam = 'home';
 
 <div id="orion-story-popup" class="mfp-hide hero-crystal__story-popup">
     <video id="orion-story-video" controls playsinline
-        poster="{{ asset('orionFrontAssets/assets/video/video-screen.png') }}">
-        <source src="{{ asset('orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
+        poster="{{ setting_image('hero_background_image', 'orionFrontAssets/assets/video/video-screen.webp') }}">
+        <source src="{{ setting_video('intro_video', 'orionFrontAssets/assets/video/orion-story.mp4') }}" type="video/mp4">
     </video>
 </div>
 <!--Hero End-->
@@ -1096,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="crystal-corner crystal-corner--tl" aria-hidden="true"></div>
     <div class="crystal-corner crystal-corner--br" aria-hidden="true"></div>
     <div class="video-one-bg jarallax" data-jarallax data-speed="0.2" data-imgPosition="50% 0%"
-        style="background-image: url({{ setting_image('home_video.video_background_image', 'orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png') }})">
+        style="background-image: url({{ setting_image('home_video.video_background_image', 'orionFrontAssets/assets/images/resources/video-section-bg.webp') }})">
     </div>
     <div class="video-one-border"></div>
     <div class="video-one-border video-one-border-two"></div>

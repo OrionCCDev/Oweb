@@ -267,6 +267,33 @@
          x-transition:leave-end="opacity-0"></div>
 
     <script>
+        // PHP silently discards any POST bigger than post_max_size, which
+        // surfaces as a baffling 419 page. Catch oversized files the moment
+        // they're picked and say so plainly instead.
+        window.ORION_MAX_UPLOAD_BYTES = {{ max_upload_kb() * 1024 }};
+
+        document.addEventListener('change', function (e) {
+            const input = e.target;
+            if (input.tagName !== 'INPUT' || input.type !== 'file') return;
+
+            const limit = window.ORION_MAX_UPLOAD_BYTES;
+            const tooBig = Array.from(input.files || []).filter(f => f.size > limit);
+            let warning = input.parentElement.querySelector('.js-file-too-big');
+            if (warning) warning.remove();
+
+            if (tooBig.length) {
+                const mb = (limit / 1048576).toFixed(1);
+                const biggest = (Math.max(...tooBig.map(f => f.size)) / 1048576).toFixed(1);
+                warning = document.createElement('p');
+                warning.className = 'js-file-too-big text-sm text-red-600 mt-1';
+                warning.textContent = 'That file is ' + biggest + ' MB, but this server only accepts up to ' + mb +
+                    ' MB. Choose a smaller file, or host it elsewhere and paste the link instead.';
+                input.insertAdjacentElement('afterend', warning);
+                input.value = '';
+                return;
+            }
+        }, true);
+
         // Live preview for every image file input across the admin - shows
         // the newly picked file immediately, before the form is saved.
         document.addEventListener('change', function (e) {

@@ -30,7 +30,7 @@ return [
                 // Shown in the dashboard when nothing custom is uploaded, so an
                 // admin sees what is actually live. Must match the fallback
                 // passed to setting_image() in orionccFront/index.blade.php.
-                'default' => 'orionFrontAssets/assets/images/resources/Screenshot2024-09-04121353.png',
+                'default' => 'orionFrontAssets/assets/images/resources/video-section-bg.webp',
             ],
         ],
     ],

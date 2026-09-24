@@ -14,9 +14,6 @@ $p_nam = 'certificate';
 <!-- used in popup video -->
 <link rel="stylesheet"
     href="{{ asset('orionFrontAssets/assets/vendors/jquery-magnific-popup/jquery.magnific-popup.css') }}" />
-<!-- used on mobile for slider -->
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nouislider/nouislider.pips.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/ogenix-icons/style.css') }}">
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.css') }}" />
@@ -25,12 +22,10 @@ $p_nam = 'certificate';
 <link rel="stylesheet"
     href="{{ asset('orionFrontAssets/assets/vendors/bootstrap-select/css/bootstrap-select.min.css') }}" />
 @endif
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.css') }}" />
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.css') }}" />
 @if ($p_nam == 'projects')
 <link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/vendors/nice-select/nice-select.css') }}" />
 @endif
-<link rel="stylesheet" href="{{ asset('orionFrontAssets/assets/css/style.css') }}" />
+<link rel="stylesheet" href="{{ asset_v('orionFrontAssets/assets/css/style.css') }}" />
 @endsection
 
 @section('cust_js')
@@ -43,11 +38,7 @@ $p_nam = 'certificate';
 <script src="{{ asset('orionFrontAssets/assets/vendors/swiper/swiper.min.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/wow/wow.js') }}"></script>
 <script src="{{ asset('orionFrontAssets/assets/vendors/owl-carousel/owl.carousel.min.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/jquery-ui/jquery-ui.js') }}"></script>
-<script src="{{ asset('orionFrontAssets/assets/vendors/timepicker/timePicker.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
-<script src="{{ asset('orionFrontAssets/assets/js/main.js') }}"></script>
+<script src="{{ asset_v('orionFrontAssets/assets/js/main.js') }}"></script>
 @endsection
 
 @section('page_content')

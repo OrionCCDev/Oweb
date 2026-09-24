@@ -1,6 +1,17 @@
 (function ($) {
   "use strict";
 
+  // jQuery UI (447KB) used to supply this easing and nothing else the site
+  // actually uses, so it's no longer loaded - define the one easing the
+  // smooth-scroll below still references.
+  if (!$.easing.easeInOutExpo) {
+    $.easing.easeInOutExpo = function (p) {
+      return p === 0 ? 0 : p === 1 ? 1 : p < 0.5
+        ? Math.pow(2, 20 * p - 10) / 2
+        : (2 - Math.pow(2, -20 * p + 10)) / 2;
+    };
+  }
+
   function thmSwiperInit() {
     // swiper slider
     if ($(".thm-swiper__slider").length) {

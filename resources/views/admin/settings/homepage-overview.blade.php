@@ -10,6 +10,17 @@
 
     <div class="space-y-3">
 
+        <a href="{{ route('admin.settings.intro-video') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-gray-400">Intro</span>
+                    <h3 class="text-base font-semibold text-gray-900">Intro Video</h3>
+                    <p class="text-sm text-gray-500">The full-screen clip before the homepage, and the “Watch Our Story” video</p>
+                </div>
+                <span class="text-gray-400">→</span>
+            </div>
+        </a>
+
         <a href="{{ route('admin.settings.hero') }}" class="block bg-white rounded-lg shadow p-5 hover:shadow-md transition">
             <div class="flex items-center justify-between">
                 <div>
